@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
+    <!--<div class="filter-container">
       <el-input v-model="listQuery.title" placeholder="Title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
@@ -14,7 +14,7 @@
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         Export
       </el-button>
-    </div>
+    </div>-->
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -82,9 +82,10 @@
             ref="expandMenuList"
             class="expand-tree"
             :data="setTree"
-            node-key="id"
+            node-key="name"
             highlight-current
             :props="defaultProps"
+            :default-expanded-keys="openKeys"
             :expand-on-click-node="false"
             @node-click="handleNodeClick"
             center
@@ -92,34 +93,6 @@
         </div>
       </div>
     </el-dialog>
-
-    <!--<el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="ID" prop="id">
-          <el-input v-model="temp.id" />
-        </el-form-item>
-        <el-form-item label="名称" prop="mingcheng">
-          <el-input v-model="temp.mingcheng" />
-        </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-input v-model="temp.type" />
-        </el-form-item>
-        <el-form-item label="粗分结果" prop="simpleclasscode">
-          <el-input v-model="temp.simpleclasscode" />
-        </el-form-item>
-        <el-form-item label="进案时间" prop="chuantime">
-          <el-date-picker type="datetime" v-model="temp.jinantime" placeholder="Please pick a date" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          Cancel
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData()">
-          Confirm
-        </el-button>
-      </div>
-    </el-dialog>-->
 
     <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
       <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
@@ -172,6 +145,7 @@ export default {
   },
   data() {
     return {
+      openKeys: [],
       list: null,
       total: 0,
       listLoading: true,
@@ -202,8 +176,6 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       downloadLoading: false,
-      maxexpandId: api.maxexpandId, // 新增节点开始id
-      non_maxexpandId: api.maxexpandId, // 新增节点开始id(不更改)
       isLoadingTree: false, // 是否加载节点树
       setTree: '', // 节点树数据
       defaultProps: {
@@ -221,8 +193,9 @@ export default {
     this.initExpand()
   },
   methods: {
-    initExpand() {
+    initExpand() { // 加载tree
       findUserInfo().then(response => {
+        debugger
         this.setTree = response.treelist
         this.setTree.map(a => {
           this.defaultExpandKeys.push(a.id)
@@ -233,7 +206,7 @@ export default {
     handleNodeClick(d, n, s) { // 点击节点
       this.temp.pdfPath = d.name
     },
-    getList() {
+    getList() { // 获取table表格数据
       this.listLoading = true
       findMainByState(this.listQuery).then(response => {
         debugger
@@ -255,12 +228,16 @@ export default {
       })
       row.status = status
     },
-    handleUpdate(row) {
+    handleUpdate(row) { // 点击调配触发事件
+      // 重新加载tree 否则上次记录依然存在
+      this.initExpand()
+      this.openKeys = []
       this.temp = Object.assign({}, row) // copy obj
       this.temp.chuantime = new Date(this.temp.chuantime)
       this.temp.jinantime = new Date(this.temp.jinantime)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+      this.openKeys.push(this.temp.areaname)
     },
     handleChangeState() {
       this.$confirm(' ' + this.temp.id + '调配到：' + this.temp.pdfPath, '提示', {

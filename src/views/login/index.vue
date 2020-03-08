@@ -96,8 +96,8 @@ export default {
     }
     return {
       loginForm: {
-        loginname: '000000',
-        password: '1234',
+        loginname: '',
+        password: '',
         codeKey: '',
         codeText: ''
       },
@@ -147,14 +147,17 @@ export default {
   },
   methods: {
     changeImageCode() {
+      console.log('process.env.VUE_APP_BASE_API' + process.env.VUE_APP_BASE_API + '')
       var arr = [
-        'http://localhost:9100/auth/verify/code',
+        process.env.VUE_APP_BASE_API,
+        '/auth/verify/code',
         '/',
         this.loginForm.codeKey,
         '?r=',
         Math.ceil(Math.random() * 100)
       ]
       var str = arr.join('')
+      debugger
       this.codeUrl = str
     },
     // 随机 生成 18位 字符串

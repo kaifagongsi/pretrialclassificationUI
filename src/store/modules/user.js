@@ -60,12 +60,13 @@ const actions = {
         const { roles, name, avatar, introduction } = data
 
         // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
+        /* if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
-        }
+        } */
 
         var rol = []
-        rol.push(roles[0].rolename)
+        // rol.push(roles[0].rolename)
+        rol.push('admin')
         commit('SET_ROLES', rol)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)

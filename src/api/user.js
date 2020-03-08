@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: 'http://localhost:9100/auth/login',
+    url: process.env.VUE_APP_BASE_API + '/auth/login',
     method: 'post',
     data: data
   })
@@ -10,7 +10,7 @@ export function login(data) {
 
 export function getInfo() {
   return request({
-    url: 'http://localhost:9100/user/getUserInfo',
+    url: process.env.VUE_APP_BASE_API + '/user/getUserInfo',
     method: 'get'
   })
 }
