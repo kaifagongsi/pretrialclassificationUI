@@ -1,7 +1,6 @@
 import request from '@/utils/request'
 
 export function findMainByState(query) {
-  console.log(query)
   return request({
     // url: 'http://192.168.8.108:9100/caseDisposition/caseAllocation/findMainByState',
     url: '/caseDisposition/caseAllocation/findMainByState',
@@ -33,4 +32,10 @@ export function updateWorker(data) {
     data: data
   })
 }
-
+export function sendEmail(data) {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/caseDisposition/caseAllocation/sendEmail',
+    method: 'post',
+    data: data
+  })
+}

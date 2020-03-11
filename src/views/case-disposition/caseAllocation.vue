@@ -15,6 +15,11 @@
         Export
       </el-button>
     </div>-->
+    <div class="filter-container">
+      <el-button class="filter-item" type="primary" icon="el-icon-s-promotion" style="float: right" @click="sendEmail">
+        发送邮件
+      </el-button>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -22,7 +27,13 @@
       fit
       highlight-current-row
       style="width: 100%;"
+      @selection-change="handleSelectionChange"
     >
+      >
+      <el-table-column
+        type="selection"
+        width="55"
+      />
       <el-table-column label="ID" prop="id" align="center" width="200">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
@@ -35,22 +46,22 @@
       </el-table-column>
       <el-table-column label="类型" min-width="50px" align="center">
         <template slot-scope="{row}">
-          <span class="link-type" >{{ row.type=== 'FM' ? '发明' : '新型' }}</span>
+          <span class="link-type">{{ row.type=== 'FM' ? '发明' : '新型' }}</span>
         </template>
       </el-table-column>
-      <el-table-column   label="粗分结果" width="200px" align="center">
+      <el-table-column label="粗分结果" width="200px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.simpleclasscode }}</span>
         </template>
       </el-table-column>
-      <el-table-column   label="分配人员" width="100px" align="center">
+      <el-table-column label="分配人员" width="100px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.worker }}</span>
         </template>
       </el-table-column>
-      <el-table-column  label="进案日期"  width="180px" align="center">
+      <el-table-column label="进案日期" width="180px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.jinantime  | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
 
@@ -71,10 +82,10 @@
           <el-button type="info" style="float: right;" @click="handleChangeState">确认调配</el-button>
         </div>
         <div style="font-size: xx-large; text-align: center">
-          <svg-icon icon-class="user" style="width: 60px; height: 60px"  /><svg-icon icon-class="exchange" style="height: 60px;margin-left: 50px;margin-right: 50px;" /><svg-icon icon-class="user" style="width: 60px; height: 60px" />
+          <svg-icon icon-class="user" style="width: 60px; height: 60px" /><svg-icon icon-class="exchange" style="height: 60px;margin-left: 50px;margin-right: 50px;" /><svg-icon icon-class="user" style="width: 60px; height: 60px" />
         </div>
         <div style="font-size: large;padding-top: 5px;">
-          <span style="width: 50px;margin-left: 200px;" >{{temp.worker}}</span> <span style="width: 50px;margin-left: 80px">{{temp.pdfPath}}</span>
+          <span style="width: 50px;margin-left: 200px;">{{ temp.worker }}</span> <span style="width: 50px;margin-left: 80px">{{ temp.pdfPath }}</span>
         </div>
         <div>
           <el-tree
@@ -87,8 +98,8 @@
             :props="defaultProps"
             :default-expanded-keys="openKeys"
             :expand-on-click-node="false"
-            @node-click="handleNodeClick"
             center
+            @node-click="handleNodeClick"
           />
         </div>
       </div>
@@ -107,8 +118,7 @@
 </template>
 
 <script>
-import { findMainByState, findUserInfo, updateWorker } from '@/api/case-disposition'
-
+import { findMainByState, findUserInfo, updateWorker, sendEmail } from '@/api/case-disposition'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -193,9 +203,11 @@ export default {
     this.initExpand()
   },
   methods: {
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
     initExpand() { // 加载tree
       findUserInfo().then(response => {
-        debugger
         this.setTree = response.treelist
         this.setTree.map(a => {
           this.defaultExpandKeys.push(a.id)
@@ -231,6 +243,7 @@ export default {
     handleUpdate(row) { // 点击调配触发事件
       // 重新加载tree 否则上次记录依然存在
       this.initExpand()
+      debugger
       this.openKeys = []
       this.temp = Object.assign({}, row) // copy obj
       this.temp.chuantime = new Date(this.temp.chuantime)
@@ -289,6 +302,17 @@ export default {
           return v[j]
         }
       }))
+    },
+    sendEmail() {
+      console.log(this.multipleSelection)
+      console.log(this.multipleSelection.length)
+      const ids = []
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        ids.push(this.multipleSelection[i].id)
+      }
+      sendEmail(ids).then(response => {
+        console.log(response)
+      })
     }
   }
 }
