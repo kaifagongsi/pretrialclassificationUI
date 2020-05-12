@@ -153,6 +153,38 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    name: '案件统计',
+    meta: {
+      title: '案件统计',
+      icon: 'list',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    redirect: '/case-statistics/caseIn',
+    children: [
+      {
+        path: 'caseIn',
+        component: () => import('@/views/case-statistics/caseIn'),
+        name: '进案统计',
+        meta: {
+          title: '进案统计',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'caseOut',
+        component: () => import('@/views/case-statistics/caseOut'),
+        name: '出案统计',
+        meta: {
+          title: '出案统计',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
