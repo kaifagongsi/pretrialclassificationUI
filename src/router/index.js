@@ -153,6 +153,29 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    name: '案件检索',
+    meta: {
+      title: '案件检索',
+      icon: 'lock',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    redirect: '/caseQuery',
+    children: [
+      {
+        path: 'caseQuery',
+        component: () => import('@/views/case-query/caseConditionQuery'),
+        name: '案件检索',
+        meta: {
+          title: '案件检索',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
