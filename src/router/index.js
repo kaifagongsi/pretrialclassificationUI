@@ -133,6 +133,30 @@ export const asyncRoutes = [
     path: '/',
     component: Layout,
     alwaysShow: true, // will always show the root menu
+
+    name: '案件检索',
+    meta: {
+      title: '案件检索',
+      icon: 'lock',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    redirect: '/caseQuery',
+    children: [
+      {
+        path: 'caseQuery',
+        component: () => import('@/views/case-query/caseConditionQuery'),
+        name: '案件检索',
+        meta: {
+          title: '案件检索',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
+    path: '/',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
     name: '案件处理',
     meta: {
       title: '案件处理',
@@ -156,20 +180,29 @@ export const asyncRoutes = [
     path: '/',
     component: Layout,
     alwaysShow: true, // will always show the root menu
-    name: '案件检索',
+    name: '案件统计',
     meta: {
-      title: '案件检索',
-      icon: 'lock',
+      title: '案件统计',
+      icon: 'list',
       roles: ['admin'] // you can set roles in root nav
     },
-    redirect: '/caseQuery',
+    redirect: '/case-statistics/caseIn',
     children: [
       {
-        path: 'caseQuery',
-        component: () => import('@/views/case-query/caseConditionQuery'),
-        name: '案件检索',
+        path: 'caseIn',
+        component: () => import('@/views/case-statistics/caseIn'),
+        name: '进案统计',
         meta: {
-          title: '案件检索',
+          title: '进案统计',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'caseOut',
+        component: () => import('@/views/case-statistics/caseOut'),
+        name: '出案统计',
+        meta: {
+          title: '出案统计',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       }
