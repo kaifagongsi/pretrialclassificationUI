@@ -43,7 +43,7 @@ export const constantRoutes = [
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
-  },
+  }/*,
   {
     path: '/redirect',
     component: Layout,
@@ -121,7 +121,7 @@ export const constantRoutes = [
         meta: { title: 'Profile', icon: 'user', noCache: true }
       }
     ]
-  }
+  }*/
 ]
 
 /**
@@ -151,7 +151,7 @@ export const asyncRoutes = [
         }
       }
     ]
-  },
+  }/*,
   {
     path: '/permission',
     component: Layout,
@@ -206,7 +206,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  /** 树形组件 **/
+  /!** 树形组件 **!/
   {
     path: '/treeMen22',
     component: Layout,
@@ -219,7 +219,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  /**  测试list  **/
+  /!**  测试list  **!/
   {
     path: '/testList1111',
     component: Layout,
@@ -232,7 +232,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  /** when your routing map is too long, you can split it into small modules **/
+  /!** when your routing map is too long, you can split it into small modules **!/
   componentsRouter,
   chartsRouter,
   nestedRouter,
@@ -432,7 +432,7 @@ export const asyncRoutes = [
   },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true }*/
 ]
 
 const createRouter = () => new Router({

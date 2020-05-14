@@ -35,7 +35,7 @@ export default {
     pageSizes: {
       type: Array,
       default() {
-        return [5, 10, 20]
+        return [10, 30, 40, 50, 70, 100]
       }
     },
     layout: {
