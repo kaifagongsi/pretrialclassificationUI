@@ -129,7 +129,7 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-  {
+ /* {
     path: '/',
     component: Layout,
     alwaysShow: true, // will always show the root menu
@@ -152,7 +152,7 @@ export const asyncRoutes = [
         }
       }
     ]
-  },
+  },*/
   {
     path: '/',
     component: Layout,

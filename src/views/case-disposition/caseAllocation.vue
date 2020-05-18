@@ -19,33 +19,34 @@
       <el-table-column
         type="selection"
         width="55"
+        :default-sort="{prop: 'worker', order: 'descending'}"
       />
       <el-table-column label="ID" prop="id" align="center" width="200">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="名称" width="500px" align="center">
+      <el-table-column label="名称" width="500px" prop="mingcheng" align="center">
         <template slot-scope="{row}">
           <span>{{ row.mingcheng }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="类型" min-width="50px" align="center">
+      <el-table-column label="类型" min-width="50px" prop="type" align="center">
         <template slot-scope="{row}">
           <span class="link-type">{{ row.type=== 'FM' ? '发明' : '新型' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="粗分结果" width="200px" align="center">
+      <el-table-column label="粗分结果" width="200px" prop="simpleclasscode" align="center">
         <template slot-scope="{row}">
           <span>{{ row.simpleclasscode }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="分配人员" width="100px" align="center">
+      <el-table-column label="分配人员" width="100px" prop="worker" align="center" sortable>
         <template slot-scope="{row}">
           <span>{{ row.worker }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="进案日期" width="180px" align="center">
+      <el-table-column label="进案日期" width="180px" prop="jinantime" align="center">
         <template slot-scope="{row}">
           <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
@@ -178,7 +179,8 @@ export default {
         children: 'children',
         label: 'name'
       },
-      defaultExpandKeys: [] // 默认展开节点列表
+      defaultExpandKeys: [], // 默认展开节点列表
+      multipleSelection: []
     }
   },
   created() {
@@ -205,6 +207,7 @@ export default {
       this.temp.pdfPath = d.name
     },
     getList() { // 获取table表格数据
+      debugger
       this.listLoading = true
       findMainByState(this.listQuery).then(response => {
         debugger
@@ -290,18 +293,26 @@ export default {
       }))
     },
     sendEmail() {
+      const ids = []
       console.log(this.multipleSelection)
       console.log(this.multipleSelection.length)
-      const ids = []
-      for (var i = 0; i < this.multipleSelection.length; i++) {
-        ids.push(this.multipleSelection[i].id)
-      }
-      sendEmail(ids).then(response => {
-        console.log(response)
-        if (response.code === 20101) {
-          alert(response.message)
+      if (this.multipleSelection.length !== 0) {
+        for (var i = 0; i < this.multipleSelection.length; i++) {
+          ids.push(this.multipleSelection[i].id)
         }
-      })
+        sendEmail(ids).then(response => {
+          console.log(response)
+          if (response.code === 20101) {
+            alert(response.message)
+          }
+        })
+      } else {
+        alert('请勾选邮件发送人员')
+      }
+    },
+    getSortClass: function(key) {
+      const sort = this.listQuery.sort
+      return sort === `+${key}` ? 'ascending' : 'descending'
     }
   }
 }
