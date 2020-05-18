@@ -9,38 +9,11 @@ export function findAllCase(query) {
   })
 }
 
-export function findById(id) {
+export function findClassInfoByID(query) {
   return request({
     // url: 'http://192.168.8.108:9100/caseDisposition/caseAllocation/findMainByState',
-    url: process.env.VUE_APP_BASE_API + '/caseQuery/caseConditionQuery/findById',
+    url: '/caseQuery/caseConditionQuery/findClassInfoByID',
     method: 'get',
-    params: id
-  })
-}
-
-export function findBySQH(sqh) {
-  return request({
-    // url: 'http://192.168.8.108:9100/caseDisposition/caseAllocation/findMainByState',
-    url: process.env.VUE_APP_BASE_API + '/caseQuery/caseConditionQuery/findBySQH',
-    method: 'get',
-    params: sqh
-  })
-}
-
-export function findByName(name) {
-  return request({
-    // url: 'http://192.168.8.108:9100/caseDisposition/caseAllocation/findMainByState',
-    url: process.env.VUE_APP_BASE_API + '/caseQuery/caseConditionQuery/findByName',
-    method: 'get',
-    params: name
-  })
-}
-
-export function findBySQR(sqr) {
-  return request({
-    // url: 'http://192.168.8.108:9100/caseDisposition/caseAllocation/findMainByState',
-    url: process.env.VUE_APP_BASE_API + '/caseQuery/caseConditionQuery/findBySQR',
-    method: 'get',
-    params: sqr
+    params: query
   })
 }

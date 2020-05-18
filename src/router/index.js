@@ -137,14 +137,14 @@ export const asyncRoutes = [
     name: '案件检索',
     meta: {
       title: '案件检索',
-      icon: 'lock',
+      icon: 'guide',
       roles: ['admin'] // you can set roles in root nav
     },
     redirect: '/caseQuery',
     children: [
       {
         path: 'caseQuery',
-        component: () => import('@/views/case-query/caseConditionQuery'),
+        component: () => import('@/views/case-query/caseQuery'),
         name: '案件检索',
         meta: {
           title: '案件检索',
