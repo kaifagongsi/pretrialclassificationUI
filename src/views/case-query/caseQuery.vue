@@ -7,8 +7,8 @@
           <el-input v-model="search.mingcheng" placeholder="发明名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
           <el-input v-model="search.sqr" placeholder="申请主体" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
           <el-input v-model="search.sqh" placeholder="申请号" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
-          <el-date-picker v-model="search.beginTime" type="date" placeholder="出案日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
-          <el-date-picker v-model="search.endTime" type="date" placeholder="出案日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="search.beginTime" type="date" placeholder="出案日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" picker-options="pickerBeginDateBefore"/>到
+          <el-date-picker v-model="search.endTime" type="date" placeholder="出案日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" picker-options="pickerBeginDateBefore" />
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
             Search
           </el-button>
@@ -16,9 +16,9 @@
       </el-form>
       <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" @tab-click="changeTab">
         <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
-          <keep-alive>
+          <!-- <keep-alive>
             <tab-pane v-if="activeName==item.key" :type="item.key" @create="showCreatedTimes" />
-          </keep-alive>
+          </keep-alive> -->
         </el-tab-pane>
         <el-table
           v-loading="listLoading"
@@ -197,7 +197,7 @@
                 <span>{{ row.state== '2' ? '已完成' : '未完成' }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="进案时间" width="120px" align="center">
+            <el-table-column label="进案时间" width="150px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.fenpeitime }}</span>
               </template>
@@ -207,7 +207,7 @@
                 <span>{{ row.fenpeiren }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="单一出案时间" width="120px" align="center">
+            <el-table-column label="单一出案时间" width="150px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.chuantime }}</span>
               </template>
@@ -275,7 +275,7 @@ export default {
         { label: '未完成案件', key: '1' },
         { label: '已完成案件', key: '2' }
       ],
-      activeName: this.$route.query.tab,
+      activeName: 'all',
       searchInfo: {
         id: ''
       },
@@ -318,7 +318,13 @@ export default {
         children: 'children',
         label: 'name'
       },
-      defaultExpandKeys: []
+      defaultExpandKeys: [],
+      pickerBeginDateBefore: {
+        disabledDate(time) {
+          return time.getTime() > Date.now() - 8.64e6
+        }
+      },
+      
     }
   },
   resetTemp() {
@@ -377,10 +383,16 @@ export default {
       })
     },
     searchFunc(search) {
-      this.getList()
+      if(this.search.beginTime == "" && this.search.endTime != ""){
+        alert("请选择出案开始日期")
+      }else{
+        this.getList()
+      }
     },
     getList() { // 获取table表格数据
       this.listLoading = true
+      console.log(this.activeName)
+      debugger
       findAllCase(this.search).then(response => {
         debugger
         console.log(response)
@@ -396,9 +408,9 @@ export default {
       this.search.page = 1
       this.getList()
     },
-    showCreatedTimes() {
+    /* showCreatedTimes() {
       this.createdTimes = this.createdTimes + 1
-    }
+    } */
   }
 }
 </script>
