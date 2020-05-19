@@ -7,8 +7,8 @@
           <el-input v-model="search.mingcheng" placeholder="发明名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
           <el-input v-model="search.sqr" placeholder="申请主体" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
           <el-input v-model="search.sqh" placeholder="申请号" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
-          <el-date-picker v-model="search.beginTime" type="date" placeholder="出案日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" picker-options="pickerBeginDateBefore"/>到
-          <el-date-picker v-model="search.endTime" type="date" placeholder="出案日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" picker-options="pickerBeginDateBefore" />
+          <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
+          <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
             Search
           </el-button>
@@ -257,7 +257,6 @@
 </template>
 
 <script>
-import tabPane from './components/TabPane'
 import { findAllCase, findClassInfoByID } from '@/api/case-query'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
@@ -265,7 +264,7 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 
 export default {
   name: 'Tab',
-  components: { Pagination, tabPane },
+  components: { Pagination },
   directives: { waves },
   data() {
     return {
@@ -317,14 +316,7 @@ export default {
       defaultProps: {
         children: 'children',
         label: 'name'
-      },
-      defaultExpandKeys: [],
-      pickerBeginDateBefore: {
-        disabledDate(time) {
-          return time.getTime() > Date.now() - 8.64e6
-        }
-      },
-      
+      }
     }
   },
   resetTemp() {
@@ -357,8 +349,6 @@ export default {
   },
   methods: {
     changeTab: function(tab, event) {
-      /* console.log(this.activeName)
-      this.search.state = event.target.getAttribute('id') */
       this.search.state = this.activeName
       console.log(this.search.state)
       this.getList()
@@ -383,9 +373,9 @@ export default {
       })
     },
     searchFunc(search) {
-      if(this.search.beginTime == "" && this.search.endTime != ""){
-        alert("请选择出案开始日期")
-      }else{
+      if (this.search.beginTime === '' && this.search.endTime !== '') {
+        alert('请选择出案开始日期')
+      } else {
         this.getList()
       }
     },
@@ -407,10 +397,7 @@ export default {
     handleFilter() {
       this.search.page = 1
       this.getList()
-    },
-    /* showCreatedTimes() {
-      this.createdTimes = this.createdTimes + 1
-    } */
+    }
   }
 }
 </script>
