@@ -35,7 +35,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id"   align="center" width="160">
+      <el-table-column label="ID" prop="id" align="center" width="160">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
@@ -55,40 +55,40 @@
           <span>{{ row.sqr }}</span>
         </template>
       </el-table-column>
-      <el-table-column   label="申请号" width="150px" align="center">
+      <el-table-column label="申请号" width="150px" align="center">
         <template slot-scope="{row}">
           <span style="color:red;">{{ row.sqh }}</span>
         </template>
       </el-table-column>
-      <el-table-column   label="pdf路径" width="110px" align="center">
+      <el-table-column label="pdf路径" width="110px" align="center">
         <template slot-scope="{row}">
-          <span  >{{ row.pdfPath }}</span>
+          <span>{{ row.pdfPath }}</span>
         </template>
       </el-table-column>
-      <el-table-column   label="案件状态" width="50px" align="center">
+      <el-table-column label="案件状态" width="50px" align="center">
         <template slot-scope="{row}">
-          <span  >{{ row.state }}</span>
+          <span>{{ row.state }}</span>
         </template>
       </el-table-column>
-      <el-table-column   label="粗分结果" width="110px" align="center">
+      <el-table-column label="粗分结果" width="110px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.simpleclasscode }}</span>
         </template>
       </el-table-column>
-      <el-table-column   label="出案日期" width="110px" align="center">
+      <el-table-column label="出案日期" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{  row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column  label="进案日期"  width="110px" align="center">
+      <el-table-column label="进案日期" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.jinantime  | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column   label="转案留言" width="110px" align="center">
+      <el-table-column label="转案留言" width="110px" align="center">
         <template slot-scope="{row}">
-          <span style="white-space: nowrap;overflow:hidden;text-overflow:ellipsis;" >{{ row.message }}</span>
+          <span style="white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">{{ row.message }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Actions" align="center" width="150" class-name="small-padding fixed-width">
@@ -129,10 +129,10 @@
           <el-input v-model="temp.simpleclasscode" />
         </el-form-item>
         <el-form-item label="出案时间" prop="chuantime">
-          <el-date-picker type="datetime" v-model="temp.chuantime" placeholder="Please pick a date" />
+          <el-date-picker v-model="temp.chuantime" type="datetime" placeholder="Please pick a date" />
         </el-form-item>
         <el-form-item label="进按时间" prop="chuantime">
-          <el-date-picker type="datetime" v-model="temp.jinantime" placeholder="Please pick a date" />
+          <el-date-picker v-model="temp.jinantime" type="datetime" placeholder="Please pick a date" />
         </el-form-item>
         <el-form-item label="消息" prop="message">
           <el-input v-model="temp.message" />

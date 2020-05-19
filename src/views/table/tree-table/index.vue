@@ -5,7 +5,7 @@
       <a href="https://github.com/PanJiaChen/vue-element-admin/tree/master/src/components/TreeTable" target="_blank">Documentation</a>
     </el-tag>
 
-    <nx-tree-table :data="data" :columns="columns" border></nx-tree-table>
+    <nx-tree-table :data="data" :columns="columns" border />
 
   </div>
 </template>
@@ -18,7 +18,7 @@
 import nxTreeTable from '@/components/nx-tree-table'
 
 export default {
-  name: 'treeTableDemo',
+  name: 'TreeTableDemo',
   components: { nxTreeTable },
   data() {
     return {
