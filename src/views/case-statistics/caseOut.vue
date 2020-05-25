@@ -6,6 +6,10 @@
       </el-button>-->
       <el-form ref="searchForm" class="el-form-col search-form" :model="search">
         <el-form-item>
+          <el-select  v-model="search.type"  filterable   class="filter-item"  placeholder="请选择主副分">
+            <el-option value="主" label="主分"></el-option>
+            <el-option value="副" label="副分"></el-option>
+          </el-select>
           <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
           <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
@@ -125,7 +129,8 @@ const calendarTypeOptions = [
   { key: 'EU', display_name: 'Eurozone' }
 ]
 
-// arr to obj, such as { CN : "China", US : "USA" }
+
+
 const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
   return acc
@@ -164,7 +169,8 @@ export default {
         page: 1,
         limit: 10,
         beginTime: '',
-        endTime: ''
+        endTime: '',
+        type:''
       },
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
