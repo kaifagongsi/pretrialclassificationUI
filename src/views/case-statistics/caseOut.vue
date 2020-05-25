@@ -1,9 +1,18 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" icon="el-icon-s-promotion" style="float: right" @click="sendEmail">
+     <!-- <el-button class="filter-item" type="primary" icon="el-icon-s-promotion" style="float: right" @click="sendEmail">
         查询
-      </el-button>
+      </el-button>-->
+      <el-form ref="searchForm" class="el-form-col search-form" :model="search">
+        <el-form-item>
+          <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
+          <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
+            查询
+          </el-button>
+        </el-form-item>
+      </el-form>
     </div>
     <el-table
       v-loading="listLoading"
@@ -59,7 +68,7 @@
       </el-table-column>-->
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="search.page" :limit.sync="search.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <div :model="temp">
@@ -151,6 +160,12 @@ export default {
         title: undefined,
         type: undefined
       },
+      search: {
+        page: 1,
+        limit: 10,
+        beginTime: '',
+        endTime: ''
+      },
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
       temp: {
@@ -203,9 +218,16 @@ export default {
     handleNodeClick(d, n, s) { // 点击节点
       this.temp.pdfPath = d.name
     },
+    searchFunc(search) {
+      if (this.search.beginTime === '' && this.search.endTime !== '') {
+        alert('请选择出案开始日期')
+      } else {
+        this.getList()
+      }
+    },
     getList() { // 获取table表格数据
       this.listLoading = true
-      countCaseOut(this.listQuery).then(response => {
+      countCaseOut(this.search).then(response => {
         debugger
         this.list = response.data.items
         this.total = response.data.total
@@ -215,7 +237,7 @@ export default {
       })
     },
     handleFilter() {
-      this.listQuery.page = 1
+      this.search.page = 1
       this.getList()
     },
     handleModifyStatus(row, status) {

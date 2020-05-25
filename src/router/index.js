@@ -175,7 +175,7 @@ export const asyncRoutes = [
         }
       }
     ]
-  }/*,
+  },
   {
     path: '/',
     component: Layout,
@@ -207,7 +207,7 @@ export const asyncRoutes = [
         }
       }
     ]
-  },
+  }/*,
   {
     path: '/permission',
     component: Layout,

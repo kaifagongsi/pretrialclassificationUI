@@ -1,9 +1,20 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" icon="el-icon-s-promotion" style="float: right" @click="queryData">
+<!--      <el-button class="filter-item" type="primary" icon="el-icon-s-promotion" style="float: right" @click="queryData">
         查询
-      </el-button>
+      </el-button>-->
+
+    <!--  <el-form ref="searchForm" class="el-form-col search-form" :model="search">
+        <el-form-item>
+          <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
+          <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
+            查询
+          </el-button>
+        </el-form-item>
+      </el-form>-->
+
     </div>
     <el-table
       v-loading="listLoading"
