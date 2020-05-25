@@ -5,15 +5,15 @@
         查询
       </el-button>-->
 
-    <!--  <el-form ref="searchForm" class="el-form-col search-form" :model="search">
+      <el-form ref="searchForm" class="el-form-col search-form" :model="search">
         <el-form-item>
-          <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
-          <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="search.beginTime" type="date" placeholder="进案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
+          <el-date-picker v-model="search.endTime" type="date" placeholder="进案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
             查询
           </el-button>
         </el-form-item>
-      </el-form>-->
+      </el-form>
 
     </div>
     <el-table
@@ -70,45 +70,10 @@
           <span>{{ row.totalCount }}</span>
         </template>
       </el-table-column>
-      <!--    <el-table-column label="Actions" align="center" width="150" class-name="small-padding fixed-width">
-        <template slot-scope="{ row }">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            调配
-          </el-button>
-        </template>
-      </el-table-column>-->
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="search.page" :limit.sync="search.limit" @pagination="getList" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <div :model="temp">
-        <div>
-          <el-button type="info" style="float: right;" @click="handleChangeState">确认调配</el-button>
-        </div>
-        <div style="font-size: xx-large; text-align: center">
-          <svg-icon icon-class="user" style="width: 60px; height: 60px" /><svg-icon icon-class="exchange" style="height: 60px;margin-left: 50px;margin-right: 50px;" /><svg-icon icon-class="user" style="width: 60px; height: 60px" />
-        </div>
-        <div style="font-size: large;padding-top: 5px;">
-          <span style="width: 50px;margin-left: 200px;">{{ temp.worker }}</span> <span style="width: 50px;margin-left: 80px">{{ temp.pdfPath }}</span>
-        </div>
-        <div>
-          <el-tree
-            v-if="isLoadingTree"
-            ref="expandMenuList"
-            class="expand-tree"
-            :data="setTree"
-            node-key="name"
-            highlight-current
-            :props="defaultProps"
-            :default-expanded-keys="openKeys"
-            :expand-on-click-node="false"
-            center
-            @node-click="handleNodeClick"
-          />
-        </div>
-      </div>
-    </el-dialog>
 
     <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
       <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
@@ -171,6 +136,12 @@ export default {
         title: undefined,
         type: undefined
       },
+      search: {
+        page: 1,
+        limit: 10,
+        beginTime: '',
+        endTime: ''
+      },
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
       temp: {
@@ -181,12 +152,6 @@ export default {
         jinantime: new Date(),
         message: '',
         worker: ''
-      },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '调配',
-        create: 'Create'
       },
       dialogPvVisible: false,
       pvData: [],
@@ -223,9 +188,16 @@ export default {
     handleNodeClick(d, n, s) { // 点击节点
       this.temp.pdfPath = d.name
     },
+    searchFunc(search) {
+      if (this.search.beginTime === '' && this.search.endTime !== '') {
+        alert('请选择进案开始日期')
+      } else {
+        this.getList()
+      }
+    },
     getList() { // 获取table表格数据
       this.listLoading = true
-      countCaseIn(this.listQuery).then(response => {
+      countCaseIn(this.search).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         setTimeout(() => {
@@ -234,7 +206,7 @@ export default {
       })
     },
     handleFilter() {
-      this.listQuery.page = 1
+      this.search.page = 1
       this.getList()
     },
     handleModifyStatus(row, status) {
@@ -243,44 +215,6 @@ export default {
         type: 'success'
       })
       row.status = status
-    },
-    handleUpdate(row) { // 点击调配触发事件
-      // 重新加载tree 否则上次记录依然存在
-      this.initExpand()
-      debugger
-      this.openKeys = []
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.chuantime = new Date(this.temp.chuantime)
-      this.temp.jinantime = new Date(this.temp.jinantime)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.openKeys.push(this.temp.areaname)
-    },
-    handleChangeState() {
-      this.$confirm(' ' + this.temp.id + '调配到：' + this.temp.pdfPath, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const tempData = Object.assign({}, this.temp)
-        console.log(tempData)
-        tempData.chuantime = +new Date(tempData.chuantime)
-        tempData.jinantime = +new Date(tempData.jinantime)
-        updateWorker(tempData).then(response => {
-          debugger
-          this.$message({
-            type: 'success',
-            message: '调配成功！'
-          })
-          this.dialogFormVisible = false
-          this.getList()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消调配'
-        })
-      })
     },
     handleDownload() {
       this.downloadLoading = true
@@ -306,17 +240,6 @@ export default {
           return v[j]
         }
       }))
-    },
-    sendEmail() {
-      console.log(this.multipleSelection)
-      console.log(this.multipleSelection.length)
-      const ids = []
-      for (var i = 0; i < this.multipleSelection.length; i++) {
-        ids.push(this.multipleSelection[i].id)
-      }
-      sendEmail(ids).then(response => {
-        console.log(response)
-      })
     }
   }
 }
