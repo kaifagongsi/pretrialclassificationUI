@@ -130,10 +130,9 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
  {
-    path: '/',
+    path: '/anjianjiansuo',
     component: Layout,
     alwaysShow: true, // will always show the root menu
-
     name: '案件检索',
     meta: {
       title: '案件检索',
@@ -177,7 +176,7 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/',
+    path: '/anjiantongji',
     component: Layout,
     alwaysShow: true, // will always show the root menu
     name: '案件统计',
