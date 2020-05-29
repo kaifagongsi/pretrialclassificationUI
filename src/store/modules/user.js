@@ -52,18 +52,15 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         const { data } = response
-        debugger
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-
         const { roles, name, avatar, introduction } = data
 
         // roles must be a non-empty array
         /* if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         } */
-
         var rol = []
         // rol.push(roles[0].rolename)
         rol.push('admin')
