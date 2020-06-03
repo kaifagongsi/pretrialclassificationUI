@@ -53,7 +53,7 @@ const actions = {
       getInfo().then(response => {
         const { data } = response
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('认证失败，请重新登录')
         }
         const { roles, name, avatar, introduction } = data
 
@@ -62,6 +62,8 @@ const actions = {
           reject('getInfo: roles must be a non-null array!')
         } */
         var rol = []
+        //修改了前段权限
+        debugger
         // rol.push(roles[0].rolename)
         rol.push('admin')
         commit('SET_ROLES', rol)

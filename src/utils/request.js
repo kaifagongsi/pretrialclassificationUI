@@ -15,7 +15,6 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
     if (getToken() !== '') {
       config.headers[getHeader()] = getToken()
     }

@@ -206,6 +206,29 @@ export const asyncRoutes = [
         }
       }
     ]
+  },
+  {
+    path: '/userManager',
+    component: Layout,
+    redirect: '/userManager/userlist',
+    alwaysShow: true,
+    name: '人员管理',
+    meta: {
+      title: '人员管理',
+      icon: 'user',
+      roles: ['admin']
+    },
+    children: [
+        {
+          path: 'userlist',
+          component: () => import('@/views/personnel-management/index'),
+          name: '人员列表',
+          meta: {
+            title: '人员列表',
+            roles: ['admin'] // or you can only set roles in sub nav
+          }
+        }
+    ]
   }/*,
   {
     path: '/permission',

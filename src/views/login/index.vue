@@ -82,7 +82,7 @@ export default {
   data() {
     const validatePassword = (rule, value, callback) => {
       if (value.length < 4) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码不能小于4位'))
       } else {
         callback()
       }
@@ -157,7 +157,6 @@ export default {
         Math.ceil(Math.random() * 100)
       ]
       var str = arr.join('')
-      debugger
       this.codeUrl = str
     },
     // 随机 生成 18位 字符串
