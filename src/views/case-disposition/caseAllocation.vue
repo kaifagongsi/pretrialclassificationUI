@@ -207,10 +207,8 @@ export default {
       this.temp.pdfPath = d.name
     },
     getList() { // 获取table表格数据
-      debugger
       this.listLoading = true
       findMainByState(this.listQuery).then(response => {
-        debugger
         this.list = response.data.items
         this.total = response.data.total
         setTimeout(() => {
