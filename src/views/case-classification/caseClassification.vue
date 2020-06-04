@@ -3,14 +3,16 @@
     <div class="filter-container">
       <el-form ref="searchForm" class="el-form-col search-form" :model="search">
         <el-form-item>
-          <el-input v-model="search.id" placeholder="预审申请号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+          <!-- <el-input v-model="search.id" placeholder="预审申请号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
           <el-input v-model="search.mingcheng" placeholder="发明名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-          <el-input v-model="search.sqr" placeholder="申请主体" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-          <el-input v-model="search.sqh" placeholder="申请号" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
-          <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
-          <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
             Search
+          </el-button> -->
+          <el-button type="primary" class="filter-item" @click="transfercase(row);dialogFormVisible =true">
+            转案
+          </el-button>
+          <el-button type="primary" class="filter-item" @click="finishcase();">
+            出案
           </el-button>
         </el-form-item>
       </el-form>
@@ -27,40 +29,31 @@
           fit
           highlight-current-row
           style="width: 100%;"
+          @selection-change="handleSelectionChange"
         >
           <el-table-column
             type="selection"
             width="55"
           />
-          <el-table-column label="预审申请号" prop="id" align="center" width="200">
+          <el-table-column label="预审申请号" prop="id" align="center" width="180px">
             <template slot-scope="{row}">
               <a target="_blank" class="buttonText">{{ row.id }}</a>
               <!-- <router-link to="">{{ row.id }}</router-link> -->
             </template>
           </el-table-column>
-          <el-table-column label="申请主体" width="200px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.sqr }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="发明名称" width="500px" align="center">
+          <el-table-column label="发明名称" width="400px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.mingcheng }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="发明类型" min-width="50px" align="center">
+          <el-table-column label="申请人" width="200px" align="center">
+            <template slot-scope="{row}">
+              <span>{{ row.sqr }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="类型" min-width="50px" align="center">
             <template slot-scope="{row}">
               <span class="link-type">{{ row.type== 'FM' ? '发明' : '新型' }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="所属保护中心" min-width="50px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.oraginization }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="申请号" width="150px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.sqh }}</span>
             </template>
           </el-table-column>
           <el-table-column label="粗分号" width="100px" align="center">
@@ -73,37 +66,7 @@
               <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="分类号" width="100px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.ipci }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="CCI" width="100px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.cci }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="CCA" width="100px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.cca }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="C-Sets" width="100px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.csets }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="主分类员" width="100px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.mainworker }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="副分类员" width="100px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.assworker }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
+          <el-table-column label="操作" align="center" width="100px" class-name="small-padding fixed-width">
             <template slot-scope="{ row }">
               <el-button type="primary" size="mini" @click="showDetail(row);dialogFormVisible =true">
                 详情
@@ -258,7 +221,8 @@
 </template>
 
 <script>
-import { findAllCase, findClassInfoByID } from '@/api/case-query'
+import { findClassInfoByID } from '@/api/case-query'
+import { findCaseByState,finishcase } from '@/api/case-classification'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -270,30 +234,32 @@ export default {
   data() {
     return {
       tabMapOptions: [
-        { label: '全部案件', key: 'all' },
-        { label: '未分配案件', key: '0' },
-        { label: '未完成案件', key: '1' },
-        { label: '已完成案件', key: '2' }
+        { label: '新分待审', key: '0' }, // 主分进案
+        { label: '已分待出', key: '1' }, // 给了分类号
+        { label: '转案待审', key: '2' }, // 作为副分
+        { label: '已出案', key: '3' } // 已出案
       ],
-      activeName: 'all',
+      activeName: '0',
       searchInfo: {
         id: ''
       },
+      user: '',
       createdTimes: 0,
       list: null,
       classInfoList: null,
       total: 0,
       listLoading: true,
       search: {
+        user: '',
         page: 1,
-        limit: 10,
+        limit: 5,
         state: this.$route.query.tab,
         id: '',
-        name: '',
+        name: ''/* ,
         sqr: '',
         sqh: '',
         beginTime: '',
-        endTime: ''
+        endTime: '' */
       },
       temp: {
         id: undefined,
@@ -313,6 +279,7 @@ export default {
       },
       dialogPvVisible: false,
       pvData: [],
+      finishIds: '',
       downloadLoading: false,
       defaultProps: {
         children: 'children',
@@ -354,6 +321,17 @@ export default {
       console.log(this.search.state)
       this.getList()
     },
+    //获取选中行id
+    handleSelectionChange(val) {
+      this.finishIds = '';
+      console.log(val);
+      for(var i=0; i<val.length-1; i++) {
+        var halo = val[i].id;
+        console.log(halo);
+        this.finishIds += halo + ','
+      }
+      this.finishIds += val[i].id;
+    },
     // 获取分类信息
     getClassficationList() {
       console.log(this.searchInfo.id)
@@ -366,12 +344,12 @@ export default {
       // this.resetTemp()
       this.dialogStatus = 'show'
       this.temp = row
-      this.searchInfo.id = row.id
+      /* this.searchInfo.id = row.id
       this.getClassficationList()
       console.log(row)
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
-      })
+      }) */
     },
     searchFunc(search) {
       if (this.search.beginTime === '' && this.search.endTime !== '') {
@@ -382,17 +360,25 @@ export default {
     },
     getList() { // 获取table表格数据
       this.listLoading = true
-      console.log(this.activeName)
-      debugger
-      findAllCase(this.search).then(response => {
-        debugger
+      /* console.log(this.activeName)
+      debugger */
+      findCaseByState(this.search).then(response => {
         console.log(response)
         // 返回的list
         this.list = response.data.items
         this.total = response.data.total
+        this.user = response.user
         setTimeout(() => {
           this.listLoading = false
         }, 0.5 * 1000)
+      })
+    },
+    finishcase(){//出案
+      alert("出案");
+      console.log(this.finishIds,this.user)
+      finishcase(this.finishIds,this.user).then(response => {
+        console.log(response)
+        this.finishIds = '';
       })
     },
     handleFilter() {

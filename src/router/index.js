@@ -129,11 +129,23 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'Dashboard',
+        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
  {
     path: '/',
     component: Layout,
     alwaysShow: true, // will always show the root menu
-
     name: '案件检索',
     meta: {
       title: '案件检索',
@@ -149,6 +161,38 @@ export const asyncRoutes = [
         meta: {
           title: '案件检索',
           roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
+    path: '/',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    name: '案件分类',
+    meta: {
+      title: '案件分类',
+      icon: 'guide',
+      //roles: ['user'] // you can set roles in root nav
+    },
+    redirect: '/caseClassification',
+    children: [
+      {
+        path: 'caseClassification',
+        component: () => import('@/views/case-classification/caseClassification'),
+        name: '案件分类',
+        meta: {
+          title: '案件分类',
+          //roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'caseSearch',
+        component: () => import('@/views/case-classification/caseSearch'),
+        name: '案件查询',
+        meta: {
+          title: '案件查询',
+          //roles: ['admin'] // or you can only set roles in sub nav
         }
       }
     ]
@@ -175,7 +219,7 @@ export const asyncRoutes = [
         }
       }
     ]
-  }/*,
+  },
   {
     path: '/',
     component: Layout,
@@ -208,7 +252,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
+  /*{
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
