@@ -46,7 +46,7 @@
           <span>{{ row.worker }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="进案日期" width="180px" prop="jinantime" align="center">
+      <el-table-column label="进案日期" width="180px" prop="jinantime" align="center" sortable>
         <template slot-scope="{row}">
           <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
@@ -207,10 +207,8 @@ export default {
       this.temp.pdfPath = d.name
     },
     getList() { // 获取table表格数据
-      debugger
       this.listLoading = true
       findMainByState(this.listQuery).then(response => {
-        debugger
         this.list = response.data.items
         this.total = response.data.total
         setTimeout(() => {
@@ -232,7 +230,6 @@ export default {
     handleUpdate(row) { // 点击调配触发事件
       // 重新加载tree 否则上次记录依然存在
       this.initExpand()
-      debugger
       this.openKeys = []
       this.temp = Object.assign({}, row) // copy obj
       this.temp.chuantime = new Date(this.temp.chuantime)
@@ -294,8 +291,6 @@ export default {
     },
     sendEmail() {
       const ids = []
-      console.log(this.multipleSelection)
-      console.log(this.multipleSelection.length)
       if (this.multipleSelection.length !== 0) {
         for (var i = 0; i < this.multipleSelection.length; i++) {
           ids.push(this.multipleSelection[i].id)

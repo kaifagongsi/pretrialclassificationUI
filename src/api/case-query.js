@@ -9,7 +9,7 @@ export function findAllCase(query) {
   })
 }
 
-export function saveEditInfo(query) {
+export function findClassInfoByID(query) {
   return request({
     // url: 'http://192.168.8.108:9100/caseDisposition/caseAllocation/findMainByState',
     url: '/caseQuery/caseConditionQuery/findClassInfoByID',

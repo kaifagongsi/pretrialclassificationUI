@@ -143,13 +143,13 @@ export const asyncRoutes = [
     ]
   },
  {
-    path: '/',
+    path: '/anjianjiansuo',
     component: Layout,
     alwaysShow: true, // will always show the root menu
     name: '案件检索',
     meta: {
       title: '案件检索',
-      icon: 'guide',
+      icon: 'search',
       roles: ['admin'] // you can set roles in root nav
     },
     redirect: '/caseQuery',
@@ -166,7 +166,7 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/',
+    path: '/anjianfenlei',
     component: Layout,
     alwaysShow: true, // will always show the root menu
     name: '案件分类',
@@ -192,6 +192,16 @@ export const asyncRoutes = [
         name: '案件查询',
         meta: {
           title: '案件查询',
+          //roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'caseTransfer',
+        component: () => import('@/views/case-classification/caseTransfer'),
+        name: '转案',
+        hidden: true,
+        meta: {
+          title: '转案',
           //roles: ['admin'] // or you can only set roles in sub nav
         }
       }
@@ -221,7 +231,7 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/',
+    path: '/anjiantongji',
     component: Layout,
     alwaysShow: true, // will always show the root menu
     name: '案件统计',
@@ -252,7 +262,30 @@ export const asyncRoutes = [
       }
     ]
   },
-  /*{
+  {
+    path: '/userManager',
+    component: Layout,
+    redirect: '/userManager/userlist',
+    alwaysShow: true,
+    name: '人员管理',
+    meta: {
+      title: '人员管理',
+      icon: 'user',
+      roles: ['admin']
+    },
+    children: [
+        {
+          path: 'userlist',
+          component: () => import('@/views/personnel-management/index'),
+          name: '人员列表',
+          meta: {
+            title: '人员列表',
+            roles: ['admin'] // or you can only set roles in sub nav
+          }
+        }
+    ]
+  }/*,
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',

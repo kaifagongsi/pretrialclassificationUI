@@ -18,3 +18,31 @@ export function finishcase(finishIds,user) {
     }
   })
 }
+
+export function searchByCondition(query) {
+  return request({
+    url: '/caseClassification/searchByCondition',
+    method: 'get',
+    params: {
+      id: query.id
+    }
+  })
+}
+
+export function getTransWorkerList(query) {
+  return request({
+    url: '/caseClassification/getTransWorkerList',
+    method: 'get',
+    params: query
+  })
+}
+
+export function caseTransfer(query) {
+  return request({
+    url: '/caseClassification/caseTransfer',
+    method: 'post',
+    params: {
+      list: query
+    }
+  })
+}

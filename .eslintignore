@@ -3,3 +3,4 @@ src/assets
 public
 dist
 src/router/index.js
+src/layout/components/Navbar.vue

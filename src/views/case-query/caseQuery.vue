@@ -3,15 +3,39 @@
     <div class="filter-container">
       <el-form ref="searchForm" class="el-form-col search-form" :model="search">
         <el-form-item>
-          <el-input v-model="search.id" placeholder="预审申请号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-          <el-input v-model="search.mingcheng" placeholder="发明名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-          <el-input v-model="search.sqr" placeholder="申请主体" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-          <el-input v-model="search.sqh" placeholder="申请号" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
-          <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
-          <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
-          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
-            Search
-          </el-button>
+          <el-row :gutter="10">
+            <el-col :span="5">
+              <el-input v-model="search.id" placeholder="预审申请号" class="filter-item" @keyup.enter.native="handleFilter" />
+            </el-col>
+            <el-col :span="5">
+              <el-input v-model="search.mingcheng" placeholder="发明名称" class="filter-item" @keyup.enter.native="handleFilter" />
+            </el-col>
+            <el-col :span="5">
+              <el-input v-model="search.sqr" placeholder="申请主体" class="filter-item" @keyup.enter.native="handleFilter" />
+            </el-col>
+            <el-col :span="5">
+              <el-input v-model="search.sqh" placeholder="申请号" class="filter-item" @keyup.enter.native="handleFilter" />
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="5">
+              <el-input v-model="search.worker" placeholder="分类员" class="filter-item" @keyup.enter.native="handleFilter" />
+            </el-col>
+            <el-col :span="5">
+              <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" class="filter-item" value-format="yyyy-MM-dd" />
+            </el-col>
+            <el-col :span="5">
+              <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
+            </el-col>
+            <el-col :span="5">
+              <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
+                Search
+              </el-button>
+              <el-button v-waves class="filter-item" type="primary" :loading="searchLoading" plain native-type="submit" @click.prevent="exportToExcel()">
+                导出
+              </el-button>
+            </el-col>
+          </el-row>
         </el-form-item>
       </el-form>
       <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" @tab-click="changeTab">
@@ -20,6 +44,7 @@
             <tab-pane v-if="activeName==item.key" :type="item.key" @create="showCreatedTimes" />
           </keep-alive> -->
         </el-tab-pane>
+        <div id="table">
         <el-table
           v-loading="listLoading"
           :data="list"
@@ -111,6 +136,7 @@
             </template>
           </el-table-column>
         </el-table>
+        </div>
         <pagination v-show="total>0" :total="total" :page.sync="search.page" :limit.sync="search.limit" @pagination="getList" />
         <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="75%">
           <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px" style="margin-left:50px;">
@@ -139,18 +165,13 @@
                 <span>{{ temp.sqh }}</span>
               </el-form-item>
             </el-col>
-            <!-- <el-form-item label="pdf路径" prop="pdfPath">
-                <el-input v-model="temp.pdfPath" />
-              </el-form-item> -->
             <el-col :span="12">
               <el-form-item label="粗分结果" prop="simpleclasscode">
                 <span>{{ temp.simpleclasscode }}</span>
-                <!-- <el-input v-model="temp.simpleclasscode" /> -->
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="进案时间" prop="jinantime">
-                <!-- <el-input><span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span></el-input> -->
                 <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
               </el-form-item>
             </el-col>
@@ -262,6 +283,8 @@ import { findAllCase, findClassInfoByID } from '@/api/case-query'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import XLSX from 'xlsx'
+import FileSaver from 'file-saver'
 
 export default {
   name: 'Tab',
@@ -292,6 +315,7 @@ export default {
         name: '',
         sqr: '',
         sqh: '',
+        worker: '',
         beginTime: '',
         endTime: ''
       },
@@ -308,8 +332,6 @@ export default {
       dialogStatus: '',
       textMap: {
         show: '案件详情及分类信息'
-        /* update: '详情',
-        create: 'Create' */
       },
       dialogPvVisible: false,
       pvData: [],
@@ -386,9 +408,10 @@ export default {
       debugger
       findAllCase(this.search).then(response => {
         debugger
-        console.log(response)
+        //console.log(response)
         // 返回的list
         this.list = response.data.items
+        console.log(this.list)
         this.total = response.data.total
         setTimeout(() => {
           this.listLoading = false
@@ -398,6 +421,20 @@ export default {
     handleFilter() {
       this.search.page = 1
       this.getList()
+    },
+    //导出table数据到Excel
+    exportToExcel(){
+      let table = document.getElementById('table');
+      let worksheet = XLSX.utils.table_to_sheet(table);
+      let workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet');
+
+      //let workbook = XLSX.utils.table_to_book(document.getElementById('table'))
+      try{
+        XLSX.writeFile(workbook, 'text.xlsx');
+      } catch(e){
+        console.log(e,workbook);
+      }
     }
   }
 }
