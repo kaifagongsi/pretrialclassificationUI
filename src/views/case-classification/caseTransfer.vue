@@ -55,13 +55,13 @@
               <span>{{scope.row.name}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="留言">
+          <el-table-column label="转案留言">
             <template slot-scope="scope">
-              <el-input placeholder="请输入留言" v-model="scope.row.message"></el-input>
+              <el-input placeholder="若有留言，请输入" v-model="scope.row.message"></el-input>
             </template>
           </el-table-column>
         </el-table>
-        <div>
+        <div style="margin:15px">
           <el-button type="primary" style="float:right;" @click="save($event)">确定转案</el-button>
         </div>
       </div>
@@ -189,11 +189,26 @@ export default {
       // 被转案人员姓名和留言
       let formData = JSON.stringify(this.transworker)
       console.log(formData)
-      caseTransfer(formData).then(response => {
-        console.log(response)
-        alert('转案成功');
-      })
-    },
+      this.$confirm('是否确定转案？','提示',{
+        confirmButtonText: '是',
+        cancelButtonText: '否',
+        type: 'warning'
+      }).then(() => {
+          caseTransfer(formData).then(response => {
+            this.$message({
+              type: 'success',
+              message: '转案成功!'
+            });
+          });
+        }).catch(() => {
+          this.$message({
+              type: 'info',
+              message: '已取消转案'
+          });
+        });
+      },
+
+
     initExpand() { // 加载tree
       findUserInfo().then(response => {
         this.setTree = response.treelist
