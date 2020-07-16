@@ -16,6 +16,5 @@ export function countCaseOut(query) {
     method: 'get',
     params: query
   })
-
 }
 

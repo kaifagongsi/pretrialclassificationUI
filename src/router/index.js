@@ -12,6 +12,9 @@ import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
 
+import axios from 'axios';
+
+Vue.prototype.$axios = axios;
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -257,6 +260,37 @@ export const asyncRoutes = [
         name: '出案统计',
         meta: {
           title: '出案统计',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
+    path: '/caseHandle',
+    component: Layout,
+    alwaysShow: true,
+    name: '案件处理',
+    meta: {
+      title: '案件处理',
+      icon: 'guide',
+      roles: ['admin']
+    },
+    children: [
+      {
+        path: 'caseInput',
+        component: () => import('@/views/caseHandle/caseInput'),
+        name: '案件入库',
+        meta: {
+          title: '案件入库',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'caseDistribute',
+        component: () => import('@/views/caseHandle/caseDistribute'),
+        name: '案件分配',
+        meta: {
+          title: '案件分配',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       }
