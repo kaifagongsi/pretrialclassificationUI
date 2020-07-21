@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken, getHeader } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+import {Message} from "element-ui";
 
 const state = {
   token: getToken(),
@@ -37,10 +38,10 @@ const actions = {
     const { loginname, password, codeKey, codeText } = userInfo
     return new Promise((resolve, reject) => {
       login({ loginname: loginname.trim(), password: password, codeKey: codeKey, codeText: codeText }).then(response => {
-        const toekenStr = response.data.prefix + response.data.value
-        setToken(response.data.header, toekenStr)
-        commit('SET_TOKEN', response.data.header, toekenStr)
-        resolve()
+          const toekenStr = response.data.prefix + response.data.value
+          setToken(response.data.header, toekenStr)
+          commit('SET_TOKEN', response.data.header, toekenStr)
+          resolve()
       }).catch(error => {
         reject(error)
       })

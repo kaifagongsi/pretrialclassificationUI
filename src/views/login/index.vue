@@ -189,8 +189,7 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/loginBySelf', this.loginForm)
-            .then(() => {
+          this.$store.dispatch('user/loginBySelf', this.loginForm).then(() => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })

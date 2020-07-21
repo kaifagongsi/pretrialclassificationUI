@@ -130,7 +130,7 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
  {
-    path: '/anjianjiansuo',
+    path: '/case-query',
     component: Layout,
     alwaysShow: true, // will always show the root menu
     name: '案件检索',
@@ -176,7 +176,7 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/anjiantongji',
+    path: '/case-statistics',
     component: Layout,
     alwaysShow: true, // will always show the root menu
     name: '案件统计',
@@ -219,18 +219,49 @@ export const asyncRoutes = [
       roles: ['admin']
     },
     children: [
-        {
-          path: 'userlist',
-          component: () => import('@/views/personnel-management/index'),
-          name: '人员列表',
-          meta: {
-            title: '人员列表',
-            roles: ['admin'] // or you can only set roles in sub nav
-          }
+      {
+        path: 'userlist',
+        component: () => import('@/views/personnel-management/index'),
+        name: '人员列表',
+        meta: {
+          title: '人员列表',
+          roles: ['admin'] // or you can only set roles in sub nav
         }
+      },
+      {
+        path: 'postList',
+        component: () => import('@/views/personnel-management/postIndex'),
+        name: '岗位列表',
+        meta: {
+          title: '岗位列表',
+          roles: ['admin']
+        }
+      }
     ]
-  }/*,
+  },
   {
+    path: '/arbiter',
+    component: Layout,
+    alwaysShow: true,
+    name: '裁决',
+    meta: {
+      title: '裁决',
+      icon: 'arbiter',
+      roles: ['admin','arbiter']
+    },
+    children: [
+      {
+        path: 'page',
+        component: () => import('@/views/arbiter/arbiter'),
+        name: '待裁决列表',
+        meta: {
+          title: '待裁决列表',
+          roles: ['admin','arviter'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  /*{
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
@@ -507,10 +538,10 @@ export const asyncRoutes = [
         meta: { title: 'External Link', icon: 'link' }
       }
     ]
-  },
+  },*/
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }*/
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({

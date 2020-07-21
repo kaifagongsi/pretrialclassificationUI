@@ -49,14 +49,14 @@ export function checkRepeatLoginName(date) {
 export function getUserInfoByLoginName(data) {
   return request({
     url: process.env.VUE_APP_BASE_API + '/user/getUserInfoByLoginName/' + data,
-    method: 'get',
+    method: 'get'
   })
 }
 
 export function deleteUserByLoginname(data) {
   return request({
     url: process.env.VUE_APP_BASE_API + '/user/deleteUserByLoginname/' + data,
-    method: 'delete',
+    method: 'delete'
   })
 }
 
@@ -64,12 +64,11 @@ export function departmentRotation(data) {
   let ymlName = ''
   if (process.env.VUE_APP_BASE_API.includes('127.0.0.1')) {
     ymlName = 'application-dev.yml'
-  }else {
+  } else {
     ymlName = 'application-prod.yml'
   }
-  debugger
   return request({
-    url: process.env.VUE_APP_BASE_API + '/user/departmentRotation/' + ymlName + "/" + data,
+    url: process.env.VUE_APP_BASE_API + '/user/departmentRotation/' + ymlName + '/' + data,
     method: 'get'
   })
 }

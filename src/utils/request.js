@@ -71,7 +71,6 @@ service.interceptors.response.use(
           })
         })
       }
-
       // 系统内部错误
       Message({
         message: res.message,
@@ -80,7 +79,16 @@ service.interceptors.response.use(
       })
       return Promise.reject('error')
     } else {
-      return res
+      if(res.status === 4400){
+        Message({
+          message: res.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }else{
+        return res
+      }
+
     }
   },
   error => {

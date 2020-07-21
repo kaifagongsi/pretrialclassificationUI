@@ -56,19 +56,18 @@
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px" style="width: 75%; margin-left:50px;">
         <el-row>
           <el-col :span="12">
-            <!--<el-form-item label="Loginname" prop="loginname" @blur.native.capture="checkLoginName(temp.loginname)">-->
-            <el-form-item label="Loginname" prop="loginname" >
-              <el-input v-model="temp.loginname" />
+            <el-form-item label="Loginname" prop="loginname"  >
+              <el-input v-model="temp.loginname" placeholder="登录名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="12" >
-            <el-form-item label="姓名" prop="name"    >
-              <el-input v-model="temp.name" />
+            <el-form-item label="姓名" prop="name"   >
+              <el-input v-model="temp.name" placeholder="姓名"  />
             </el-form-item>
           </el-col>
           <el-col :span="12" >
-            <el-form-item label="密码" prop="password"    >
-              <el-input v-model="temp.password" />
+            <el-form-item label="密码" prop="password"   >
+              <el-input v-model="temp.password" placeholder="密码" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -94,6 +93,8 @@
               <el-select  v-model="temp.classlevel" class="filter-item" placeholder="角色">
                 <el-option value="A" >A</el-option>
                 <el-option value="B" >B</el-option>
+                <el-option value="导师" >导师</el-option>
+                <el-option value="专家" >专家</el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -113,50 +114,33 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="个人邮箱" prop="email" >
-              <el-input v-model="temp.email" >
+              <el-input v-model="temp.email"  placeholder="邮箱" >
                 <template slot="append">@cnipa.gov.cn</template>
               </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-        <el-col :span="24">
-          <el-form-item label="领域" prop="areaname" placeholder="19计算机">
-            <el-input v-model="temp.areaname"  />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="ipcs" prop="ipcs">
-            <el-input v-model="temp.ipcs" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="fields" prop="fields" placeholder="计算机;计算机G07;计算机H03;机动A47G;计算机H04R;计算机G11">
-            <el-input v-model="temp.fields" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-        <!--<el-form-item label="Date" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
-        </el-form-item>
-        <el-form-item label="Title" prop="title">
-          <el-input v-model="temp.title" />
-        </el-form-item>
-        <el-form-item label="Status">
-          <el-select v-model="temp.dep1" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in dep1s" :key="item" :label="item" :value="item" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Imp">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
-        </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
-        </el-form-item>-->
+          <el-col :span="24">
+            <el-form-item label="领域" prop="areaname" >
+              <el-input v-model="temp.areaname" placeholder="19计算机" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="ipcs" prop="ipcs">
+              <el-input v-model="temp.ipcs" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="fields" prop="fields" >
+              <el-input v-model="temp.fields" placeholder="计算机;计算机G07;计算机H03;机动A47G;计算机H04R;计算机G11" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -293,6 +277,12 @@ export default {
       }, {
         value: '五室',
         label: '五室'
+      }, {
+        value: '专家',
+        label: '专家'
+      }, {
+        value: '导师',
+        label: '导师'
       }]
     }
   },
