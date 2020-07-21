@@ -232,6 +232,7 @@ export default {
       this.initExpand()
       this.openKeys = []
       this.temp = Object.assign({}, row) // copy obj
+      console.info(this.temp);
       this.temp.chuantime = new Date(this.temp.chuantime)
       this.temp.jinantime = new Date(this.temp.jinantime)
       this.dialogStatus = 'update'

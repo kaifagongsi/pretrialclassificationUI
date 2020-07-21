@@ -18,33 +18,3 @@ export function countCaseOut(query) {
   })
 }
 
-export function findWorkerById(id) {
-  return request({
-    url: process.env.VUE_APP_BASE_API + '/caseDisposition/caseAllocation/findWorkerById',
-    method: 'get',
-    params: id
-  })
-}
-
-export function findUserInfo() {
-  return request({
-    url: process.env.VUE_APP_BASE_API + '/caseDisposition/caseAllocation/findUserInfo',
-    method: 'get'
-  })
-}
-export function updateWorker(data) {
-  debugger
-  console.log(data)
-  return request({
-    url: process.env.VUE_APP_BASE_API + '/caseDisposition/caseAllocation/updateWorker',
-    method: 'post',
-    data: data
-  })
-}
-export function queryData(data) {
-  return request({
-    url: process.env.VUE_APP_BASE_API + '/caseStatistic/queryData',
-    method: 'post',
-    data: data
-  })
-}

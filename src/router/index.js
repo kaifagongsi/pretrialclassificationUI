@@ -12,6 +12,9 @@ import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
 
+import axios from 'axios';
+
+Vue.prototype.$axios = axios;
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -129,6 +132,19 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'Dashboard',
+        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
  {
     path: '/case-query',
     component: Layout,
@@ -136,7 +152,7 @@ export const asyncRoutes = [
     name: '案件检索',
     meta: {
       title: '案件检索',
-      icon: 'guide',
+      icon: 'search',
       roles: ['admin'] // you can set roles in root nav
     },
     redirect: '/caseQuery',
@@ -148,6 +164,48 @@ export const asyncRoutes = [
         meta: {
           title: '案件检索',
           roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
+    path: '/anjianfenlei',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    name: '案件分类',
+    meta: {
+      title: '案件分类',
+      icon: 'guide',
+      //roles: ['user'] // you can set roles in root nav
+    },
+    redirect: '/caseClassification',
+    children: [
+      {
+        path: 'caseClassification',
+        component: () => import('@/views/case-classification/caseClassification'),
+        name: '案件分类',
+        meta: {
+          title: '案件分类',
+          //roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'caseSearch',
+        component: () => import('@/views/case-classification/caseSearch'),
+        name: '案件查询',
+        meta: {
+          title: '案件查询',
+          //roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'caseTransfer',
+        component: () => import('@/views/case-classification/caseTransfer'),
+        name: '转案',
+        hidden: true,
+        meta: {
+          title: '转案',
+          //roles: ['admin'] // or you can only set roles in sub nav
         }
       }
     ]
@@ -202,6 +260,37 @@ export const asyncRoutes = [
         name: '出案统计',
         meta: {
           title: '出案统计',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
+    path: '/caseHandle',
+    component: Layout,
+    alwaysShow: true,
+    name: '案件处理',
+    meta: {
+      title: '案件处理',
+      icon: 'guide',
+      roles: ['admin']
+    },
+    children: [
+      {
+        path: 'caseInput',
+        component: () => import('@/views/caseHandle/caseInput'),
+        name: '案件入库',
+        meta: {
+          title: '案件入库',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'caseDistribute',
+        component: () => import('@/views/caseHandle/caseDistribute'),
+        name: '案件分配',
+        meta: {
+          title: '案件分配',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       }
