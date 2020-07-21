@@ -4,13 +4,13 @@
 
       <el-form ref="searchForm" class="el-form-col search-form" :model="search">
         <el-form-item>
-          <el-select  v-model="search.type"  filterable   class="filter-item"  placeholder="请选择主副分">
-            <el-option value="主" label="主分"></el-option>
-            <el-option value="副" label="副分"></el-option>
-          </el-select>
           <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
           <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
-          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
+          <el-select  v-model="search.dept"  filterable   class="filter-item"  placeholder="请选择部门">
+            <el-option value="FL" label="分类部"></el-option>
+            <el-option value="JG" label="加工部"></el-option>
+          </el-select>
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">
             查询
           </el-button>
           <el-button v-waves class="filter-item" type="primary"   plain native-type="submit" @click.prevent="handleDownload()">
@@ -21,34 +21,64 @@
     </div>
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"/>
-      <el-table-column label="分类员" prop="id" align="center" width="200">
+      <el-table-column label="分类代码" prop="id" align="center" width="80">
         <template slot-scope="{row}">
-          <span>{{ row.worker }}</span>
+          <span>{{ row.fldm }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="部门" width="500px" align="center">
+      <el-table-column label="姓名" prop="id" align="center" width="80">
         <template slot-scope="{row}">
-          <span>{{ row.orgname }}</span>
+          <span>{{ row.workerName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="主分|副分" min-width="50px" align="center">
+      <el-table-column label="分类部门" prop="id" align="center" >
         <template slot-scope="{row}">
-          <span>{{ row.classtype }}</span>
+          <span>{{ row.dep1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="发明件数" width="200px" align="center">
+      <el-table-column label="分类领域" prop="id" align="center" >
         <template slot-scope="{row}">
-          <span>{{ row.fmCount }}</span>
+          <span>{{ row.areaName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="新型件数" width="100px" align="center">
+      <el-table-column label="发明主分出案数" prop="id" align="center" width="100">
         <template slot-scope="{row}">
-          <span>{{ row.xxCount }}</span>
+          <span>{{ row.fmzfNumCount }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="总数" width="180px" align="center">
+      <el-table-column label="发明副分出案数" prop="id" align="center" width="100">
         <template slot-scope="{row}">
-          <span>{{ row.totalCount }}</span>
+          <span>{{ row.fmffNumCount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="发明未给号出案数" prop="id" align="center" width="130">
+        <template slot-scope="{row}">
+          <span>{{ row.fmNoNumCount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="新型主分出案数" prop="id" align="center" width="100">
+        <template slot-scope="{row}">
+          <span>{{ row.xxzfNumCount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="新型副分出案数" prop="id" align="center" width="100">
+        <template slot-scope="{row}">
+          <span>{{ row.xxffNumCount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="新型未给号出案数" prop="id" align="center" width="130">
+        <template slot-scope="{row}">
+          <span>{{ row.xxNoNumCount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="主裁决案件数" prop="id" align="center" width="100">
+        <template slot-scope="{row}">
+          <span>{{ row.cjNum }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="副裁决案件数" prop="id" align="center" width="100">
+        <template slot-scope="{row}">
+          <span>{{ row.cjyNum }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -110,21 +140,13 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        importance: undefined,
-        title: undefined,
-        type: undefined
-      },
       search: {
         page: 1,
         limit: 10,
         beginTime: '',
         endTime: '',
-        type:''
+        dept:''
       },
-      importanceOptions: [1, 2, 3],
       calendarTypeOptions,
       temp: {
         id: undefined,
@@ -146,7 +168,8 @@ export default {
         children: 'children',
         label: 'name'
       },
-      defaultExpandKeys: [] // 默认展开节点列表
+      defaultExpandKeys: [], // 默认展开节点列表
+      multipleSelection: []
     }
   },
   created() {
@@ -191,8 +214,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['分类员', '部门', '主分|副分', '发明件数', '新型件数', '总件数']
-        const filterVal = ['worker', 'orgname', 'classtype', 'fmCount', 'xxCount', 'totalCount']
+        const tHeader = ['分类代码','姓名', '分类部门', '分类领域', '发明主分出案数', '发明副分出案数', '发明未给号出案数', '新型主分出案数', '新型副分出案数', '新型未给号出案数', '主裁决案件数', '副裁决案件数']
+        const filterVal = ['fldm', 'workerName', 'dep1', 'areaName', 'fmzfNumCount', 'fmffNumCount', 'fmNoNumCount', 'xxzfNumCount', 'xxffNumCount', 'xxNoNumCount', 'cjNum', 'cjyNum']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
@@ -213,17 +236,6 @@ export default {
           return v[j]
         }))
       }
-    },
-    sendEmail() {
-      console.log(this.multipleSelection)
-      console.log(this.multipleSelection.length)
-      const ids = []
-      for (var i = 0; i < this.multipleSelection.length; i++) {
-        ids.push(this.multipleSelection[i].id)
-      }
-      sendEmail(ids).then(response => {
-        console.log(response)
-      })
     }
   }
 }
