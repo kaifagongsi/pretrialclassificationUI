@@ -64,7 +64,6 @@ const actions = {
         } */
         var rol = []
         //修改了前段权限
-        debugger
         // rol.push(roles[0].rolename)
         rol.push('admin')
         commit('SET_ROLES', rol)
