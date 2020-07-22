@@ -1,7 +1,6 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken, getHeader } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
-import {Message} from "element-ui";
 
 const state = {
   token: getToken(),
@@ -38,10 +37,10 @@ const actions = {
     const { loginname, password, codeKey, codeText } = userInfo
     return new Promise((resolve, reject) => {
       login({ loginname: loginname.trim(), password: password, codeKey: codeKey, codeText: codeText }).then(response => {
-          const toekenStr = response.data.prefix + response.data.value
-          setToken(response.data.header, toekenStr)
-          commit('SET_TOKEN', response.data.header, toekenStr)
-          resolve()
+        const toekenStr = response.data.prefix + response.data.value
+        setToken(response.data.header, toekenStr)
+        commit('SET_TOKEN', response.data.header, toekenStr)
+        resolve()
       }).catch(error => {
         reject(error)
       })
@@ -57,20 +56,24 @@ const actions = {
           reject('认证失败，请重新登录')
         }
         const { roles, name, avatar, introduction } = data
+        // const { roles name, avatar, introduction } = data
 
         // roles must be a non-empty array
         /* if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         } */
         var rol = []
-        //修改了前段权限
+        for (let i = 0; i < roles.length; i++) {
+          rol.push(roles[i].rolename)
+        }
+        // 修改了前段权限
         // rol.push(roles[0].rolename)
-        rol.push('admin')
+        // rol.push('admin')
         commit('SET_ROLES', rol)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
-        data.rol = rol
+        data.roles = rol
         resolve(data)
       }).catch(error => {
         reject(error)
