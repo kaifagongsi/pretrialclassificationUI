@@ -199,7 +199,7 @@
           <el-col :span="7">
             <el-form-item label="部门">
               <el-select v-model="arbiterPerson.dep1" class="filter-item" placeholder="请选择部门">
-                <el-option v-for="item in dep1s" :key="item.value" :label="item.label" :value="item.value" />
+                <el-option v-for="item in dep1s" :key="item.value" :label="item.label" :value="item.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -467,9 +467,9 @@ export default {
   watch: {
     'arbiterPerson.dep1': {
       handler(newValue, oldValue) {
-        if (newValue === 'JG') {
+        if (newValue === '数据加工部') {
           this.dep2s = this.dep2JG
-        } else if (newValue === 'FL') {
+        } else if (newValue === '分类审查部') {
           this.dep2s = this.dep2FL
         } else {
           this.dep2s = null
@@ -542,32 +542,6 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           // ipc 与cpc 同在校验
-          /*// 校验ipc与cpc的发明信息是否同时为空
-          if ((this.temp.ipcmi === null || this.temp.ipcmi === '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci === null || this.temp.cci === '')) {
-            this.$confirm('检测到您的ipc与cpc的发明信息是否同时为空，是否继续出案', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              // 此处执行出案操作
-              this.saveClassification()
-            }).catch(() => {
-              // 取消操作
-            })
-          } else if ((this.temp.ipcmi === null || this.temp.ipcmi === '') && (this.temp.ipcoi !== null || this.temp.ipcoi !== '') && (this.temp.cci === null || this.temp.cci === '')) {
-            // 如果主分/副分 其中一个不为空，而cci为空
-            // 主分为空，副分不为空,cci 为空
-            this.$confirm('检测到您的cci为空，是否继续出案', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              // 此处执行出案操作
-              this.saveClassification()
-            }).catch(() => {
-              // 取消操作
-            })
-          } else */
            if ((this.temp.ipcmi !== null || this.temp.ipcmi !== '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci === null || this.temp.cci === '')) {
             // 主分不为空，副分为空，cci 为空
             this.$confirm('检测到您的cci为空，是否继续出案', '提示', {
