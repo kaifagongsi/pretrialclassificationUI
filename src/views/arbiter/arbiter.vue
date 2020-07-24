@@ -56,15 +56,18 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="400" class-name="small-padding fixed-width">
-        <template slot-scope="{row}">
-          <el-button type="primary" size="small" @click="showDetail(row);dialogFormVisible =true">
+        <template slot-scope="{row}" >
+          <el-button type="primary"  size="small" v-if=" row.state === '7'" @click="showDetail(row);dialogFormVisible =true">
             分类过程&保存分类号
           </el-button>
-          <el-button v-if="row.status!='published'" size="small" type="success" @click="showArbiterPersons(row.id);dialogArbiterPerson=true">
+          <el-button  size="small" type="success" v-if=" row.state === '7'" @click="showArbiterPersons(row.id);dialogArbiterPerson=true">
             添加裁决员
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="small" type="danger" @click="arbiterChuAn(row.id)">
+          <el-button size="small" type="danger" v-if=" row.state === '7'" @click="arbiterChuAn(row.id)">
             出案
+          </el-button>
+          <el-button type="primary" size="small" v-if=" row.state === '8'" @click="showDetail(row);dialogFormVisible =true">
+            案件详细
           </el-button>
         </template>
       </el-table-column>
@@ -95,32 +98,62 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="IPCMI" prop="ipcmi">
-            <el-input v-model="temp.ipcmi" placeholder="请输入主分类号" />
+            <div v-if="temp.state === '8'">
+              <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号" />
+            </div>
+            <div v-if="temp.state === '7'">
+              <el-input v-model="temp.ipcmi"  placeholder="请输入主分类号" />
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="IPCOI" prop="ipcoi">
-            <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号" />
+            <div  v-if="temp.state === '8'">
+              <el-input v-model="temp.ipcoi" :disabled="true" type="textarea" placeholder="请输入副分类号" />
+            </div>
+            <div v-if="temp.state === '7'">
+              <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号" />
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="IPCA" prop="ipca">
-            <el-input v-model="temp.ipca" type="textarea" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" />
+            <div v-if="temp.state === '8'">
+              <el-input v-model="temp.ipca" :disabled="true" type="textarea" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" />
+            </div>
+            <div v-if="temp.state === '7'">
+              <el-input v-model="temp.ipca" type="textarea" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" />
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="CCI" prop="cci">
-            <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" />
-          </el-form-item>
+            <div v-if="temp.state === '8'">
+              <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" />
+            </div>
+            <div v-if="temp.state === '7'">
+              <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" />
+            </div>
+           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="CCA" prop="cca">
-            <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" />
+            <div v-if="temp.state === '8'">
+              <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" />
+            </div>
+            <div v-if="temp.state === '7'">
+              <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" />
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="CSETS" prop="csets">
-            <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" />
+            <div v-if="temp.state === '8'">
+              <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" />
+            </div>
+            <div v-if="temp.state === '7'">
+              <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" />
+            </div>
           </el-form-item>
         </el-col>
       </el-form>
@@ -264,7 +297,7 @@
 </template>
 <script>
 
-import { getArbiterInitList, checkIpcServer, checkIpcCsetsServer, saveAribiterClassfication, findClassInfoByID, getArbiterPersonList, updateAribiterPerson, findAdjudicatorWorker } from '@/api/case-arbiter'
+import { getArbiterInitList, checkIpcServer, checkIpcCsetsServer, saveAribiterClassfication, findClassInfoByID, getArbiterPersonList, updateAribiterPerson, findAdjudicatorWorker, arbiterChuAn } from '@/api/case-arbiter'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -491,7 +524,26 @@ export default {
   methods: {
     // 裁决组长出案
     arbiterChuAn: function(id) {
-      alert('即将出案:'+id)
+      alert('即将出案:' + id)
+      arbiterChuAn(id).then(response => {
+        if (response.success) {
+          this.$message({
+            message: '出案成功',
+            type: 'success'
+          })
+          this.getList()
+        } else {
+          this.$message({
+            message: '出案失败',
+            type: 'error'
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          message: '出案失败，请稍后重试',
+          type: 'error'
+        })
+      })
     },
     // 删除裁决员dialog框中列表的人员
     deleteArbiterPersonRow: function(index, rows) {
@@ -523,9 +575,7 @@ export default {
     },
     // 查询某个部门下某个室的裁决人员列表
     selectArbiterPerson: function() {
-      console.log(this.arbiterPerson)
       getArbiterPersonList(this.arbiterPerson).then(response => {
-        console.log(response.queryResult.list)
         this.persons = response.queryResult.list
       })
     },
@@ -542,7 +592,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           // ipc 与cpc 同在校验
-           if ((this.temp.ipcmi !== null || this.temp.ipcmi !== '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci === null || this.temp.cci === '')) {
+          if ((this.temp.ipcmi !== null || this.temp.ipcmi !== '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci === null || this.temp.cci === '')) {
             // 主分不为空，副分为空，cci 为空
             this.$confirm('检测到您的cci为空，是否继续出案', '提示', {
               confirmButtonText: '确定',

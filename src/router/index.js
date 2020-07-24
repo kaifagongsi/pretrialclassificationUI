@@ -347,7 +347,16 @@ export const asyncRoutes = [
           title: '待裁决列表',
           roles: ['admin','arviter'] // or you can only set roles in sub nav
         }
-      }
+      }/*,
+      {
+        path: 'finishPage',
+        component: () => import('@/views/arbiter/finishArbiter'),
+        name: '裁决完成列表',
+        meta: {
+          title: '裁决完成列表',
+          roles: ['admin','arviter'] // or you can only set roles in sub nav
+        }
+      }*/
     ]
   },
   /*{
