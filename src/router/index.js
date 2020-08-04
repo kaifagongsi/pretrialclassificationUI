@@ -211,7 +211,7 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/',
+    path: '/case-disposition',
     component: Layout,
     alwaysShow: true, // will always show the root menu
     name: '案件处理',
@@ -291,7 +291,7 @@ export const asyncRoutes = [
         name: '案件分配',
         meta: {
           title: '案件分配',
-          roles: ['admin'] // or you can only set roles in sub nav
+          roles: ['admin']
         }
       }
     ]
@@ -314,7 +314,7 @@ export const asyncRoutes = [
         name: '人员列表',
         meta: {
           title: '人员列表',
-          roles: ['admin'] // or you can only set roles in sub nav
+          roles: ['admin']
         }
       },
       {
@@ -336,16 +336,25 @@ export const asyncRoutes = [
     meta: {
       title: '裁决',
       icon: 'arbiter',
-      roles: ['admin','arbiter']
+      roles: ['admin','arbiter','user']
     },
     children: [
       {
+        path: 'pageUser' ,
+        component: () => import('@/views/arbiter/arbiterUser'),
+        name: '需查看的裁决列表',
+        meta: {
+          title: '需查看的裁决列表',
+          roles: ['admin','arbiter','user'] // or you can only set roles in sub nav
+        }
+      },
+      {
         path: 'page',
         component: () => import('@/views/arbiter/arbiter'),
-        name: '待裁决列表',
+        name: '裁决列表',
         meta: {
-          title: '待裁决列表',
-          roles: ['admin','arviter'] // or you can only set roles in sub nav
+          title: '裁决列表',
+          roles: ['admin','arbiter'] // or you can only set roles in sub nav
         }
       }/*,
       {
@@ -357,6 +366,40 @@ export const asyncRoutes = [
           roles: ['admin','arviter'] // or you can only set roles in sub nav
         }
       }*/
+    ]
+  },
+  {
+    path: '/updateIpc',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    name: '分类号更正',
+    meta: {
+      title: '分类号更正',
+      icon: 'updateIpc',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'page',
+        component: () => import('@/views/update-ipc/updateIpc'),
+        name: '分类号更正列表',
+        meta: {
+          title: '分类号更正列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
+    path: '/tab',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/tab/index'),
+        name: 'Tab',
+        meta: { title: 'Tab', icon: 'tab' }
+      }
     ]
   },
   /*{

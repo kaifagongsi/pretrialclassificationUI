@@ -67,3 +67,10 @@ export function arbiterChuAn(id) {
     method: 'get'
   })
 }
+
+export function getArbiterPersonInitList(query) {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/caseArbiter/getArbiterPersonInitList/' + query.page + '/' + query.limit,
+    method: 'get'
+  })
+}
