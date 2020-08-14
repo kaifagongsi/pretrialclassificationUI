@@ -9,15 +9,18 @@
             Search
           </el-button> -->
           <el-row>
-            <el-col :span="6">
-              <el-button type="primary" class="filter-item" @click="transfercase();dialogFormVisible =false">
+            <!-- <el-col :span="6">
+              <el-button type="primary" :disabled="modifyBtn" class="filter-item" @click="modifycase();dialogFormVisible =false">
+                分类号更正
+              </el-button>
+              <el-button type="primary" :disabled="transBtn" class="filter-item" @click="transfercase();dialogFormVisible =false">
                 转案
               </el-button>
-              <el-button type="primary" class="filter-item" @click="finishcase();">
+              <el-button type="primary" :disabled="finishsBtn" class="filter-item" @click="finishcase();">
                 出案
               </el-button>
-            </el-col>
-            <el-col :span="12" :offset="6">
+            </el-col> -->
+            <el-col :span="24" :offset="0">
               <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" class="filter-item" value-format="yyyy-MM-dd" />
               <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
@@ -29,9 +32,7 @@
       </el-form>
       <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" @tab-click="changeTab">
         <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
-          <!-- <keep-alive>
-            <tab-pane v-if="activeName==item.key" :type="item.key" @create="showCreatedTimes" />
-          </keep-alive> -->
+
         </el-tab-pane>
         <el-table
           v-loading="listLoading"
@@ -48,7 +49,7 @@
           />
           <el-table-column label="预审申请号" prop="id" align="center" width="180px">
             <template slot-scope="{row}">
-              <a target="_blank" class="buttonText">{{ row.id }}</a>
+              <a v-bind:href="'ftp://172.17.1.54/'+row.id+'/'+row.pdfPath" target="_blank" class="buttonText">{{row.id}}</a>
               <!-- <router-link to="">{{ row.id }}</router-link> -->
             </template>
           </el-table-column>
@@ -60,6 +61,11 @@
           <el-table-column label="申请人" width="200px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.sqr }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="分类类型" width="100px" align="center">
+            <template slot-scope="{row}">
+              <span>{{ row.maintype }}</span>
             </template>
           </el-table-column>
           <el-table-column label="类型" min-width="50px" align="center">
@@ -77,17 +83,24 @@
               <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="100px" class-name="small-padding fixed-width">
+          <el-table-column label="操作" align="center" width="300px" class-name="small-padding fixed-width">
             <template slot-scope="{ row }">
               <el-button type="primary" size="mini" @click="showDetail(row);dialogFormVisible =true">
                 详情
+              </el-button>
+              <el-button type="warning" size="mini" :disabled="transBtn" @click="transfercase(row);dialogFormVisible =false">
+                转案
+              </el-button>
+              <el-button type="success" size="mini" :disabled="finishsBtn" @click="finishcase(row);">
+                出案
               </el-button>
             </template>
           </el-table-column>
         </el-table>
         <pagination v-show="total>0" :total="total" :page.sync="search.page" :limit.sync="search.limit" @pagination="getList" />
-        <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="75%">
-          <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px" style="margin-left:50px;">
+        <!-- 案件信息以及填写裁决分类号 -->
+        <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="80%" top="5vh">
+          <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="margin-left:50px;">
             <el-col :span="12">
               <el-form-item label="案件编号" prop="id">
                 <span>{{ temp.id }}</span>
@@ -99,50 +112,43 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="专利类型" prop="type">
-                <span>{{ temp.type }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="申请主体" prop="sqr">
-                <span>{{ temp.sqr }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
               <el-form-item label="申请号" prop="sqh">
                 <span>{{ temp.sqh }}</span>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="粗分结果" prop="simpleclasscode">
-                <span>{{ temp.simpleclasscode }}</span>
-                <!-- <el-input v-model="temp.simpleclasscode" /> -->
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
               <el-form-item label="进案时间" prop="jinantime">
-                <!-- <el-input><span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span></el-input> -->
                 <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="IPC" prop="ipc">
-                <span>{{ temp.ipci }}</span>
+              <el-form-item label="IPCMI" prop="ipcmi">
+                <el-input v-model="temp.ipcmi" placeholder="请输入主分类号" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="24">
+              <el-form-item label="IPCOI" prop="ipcoi">
+                <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="IPCA" prop="ipca">
+                <el-input v-model="temp.ipca" type="textarea" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
               <el-form-item label="CCI" prop="cci">
-                <span>{{ temp.cci }}</span>
+                <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="24">
               <el-form-item label="CCA" prop="cca">
-                <span>{{ temp.cca }}</span>
+                <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="24">
               <el-form-item label="CSETS" prop="csets">
-                <span>{{ temp.csets }}</span>
+                <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" />
               </el-form-item>
             </el-col>
           </el-form>
@@ -184,9 +190,19 @@
                 <span>{{ row.chuantime }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="IPC" width="200px" align="center">
+            <el-table-column label="IPCI" width="200px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.ipci }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="IPCMI" width="200px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.ipcmi }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="IPCOI" width="200px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.ipcoi }}</span>
               </template>
             </el-table-column>
             <el-table-column label="CCI" width="100px" align="center">
@@ -214,8 +230,17 @@
             <el-button @click="dialogFormVisible = false">
               关闭
             </el-button>
+            <el-button type="primary" :disabled="saveBtn" @click="subClassification()">
+              保存
+            </el-button>
+            <el-button type="primary" :disabled="correctBtn" @click="subClassification()">
+              更正
+            </el-button>
+            <el-button type="primary" :disabled="finishsBtn" @click="finishcase(temp)">
+              出案
+            </el-button>
           </div>
-        </el-dialog>
+        </el-dialog>  
         <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
           <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
             <el-table-column prop="key" label="Channel" />
@@ -260,7 +285,8 @@
 </template>
 
 <script>
-import { findCaseByState, finishcase } from '@/api/case-classification'
+import { findCaseByState, finishcase, updateClassificationInfo, correctCase } from '@/api/case-classification'
+import { checkIpcServer, checkIpcCsetsServer } from '@/api/case-arbiter'
 import { findUserInfo, updateWorker } from '@/api/case-disposition'
 import { findClassInfoByID } from '@/api/case-query'
 import waves from '@/directive/waves' // waves directive
@@ -273,6 +299,89 @@ export default {
   components: { Pagination },
   directives: { waves },
   data() {
+    var checkIpc = (rule, value, callback) => {
+      // 空格替换
+      this.loadlFuncationRplaceSpaceForTemp()
+      if (value == null || value === '') {
+        callback()
+      } else {
+        if (rule.field === 'ipcmi') {
+          if (value.indexOf(',') !== -1) {
+            callback(new Error('主分类有且只有一个'))
+          }
+        }
+        checkIpcServer(this.temp, rule.field).then(response => {
+          if (response.success) {
+            if (rule.field === 'ipcoi') {
+              if (response.queryResult.map.newClassification === '') {
+                this.temp.ipcoi = null
+              } else {
+                this.temp.ipcoi = response.queryResult.map.newClassification
+              }
+            } else if (rule.field === 'ipca') {
+              if (response.queryResult.map.newClassification === '') {
+                this.temp.ipca = null
+              } else {
+                this.temp.ipca = response.queryResult.map.newClassification
+              }
+            } else if (rule.field === 'ipcmi') {
+              if (response.queryResult.map.newClassification === '') {
+                this.temp.ipcmi = null
+              } else {
+                this.temp.ipcmi = response.queryResult.map.newClassification
+              }
+            }
+            callback()
+          } else {
+            callback(response.message)
+          }
+        })
+      }
+    }
+    var checkCpc = (rule, value, callback) => {
+      this.loadlFuncationRplaceSpaceForTemp()
+      if (value == null || value === '') {
+        callback()
+      } else {
+        checkIpcServer(this.temp, rule.field).then(response => {
+          if (response.success) {
+            if (rule.field === 'cci') {
+              if (response.queryResult.map.newClassification === '') {
+                this.temp.cci = null
+              } else {
+                this.temp.cci = response.queryResult.map.newClassification
+              }
+            } else if (rule.field === 'cca') {
+              if (response.queryResult.map.newClassification === '') {
+                this.temp.cca = null
+              } else {
+                this.temp.cca = response.queryResult.map.newClassification
+              }
+            }
+            callback()
+          } else {
+            callback(response.message)
+          }
+        })
+      }
+    }
+    var checkCsets = (rule, value, callback) => {
+      this.loadlFuncationRplaceSpaceForTemp()
+      if (value == null || value === '') {
+        callback()
+      } else {
+        this.temp.csets = value.toUpperCase()
+        checkIpcCsetsServer(this.temp).then(response => {
+          if (response.success) {
+            debugger
+            this.temp.csets = response.queryResult.map.newClassification
+            callback()
+          } else {
+            callback(response.message)
+          }
+        })
+      }
+    }
     return {
       tabMapOptions: [
         { label: '新分待审', key: '0' }, // 主分进案
@@ -294,10 +403,18 @@ export default {
       listLoading: true,
       search: {
         page: 1,
-        limit: 5,
+        limit: 10,
         state: this.$route.query.tab,
         beginTime: '',
         endTime: ''
+      },
+      rules: {
+        ipcmi: [{ required: true, trigger: 'blur', validator: checkIpc }],
+        ipcoi: [{ required: true, trigger: 'blur', validator: checkIpc }],
+        ipca: [{ required: true, trigger: 'blur', validator: checkIpc }],
+        cci: [{ required: true, trigger: 'blur', validator: checkCpc }],
+        cca: [{ required: true, trigger: 'blur', validator: checkCpc }],
+        csets: [{ required: true, trigger: 'blur', validator: checkCsets }]
       },
       temp: {
         id: undefined,
@@ -306,7 +423,15 @@ export default {
         sqr: '',
         sqh: '',
         simpleclasscode: '',
-        jinantime: ''
+        jinantime: '',
+        classtype: '',
+        cci: '',
+        cca: '',
+        csets: '',
+        ipci: '',
+        ipca: '',
+        ipcmi: '',
+        ipcoi: ''
       },
       dialogFormVisible: false,
       userDialogFormVisible: false,
@@ -336,28 +461,33 @@ export default {
         label: 'name'
       },
       defaultExpandKeys: [], // 默认展开节点列表
-      multipleSelection: []// 多选
-    }
-  },
-  resetTemp() {
-    this.temp = {
-      id: '',
-      mingcheng: '',
-      type: '',
-      sqr: '',
-      sqh: '',
-      pdfPath: '',
-      state: '',
-      simpleclasscode: '',
-      chuantime: '',
-      jinantime: '',
-      message: ''
+      multipleSelection: [],// 多选
+      finishsBtn: false, //出案按钮显示
+      transBtn: false, //转案按钮
+      saveBtn: false, //保存按钮
+      correctBtn: false //更正按钮
     }
   },
   watch: {
     activeName(val) {
       this.$router.push(`${this.$route.path}?tab=${val}`)
-    }
+      if (this.activeName == '3'){ //已出案、更正、裁决案件不可转案及出案
+        this.finishsBtn = true
+        this.saveBtn = true
+        this.transBtn = true
+        this.correctBtn = false
+      }else if (this.activeName == '4' || this.activeName == '5'){ //更正和裁决列表不可操作
+        this.saveBtn = true
+        this.transBtn = true
+        this.finishsBtn = true
+        this.correctBtn = true
+      }else { 
+        this.finishsBtn = false
+        this.correctBtn = true
+        this.saveBtn = false
+        this.transBtn = false
+      }
+    },
   },
   created() {
     // init the default selected tab
@@ -374,7 +504,6 @@ export default {
   methods: {
     changeTab: function(tab, event) {
       this.search.state = this.activeName
-      console.log(this.search.state)
       this.getList()
     },
     // 点击人员节点
@@ -430,17 +559,16 @@ export default {
     getClassficationList() {
       //console.log(this.searchInfo.id)
       findClassInfoByID(this.searchInfo).then(response => {
-        console.log(response)
+        //console.log(response)
         this.classInfoList = response.data
       })
     },
     showDetail(row) {
-      // this.resetTemp()
       this.dialogStatus = 'show'
       this.temp = row
       this.searchInfo.id = row.id
       this.getClassficationList()
-      console.log(row)
+      //console.log('temp数据:'+ this.temp)
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -456,8 +584,8 @@ export default {
     },
     getList() { // 获取table表格数据
       this.listLoading = true
-      if(this.activeName !== '3'){
-        this.search.beginTime = '',
+      if(this.activeName !== '3') {
+        this.search.beginTime = '' ,
         this.search.endTime = ''
       }
       findCaseByState(this.search).then(response => {
@@ -471,12 +599,116 @@ export default {
         }, 0.5 * 1000)
       })
     },
-    transfercase() { //转案
+    // 分类号逻辑判断
+    subClassification: function() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          // ipc 与cpc 同在校验
+           if ((this.temp.ipcmi !== null || this.temp.ipcmi !== '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci === null || this.temp.cci === '')) {
+            // 主分不为空，副分为空，cci 为空
+            this.$confirm('检测到您的cci为空，是否继续保存', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              // 此处执行保存操作
+              this.saveClassification()
+            }).catch(() => {
+              // 取消操作
+            })
+          } else if ((this.temp.ipcmi === null || this.temp.ipcmi === '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci !== null || this.temp.cci !== '')) {
+            // 主，副分为空，cci不为空
+            this.$confirm('检测到您的cci不为空，ipcmi/ipcoi为空，是否继续保存', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              // 此处执行出案操作
+              this.saveClassification()
+            }).catch(() => {
+              // 取消操作
+            })
+          } else {
+            // 一切正常的情况下
+            this.saveClassification()
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    // 逻辑判断通过后，进行后台保存：保存或更正
+    saveClassification: function() {
+      if(this.activeName == '3'){ //进行更正操作
+        correctCase(this.temp).then((response) => {
+          if (response.success) {
+            this.$message({
+              message: '已提交更正，等待管理员审核',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              showClose: true,
+              message: '发生错误,请稍后重试',
+              type: 'error'
+            })
+          }
+        })
+      } else{ //进行保存操作
+        updateClassificationInfo(this.temp).then((response) => {
+        if (response.success) {
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          })
+          this.dialogFormVisible = false
+          this.getList()
+        } else {
+          this.$message({
+            showClose: true,
+            message: '保存失败，请稍后重试',
+            type: 'error'
+          })
+        }
+      })
+      }
+      
+    },
+    loadlFuncationRplaceSpaceForTemp: function() {
+      if (this.temp.ipcmi != null) {
+        this.temp.ipcmi = this.temp.ipcmi.replace(/\s+/g, '')
+      }
+      if (this.temp.ipcoi != null) {
+        this.temp.ipcoi = this.temp.ipcoi.replace(/\s+/g, '')
+      }
+      if (this.temp.ipca != null) {
+        this.temp.ipca = this.temp.ipca.replace(/\s+/g, '')
+      }
+      if (this.temp.cci != null) {
+        this.temp.cci = this.temp.cci.replace(/\s+/g, '')
+      }
+      if (this.temp.cca != null) {
+        this.temp.cca = this.temp.cca.replace(/\s+/g, '')
+      }
+      if (this.temp.cset != null) {
+        this.temp.csets = this.temp.csets.replace(/\s+/g, '')
+      }
+    },
+    modifycase() { //案件更正
+      //只有已出案且未导出的案件可以提出更正
+      if(this.activeName !== '3') {
+        alert('仅支持已出案案件提出分类号更正申请')
+      }else{
+        alert('功能待完善')
+      }
+    },
+    transfercase(row) { //转案
       //已出案、更正、裁决案件不可进行转案
-      /* if(this.activeName == '3'){
+      if(this.activeName == '3') {
         alert('已出案案件不可进行转案')
         return
-      } */
+      }
       if(this.activeName == '4'){
         alert('更正案件不可进行转案')
         return
@@ -484,31 +716,48 @@ export default {
       if(this.activeName == '5'){
         alert('裁决案件不可进行转案')
         return
-      }else if(this.multipleSelection.length === 0){
-        alert('请选择需要转案的案件')
-      }else if(this.multipleSelection.length > 1){
-        alert('仅能选择一个案件转案')
-      }else{
+      } else{
         //跳转转案界面
-        //this.transtemp = this.multipleSelection[0]
-        this.transtemp.id = this.multipleSelection[0].id
+        /* this.transtemp.id = this.multipleSelection[0].id
         this.transtemp.mingcheng = this.multipleSelection[0].mingcheng
         this.transtemp.worker = this.multipleSelection[0].worker
-        this.transtemp.type = this.multipleSelection[0].type
+        this.transtemp.type = this.multipleSelection[0].type */
+        this.transtemp.id = row.id
+        this.transtemp.mingcheng = row.mingcheng
+        this.transtemp.worker = row.worker
+        this.transtemp.type = row.type
         this.$router.push({
           path: '/anjianfenlei/caseTransfer',
-          query:{
+          query: {
             transtemp:this.transtemp
           }
         });
       }
     },
-    finishcase(){ // 出案
-      alert("出案");
-      console.log(this.finishIds,this.user)
-      finishcase(this.finishIds,this.user).then(response => {
-        console.log(response)
-        this.finishIds = '';
+    finishcase(row) { // 出案
+      /* if (this.finishIds == ''){
+        alert('请至少选择一个案件')
+      } else {
+          finishcase(this.finishIds, this.user).then(response => {
+          if(response.success) {
+            alert('出案成功')
+          } else {
+            alert('出案失败')
+          }
+        })
+      } */
+      this.finishIds = row.id
+      this.user = row.worker
+      //alert(this.user)
+      finishcase(this.finishIds, this.user).then(response => {
+          if(response.success) {
+            alert('出案成功')
+            //alert(response.success)
+            this.getList()
+          } else {
+            alert(response.message + ',出案失败')
+            this.getList()
+          }
       })
     },
     handleFilter() {

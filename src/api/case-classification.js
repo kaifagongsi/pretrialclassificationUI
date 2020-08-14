@@ -8,6 +8,14 @@ export function findCaseByState(query) {
   })
 }
 
+export function updateClassificationInfo(data) {
+  return request({
+    url: '/caseClassification/updateClassificationInfo',
+    method: 'post',
+    data: data
+  })
+}
+
 export function finishcase(finishIds,user) {
   return request({
     url: '/caseClassification/caseFinish',
@@ -16,6 +24,14 @@ export function finishcase(finishIds,user) {
       ids: finishIds,
       user: user
     }
+  })
+}
+
+export function correctCase(data){
+  return request({
+    url: '/caseClassification/caseCorrect',
+    method: 'post',
+    data: data
   })
 }
 
