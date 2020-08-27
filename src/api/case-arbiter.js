@@ -60,3 +60,17 @@ export function findAdjudicatorWorker(id) {
     method: 'get'
   })
 }
+
+export function arbiterChuAn(id) {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/caseArbiter/arbiterChuAn/' + id,
+    method: 'get'
+  })
+}
+
+export function getArbiterPersonInitList(query) {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/caseArbiter/getArbiterPersonInitList/' + query.page + '/' + query.limit,
+    method: 'get'
+  })
+}
