@@ -269,9 +269,9 @@ export const asyncRoutes = [
     path: '/caseHandle',
     component: Layout,
     alwaysShow: true,
-    name: '案件处理',
+    name: '案件入库',
     meta: {
-      title: '案件处理',
+      title: '案件入库',
       icon: 'guide',
       roles: ['admin']
     },
