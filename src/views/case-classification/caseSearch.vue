@@ -215,7 +215,6 @@ export default {
       if (this.search.id === '' && this.search.sqh === '' && this.search.mingcheng === '') {
         alert('查询条件不可为空！')
       } else {
-        alert(this.search.mingcheng)
         searchByCondition(this.search).then(response => {
           if (response.case === null){
             this.showDetail = false
