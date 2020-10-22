@@ -456,8 +456,8 @@ export default {
     return {
       tabMapOptions: [
         { label: "新分待审", key: "0" }, // 主分进案
-        { label: "已分待出", key: "1" }, // 给了分类号
-        { label: "转案待审", key: "2" }, // 作为副分
+        { label: "转案待审", key: "1" }, // 作为副分
+        { label: "已分待出", key: "2" }, // 给了分类号
         { label: "已出案", key: "3" }, // 已出案
         { label: "更正列表", key: "4" }, // 分类号更正待审
         { label: "裁决列表", key: "5" }, // 案件裁决待审
@@ -554,8 +554,8 @@ export default {
         this.transBtn = true;
         this.finishsBtn = true;
         this.correctBtn = true;
-      } else if (this.activeName == "0") {
-        //新分待审案件不可直接出案
+      } else if (this.activeName == "0" || this.activeName == "1") {
+        //新分待审和转案待审案件不可直接出案
         this.finishsBtn = true;
         this.correctBtn = true;
         this.saveBtn = false;

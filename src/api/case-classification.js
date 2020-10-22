@@ -40,7 +40,9 @@ export function searchByCondition(query) {
     url: '/caseClassification/searchByCondition',
     method: 'get',
     params: {
-      id: query.id
+      id: query.id,
+      sqh: query.sqh,
+      mingcheng: query.mingcheng
     }
   })
 }

@@ -6,13 +6,13 @@
         <el-form-item>
           <el-row :gutter="20">
               <el-col :span="6">
-                <el-input v-model.trim="search.id" placeholder="预审案件编号" class="filter-item" @keyup.enter.native="handleFilter" />
+                <el-input v-model.trim="search.id" placeholder="预审案件编号" class="filter-item" @input="inputOnInput($event)"  />
               </el-col>
               <el-col :span="6">
-                <el-input v-model.trim="search.sqh" placeholder="申请号" class="filter-item" @keyup.enter.native="handleFilter" />
+                <el-input v-model.trim="search.sqh" placeholder="申请号" class="filter-item" @input="inputOnInput($event)" />
               </el-col>
               <el-col :span="6">
-                <el-input v-model.trim="search.mingcheng" placeholder="发明名称" class="filter-item" @keyup.enter.native="handleFilter" />
+                <el-input v-model.trim="search.mingcheng" placeholder="发明名称" class="filter-item" @input="inputOnInput($event)" />
               </el-col>
               <el-col :span="4">
                 <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" plain native-type="submit" @click.prevent="searchFunc(search)">
@@ -146,8 +146,6 @@
 <script>
 import { searchByCondition } from '@/api/case-classification'
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
   { key: 'CN', display_name: 'China' },
@@ -163,7 +161,6 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
 }, {})
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -218,11 +215,12 @@ export default {
       if (this.search.id === '' && this.search.sqh === '' && this.search.mingcheng === '') {
         alert('查询条件不可为空！')
       } else {
+        alert(this.search.mingcheng)
         searchByCondition(this.search).then(response => {
-          if(response.case === null){
+          if (response.case === null){
             this.showDetail = false
             alert('无匹配结果')
-          } else{
+          } else {
             this.temp = response.case
             console.log(this.temp)
             this.classInfoList = response.singleInfo
@@ -231,8 +229,13 @@ export default {
         })
       }
     },
-    handleFilter() {
+
+    // 解决input嵌套过深的问题
+    inputOnInput: function(e) {
+      this.$forceUpdate();
+      this.showDetail = false
     },
+
     handleModifyStatus(row, status) {
       this.$message({
         message: '操作Success',
