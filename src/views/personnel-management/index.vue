@@ -56,7 +56,7 @@
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px" style="width: 75%; margin-left:50px;">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="Loginname" prop="loginname"  >
+            <el-form-item label="登录名称" prop="loginname"  >
               <el-input v-model="temp.loginname" placeholder="登录名称"/>
             </el-form-item>
           </el-col>

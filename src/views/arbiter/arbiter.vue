@@ -297,7 +297,7 @@
 </template>
 <script>
 
-import { getArbiterInitList, checkIpcServer, checkIpcCsetsServer, saveAribiterClassfication, findClassInfoByID, getArbiterPersonList, updateAribiterPerson, findAdjudicatorWorker, arbiterChuAn } from '@/api/case-arbiter'
+import { getArbiterInitList, checkIpcServer, checkIpcCsetsServer, saveAribiterClassfication, findClassInfoByID, getArbiterPersonList, updateAribiterPerson, findAdjudicatorWorker, arbiterChuAn, beforeTheCaseOfTheChiefJudge } from '@/api/case-arbiter'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -522,28 +522,42 @@ export default {
     this.getList()
   },
   methods: {
-    // 裁决组长出案
-    arbiterChuAn: function(id) {
-      alert('即将出案:' + id)
-      arbiterChuAn(id).then(response => {
-        if (response.success) {
-          this.$message({
-            message: '出案成功',
-            type: 'success'
-          })
-          this.getList()
-        } else {
-          this.$message({
-            message: '出案失败',
-            type: 'error'
-          })
-        }
-      }).catch(() => {
-        this.$message({
-          message: '出案失败，请稍后重试',
-          type: 'error'
+    // 裁决组长出案 之前判断这个案子有无主分类号 该方法需要同步执行
+    beforeTheCaseOfTheChiefJudge:  function(id) {
+      return beforeTheCaseOfTheChiefJudge(id)
+    },
+    //裁决组长出案 此方法需要同步执行（按顺序执行）
+    arbiterChuAn:  function(id) {
+      debugger
+       let promiseObject =  this.beforeTheCaseOfTheChiefJudge(id);
+        promiseObject.then( response => {
+          if(response){
+            arbiterChuAn(id).then(response => {
+              if (response.success) {
+                this.$message({
+                  message: '出案成功',
+                  type: 'success'
+                })
+                this.getList()
+              } else {
+                this.$message({
+                  message: '出案失败',
+                  type: 'error'
+                })
+              }
+            }).catch(() => {
+              this.$message({
+                message: '出案失败，请稍后重试',
+                type: 'error'
+              })
+            })
+          } else {
+            this.$message({
+              message: '该案件没有主分类号，无法出案',
+              type: 'error'
+            })
+          }
         })
-      })
     },
     // 删除裁决员dialog框中列表的人员
     deleteArbiterPersonRow: function(index, rows) {
@@ -621,7 +635,7 @@ export default {
             this.saveClassification()
           }
         } else {
-          console.log('error submit!!')
+          console.log('有部分输入不合规')
           return false
         }
       })
