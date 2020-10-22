@@ -74,3 +74,10 @@ export function getArbiterPersonInitList(query) {
     method: 'get'
   })
 }
+
+export function beforeTheCaseOfTheChiefJudge(id) {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/caseArbiter/beforeTheCaseOfTheChiefJudge/' + id,
+    method: 'get'
+  })
+}
