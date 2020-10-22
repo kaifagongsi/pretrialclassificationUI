@@ -216,12 +216,12 @@ export default {
         alert('查询条件不可为空！')
       } else {
         searchByCondition(this.search).then(response => {
+          console.log(response)
           if (response.case === null){
             this.showDetail = false
-            alert('无匹配结果')
+            alert('无匹配结果，请重新搜索')
           } else {
             this.temp = response.case
-            console.log(this.temp)
             this.classInfoList = response.singleInfo
             this.showDetail = true
           }
