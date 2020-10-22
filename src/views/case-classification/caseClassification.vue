@@ -183,41 +183,94 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="IPCMI" prop="ipcmi">
-                <el-input v-model="temp.ipcmi" placeholder="请输入主分类号" />
+                <div v-if="this.activeName === '4'">
+                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号" />
+                </div>
+                <div v-else-if="this.activeName === '5'">
+                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号" />
+                </div>
+                <div v-else>
+                  <el-input v-model="temp.ipcmi" placeholder="请输入主分类号" />
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="IPCOI" prop="ipcoi">
-                <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号" />
+                <div v-if="this.activeName === '4'">
+                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" />
+                </div>
+                <div v-else-if="this.activeName === '5'">
+                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" />
+                </div>
+                <div v-else>
+                  <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号" />
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="IPCA" prop="ipca">
-                <el-input
-                  v-model="temp.ipca"
-                  type="textarea"
-                  placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加"
-                />
+                <div v-if="this.activeName === '4'">
+                  <el-input
+                    v-model="temp.ipca"
+                    type="textarea"
+                    :disabled="true"
+                    placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加"
+                  />
+                </div>
+                <div v-else-if="this.activeName === '5'">
+                  <el-input
+                    v-model="temp.ipca"
+                    type="textarea"
+                    :disabled="true"
+                    placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加"
+                  />
+                </div>
+                <div v-else>
+                  <el-input
+                    v-model="temp.ipca"
+                    type="textarea"
+                    placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加"
+                  />
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="CCI" prop="cci">
-                <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" />
+                <div v-if="this.activeName === '4'">
+                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" />
+                </div>
+                <div v-else-if="this.activeName === '5'">
+                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" />
+                </div>
+                <div v-else>
+                  <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" />
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="CCA" prop="cca">
-                <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" />
+                <div v-if="this.activeName === '4'">
+                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" />
+                </div>
+                <div v-else-if="this.activeName === '5'">
+                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" />
+                </div>
+                <div v-else>
+                  <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" />
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="CSETS" prop="csets">
-                <el-input
-                  v-model="temp.csets"
-                  type="textarea"
-                  :disabled="temp.type === 'XX'"
-                  placeholder="请输入csets号"
-                />
+                <div v-if="this.activeName === '4'">
+                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" />
+                </div>
+                <div v-else-if="this.activeName === '5'">
+                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" />
+                </div>
+                <div v-else>
+                  <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" />
+                </div>
               </el-form-item>
             </el-col>
           </el-form>
@@ -549,7 +602,7 @@ export default {
         this.transBtn = true;
         this.correctBtn = false;
       } else if (this.activeName == "4" || this.activeName == "5") {
-        //更正和裁决列表不可操作
+        // 更正和裁决列表不可操作
         this.saveBtn = true;
         this.transBtn = true;
         this.finishsBtn = true;
@@ -688,6 +741,9 @@ export default {
     },
     // 分类号逻辑判断
     subClassification: function () {
+      if (this.activeName == "3") {
+        this.correctBtn = true;
+      }
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           // ipc 与cpc 同在校验
@@ -747,6 +803,7 @@ export default {
         //进行更正操作
         correctCase(this.temp).then((response) => {
           if (response.success) {
+            this.dialogFormVisible = false;
             this.$message({
               message: "已提交更正，等待管理员审核",
               type: "success",
@@ -763,11 +820,11 @@ export default {
         //进行保存操作
         updateClassificationInfo(this.temp).then((response) => {
           if (response.success) {
+            this.dialogFormVisible = false;
             this.$message({
               message: "保存成功",
               type: "success",
             });
-            this.dialogFormVisible = false;
             this.getList();
           } else {
             this.$message({
@@ -844,10 +901,12 @@ export default {
           }
         })
       } */
+      this.finishsBtn = true;
       this.finishIds = row.id;
       this.user = row.worker;
       finishcase(this.finishIds, this.user).then((response) => {
         if (response.success) {
+          this.dialogFormVisible = false;
           this.$message({
               message: "出案成功",
               type: "success",
@@ -866,9 +925,9 @@ export default {
     handleFilter() {
       this.search.page = 1;
       this.getList();
-    },
+    }
   },
-};
+}
 </script>
 
 <style scoped>
