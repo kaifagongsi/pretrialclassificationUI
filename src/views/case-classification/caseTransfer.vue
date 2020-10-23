@@ -141,11 +141,13 @@ export default {
         worker: '',
       },
       transworker: [],
-      workerlist: []
+      workerlist: [],
+      saveBtn: false,
     }
   },
   created() {
-    console.log(this.$route.query.transtemp)
+    // console.log(this.$route.query.transtemp)
+    this.saveBtn = false;
     this.transtemp = this.$route.query.transtemp
     this.initExpand()
   },
@@ -173,6 +175,7 @@ export default {
               alert(list[i].name+'存在重复转案,请重新选择')
             } else {
               // 子节点
+              this.saveBtn = true;
               let workertemp={
                 id: this.transtemp.id,
                 worker: this.transtemp.worker,
@@ -186,27 +189,33 @@ export default {
       }
     },
     save(event){
-      // 被转案人员姓名和留言
-      let formData = JSON.stringify(this.transworker)
-      console.log(formData)
-      this.$confirm('是否确定转案？','提示',{
-        confirmButtonText: '是',
-        cancelButtonText: '否',
-        type: 'warning'
-      }).then(() => {
-          caseTransfer(formData).then(response => {
-            this.$message({
-              type: 'success',
-              message: '转案成功!'
+      if (!this.saveBtn){
+        alert("请先确定转案人员");
+        return;
+      } else {
+          // 被转案人员姓名和留言
+          let formData = JSON.stringify(this.transworker)
+          console.log(formData)
+          this.$confirm('是否确定转案？','提示',{
+            confirmButtonText: '是',
+            cancelButtonText: '否',
+            type: 'warning'
+          }).then(() => {
+              caseTransfer(formData).then(response => {
+                this.$message({
+                  type: 'success',
+                  message: '转案成功!'
+                });
+              });
+            }).catch(() => {
+              this.$message({
+                  type: 'info',
+                  message: '已取消转案'
+              });
             });
-          });
-        }).catch(() => {
-          this.$message({
-              type: 'info',
-              message: '已取消转案'
-          });
-        });
+          }
       },
+    
 
 
     initExpand() { // 加载tree

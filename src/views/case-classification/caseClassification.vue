@@ -626,6 +626,7 @@ export default {
     const tab = this.$route.query.tab;
     if (tab) {
       this.activeName = tab;
+      this.finishsBtn = true;
     }
     this.getList();
   },
