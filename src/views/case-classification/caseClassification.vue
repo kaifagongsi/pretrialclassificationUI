@@ -586,10 +586,10 @@ export default {
       },
       defaultExpandKeys: [], // 默认展开节点列表
       multipleSelection: [], // 多选
-      finishsBtn: false, //出案按钮显示
+      finishsBtn: true, //出案按钮显示
       transBtn: false, //转案按钮
       saveBtn: false, //保存按钮
-      correctBtn: false, //更正按钮
+      correctBtn: true, //更正按钮
     };
   },
   watch: {
