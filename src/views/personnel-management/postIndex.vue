@@ -73,9 +73,9 @@ export default {
           children: [
             {
               id: 11,
-              name: "第二根半价套餐",
-              alias: "是兄弟就来割",
-              operator: "铁手无情",
+              name: "心脏搭桥",
+              alias: "塑料级别",
+              operator: "心间大爱",
               state: "无痛"
             }
           ]
@@ -85,23 +85,22 @@ export default {
           date: "科室",
           children: []
         },
-
         {
           id: 3,
           date: "全院",
           children: [
             {
               id: 31,
-              name: "第二根半价套餐",
-              alias: "是兄弟就来割",
-              operator: "铁手无情",
+              name: "心脏搭桥",
+              alias: "钢铁级别",
+              operator: "心间大爱",
               state: "无痛"
             },
             {
               id: 41,
-              name: "第二根半价套餐",
-              alias: "是兄弟就来割",
-              operator: "铁手无情",
+              name: "心脏搭桥",
+              alias: "黄金级别",
+              operator: "世间大爱",
               state: "无痛"
             }
           ]
