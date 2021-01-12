@@ -265,7 +265,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
+  /*{
     path: '/caseHandle',
     component: Layout,
     alwaysShow: true,
@@ -295,7 +295,7 @@ export const asyncRoutes = [
         }
       }
     ]
-  },
+  },*/
   {
     path: '/userManager',
     component: Layout,
