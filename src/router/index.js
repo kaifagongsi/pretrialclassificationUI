@@ -390,7 +390,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
+  /*{
     path: '/tab',
     component: Layout,
     children: [
@@ -401,7 +401,7 @@ export const asyncRoutes = [
         meta: { title: 'Tab', icon: 'tab' }
       }
     ]
-  },
+  },*/
   /*{
     path: '/permission',
     component: Layout,
