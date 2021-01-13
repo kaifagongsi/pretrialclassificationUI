@@ -218,8 +218,6 @@ export default {
           }
       },
     
-
-
     initExpand() { // 加载tree
       findUserInfo().then(response => {
         this.setTree = response.treelist

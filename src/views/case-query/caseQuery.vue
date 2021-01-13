@@ -83,22 +83,12 @@
               <span>{{ row.oraginization }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="申请号" width="150px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.sqh }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="粗分号" width="100px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.simpleclasscode }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="进案日期" width="180px" align="center">
+          <el-table-column label="预审申请日" width="180px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="分类号" width="100px" align="center">
+          <el-table-column label="IPC" width="100px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.ipci }}</span>
             </template>
@@ -431,7 +421,7 @@ export default {
 
       //let workbook = XLSX.utils.table_to_book(document.getElementById('table'))
       try{
-        XLSX.writeFile(workbook, 'text.xlsx');
+        XLSX.writeFile(workbook, 'bhzx.xlsx');
       } catch(e){
         console.log(e,workbook);
       }
