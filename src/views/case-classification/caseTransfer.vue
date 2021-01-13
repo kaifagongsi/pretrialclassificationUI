@@ -203,11 +203,19 @@ export default {
             type: 'warning'
           }).then(() => {
               caseTransfer(formData).then(response => {
-                this.$message({
+                if (response.success) {
+                  this.isDisable = true;
+                  this.$message({
                   type: 'success',
                   message: '转案成功!'
                 });
-                this.isDisable = true;
+                }else {
+                  this.$message({
+                    type: 'error',
+                    message: '转案失败'
+                  });
+                }
+
               });
             }).catch(() => {
               this.$message({
