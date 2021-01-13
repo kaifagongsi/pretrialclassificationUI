@@ -63,6 +63,7 @@ const actions = {
           reject('getInfo: roles must be a non-null array!')
         } */
         var rol = []
+        debugger
         for (let i = 0; i < roles.length; i++) {
           rol.push(roles[i].rolename)
         }
