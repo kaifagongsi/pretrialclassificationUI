@@ -37,6 +37,7 @@ const actions = {
     const { loginname, password, codeKey, codeText } = userInfo
     return new Promise((resolve, reject) => {
       login({ loginname: loginname.trim(), password: password, codeKey: codeKey, codeText: codeText }).then(response => {
+        debugger
         const toekenStr = response.data.prefix + response.data.value
         setToken(response.data.header, toekenStr)
         commit('SET_TOKEN', response.data.header, toekenStr)
