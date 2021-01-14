@@ -265,7 +265,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
+  /*{
     path: '/caseHandle',
     component: Layout,
     alwaysShow: true,
@@ -295,7 +295,7 @@ export const asyncRoutes = [
         }
       }
     ]
-  },
+  },*/
   {
     path: '/userManager',
     component: Layout,
@@ -390,7 +390,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
+  /*{
     path: '/tab',
     component: Layout,
     children: [
@@ -401,7 +401,7 @@ export const asyncRoutes = [
         meta: { title: 'Tab', icon: 'tab' }
       }
     ]
-  },
+  },*/
   /*{
     path: '/permission',
     component: Layout,
