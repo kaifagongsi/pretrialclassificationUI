@@ -28,10 +28,10 @@
               <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
             </el-col>
             <el-col :span="5">
-              <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" :loading="searchLoading" plain native-type="submit" @click.prevent="searchFunc(search)">
+              <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">
                 Search
               </el-button>
-              <el-button v-waves class="filter-item" type="primary" :loading="searchLoading" plain native-type="submit" @click.prevent="exportToExcel()">
+              <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToExcel()">
                 导出
               </el-button>
             </el-col>
@@ -83,22 +83,12 @@
               <span>{{ row.oraginization }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="申请号" width="150px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.sqh }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="粗分号" width="100px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.simpleclasscode }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="进案日期" width="180px" align="center">
+          <el-table-column label="预审申请日" width="180px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="分类号" width="100px" align="center">
+          <el-table-column label="IPC" width="100px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.ipci }}</span>
             </template>
@@ -405,9 +395,7 @@ export default {
     getList() { // 获取table表格数据
       this.listLoading = true
       console.log(this.activeName)
-      debugger
       findAllCase(this.search).then(response => {
-        debugger
         //console.log(response)
         // 返回的list
         this.list = response.data.items
@@ -431,7 +419,7 @@ export default {
 
       //let workbook = XLSX.utils.table_to_book(document.getElementById('table'))
       try{
-        XLSX.writeFile(workbook, 'text.xlsx');
+        XLSX.writeFile(workbook, 'bhzx.xlsx');
       } catch(e){
         console.log(e,workbook);
       }

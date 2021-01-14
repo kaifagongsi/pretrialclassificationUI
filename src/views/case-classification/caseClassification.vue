@@ -40,7 +40,6 @@
                 class="filter-item"
                 type="primary"
                 icon="el-icon-search"
-                :loading="searchLoading"
                 plain
                 native-type="submit"
                 @click.prevent="searchFunc(search)"

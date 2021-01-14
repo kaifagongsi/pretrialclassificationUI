@@ -62,7 +62,7 @@
           </el-table-column>
         </el-table>
         <div style="margin:15px">
-          <el-button type="primary" style="float:right;" @click="save($event)">确定转案</el-button>
+          <el-button type="primary" :disabled="isDisable" style="float:right;" @click="save($event)">确定转案</el-button>
         </div>
       </div>
     </div>
@@ -116,6 +116,7 @@ export default {
         children: 'children',
         label: 'name'
       },
+      isDisable: false,
       dialogStatus: '',
       defaultExpandKeys: [], // 默认展开节点列表
       list: null,
@@ -202,10 +203,19 @@ export default {
             type: 'warning'
           }).then(() => {
               caseTransfer(formData).then(response => {
-                this.$message({
+                if (response.success) {
+                  this.isDisable = true;
+                  this.$message({
                   type: 'success',
                   message: '转案成功!'
                 });
+                }else {
+                  this.$message({
+                    type: 'error',
+                    message: '转案失败'
+                  });
+                }
+
               });
             }).catch(() => {
               this.$message({
@@ -216,8 +226,6 @@ export default {
           }
       },
     
-
-
     initExpand() { // 加载tree
       findUserInfo().then(response => {
         this.setTree = response.treelist
