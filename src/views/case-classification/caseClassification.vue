@@ -74,7 +74,7 @@
           <el-table-column fixed label="预审申请号" prop="id" align="center" width="180px">
             <template slot-scope="{row}">
               <a
-                v-bind:href="'ftp://172.17.1.54/'+row.id+'/'+row.pdfPath"
+                v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.pdfPath"
                 target="_blank"
                 class="buttonText"
               >{{row.id}}</a>
