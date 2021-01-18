@@ -595,7 +595,7 @@ export default {
     activeName(val) {
       this.$router.push(`${this.$route.path}?tab=${val}`);
       if (this.activeName == "3") {
-        //已出案、更正、裁决案件不可转案及出案
+        //已出案案件不可转案及出案
         this.finishsBtn = true;
         this.saveBtn = true;
         this.transBtn = true;
@@ -801,22 +801,35 @@ export default {
     saveClassification: function () {
       if (this.activeName == "3") {
         //进行更正操作
-        correctCase(this.temp).then((response) => {
-          if (response.success) {
-            this.dialogFormVisible = false;
-            this.$message({
-              message: "已提交更正，等待管理员审核",
-              type: "success",
-            });
-          } else {
-            this.$message({
-              showClose: true,
-              message: "发生错误,请稍后重试",
-              type: "error",
-            });
+        this.$confirm("提交更正后不可撤销，请确认是否提交？","提示",{
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+        )
+        .then(() => {
+          correctCase(this.temp).then((response) => {
+            if (response.success) {
+              this.dialogFormVisible = false;
+              this.$message({
+                message: "已提交更正，等待管理员审核",
+                type: "success",
+              });
+            } else {
+              this.$message({
+                showClose: true,
+                message: "发生错误,请稍后重试",
+                type: "error",
+              });
+              this.correctBtn = false;
+            }
           }
-        });
-      } else {
+          )})
+          .catch(() => {
+            // 取消操作
+            this.correctBtn = false;
+          });
+        }else {
         //进行保存操作
         updateClassificationInfo(this.temp).then((response) => {
           if (response.success) {
