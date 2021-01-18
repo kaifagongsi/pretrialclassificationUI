@@ -412,6 +412,13 @@ export default {
     },
     //导出table数据到Excel
     exportToExcel(){
+      debugger
+      if('admin' != this.$store.state.user.roles){
+        this.$alert('您当前没有该权限', '提示', {
+          confirmButtonText: '确定'
+        });
+        return
+      }
       let table = document.getElementById('table');
       let worksheet = XLSX.utils.table_to_sheet(table);
       let workbook = XLSX.utils.book_new();
