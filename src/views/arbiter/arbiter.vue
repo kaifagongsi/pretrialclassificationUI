@@ -195,9 +195,19 @@
             <span>{{ row.chuantime }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="IPC" width="200px" align="center">
+        <el-table-column label="IPMI" width="200px" align="center">
           <template slot-scope="{row}">
-            <span>{{ row.ipci }}</span>
+            <span>{{ row.ipcmi }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="IPOI" width="200px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.ipcoi }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="IPCA" width="200px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.ipca }}</span>
           </template>
         </el-table-column>
         <el-table-column label="CCI" width="100px" align="center">
