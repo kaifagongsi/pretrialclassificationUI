@@ -78,7 +78,11 @@
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="margin-left:50px;">
         <el-col :span="12">
           <el-form-item label="案件编号" prop="id">
-            <span>{{ temp.id }}</span>
+            <span>
+              <a v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+temp.id+'/'+temp.pdfPath" target="_blank" class="buttonText">
+                {{ temp.id }}
+              </a>
+            </span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -615,8 +619,9 @@ export default {
     subClassification: function() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          debugger
           // ipc 与cpc 同在校验
-          if ((this.temp.ipcmi !== null || this.temp.ipcmi !== '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci === null || this.temp.cci === '')) {
+          if ((this.temp.ipcmi !== null || this.temp.ipcmi !== '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci === null || this.temp.cci === '') && (this.temp.type !== 'XX') ) {
             // 主分不为空，副分为空，cci 为空
             this.$confirm('检测到您的cci为空，是否继续出案', '提示', {
               confirmButtonText: '确定',

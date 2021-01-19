@@ -741,6 +741,7 @@ export default {
     },
     // 分类号逻辑判断
     subClassification: function () {
+      debugger
       if (this.activeName == "3") {
         this.correctBtn = true;
       }
@@ -750,7 +751,8 @@ export default {
           if (
             (this.temp.ipcmi !== null || this.temp.ipcmi !== "") &&
             (this.temp.ipcoi === null || this.temp.ipcoi === "") &&
-            (this.temp.cci === null || this.temp.cci === "")
+            (this.temp.cci === null || this.temp.cci === "") &&
+            (this.temp.type !== 'XX')
           ) {
             // 主分不为空，副分为空，cci 为空
             this.$confirm("检测到您的cci为空，是否继续保存", "提示", {
