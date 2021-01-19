@@ -18,12 +18,13 @@
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         新增
       </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-refresh" style="float: right;" @click="changeDepartmentRotation">
+      <!--<el-button class="filter-item" type="primary" icon="el-icon-refresh" style="float: right;" @click="changeDepartmentRotation">
         修改部门轮换
       </el-button>
       <el-select v-model="departmentRotation" placeholder="修改部门轮换" clearable class="filter-item" style="width: 130px;float: right">
         <el-option v-for="item in departmentRotations" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
+      -->
     </div>
     <el-table v-loading="listLoading" :data="userList" border fit highlight-current-row style="width: 100%;">
       <el-table-column type="index" >
