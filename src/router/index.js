@@ -218,7 +218,7 @@ export const asyncRoutes = [
     meta: {
       title: '案件处理',
       icon: 'lock',
-      roles: ['admin'] // you can set roles in root nav
+      roles: ['admin','arbiter'] // you can set roles in root nav
     },
     redirect: '/caseAllocation',
     children: [
@@ -228,7 +228,7 @@ export const asyncRoutes = [
         name: '案件调配',
         meta: {
           title: '案件调配',
-          roles: ['admin'] // or you can only set roles in sub nav
+          roles: ['admin','arbiter'] // or you can only set roles in sub nav
         }
       }
     ]
