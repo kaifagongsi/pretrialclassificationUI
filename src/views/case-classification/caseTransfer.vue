@@ -204,7 +204,8 @@ export default {
           }).then(() => {
               caseTransfer(formData).then(response => {
                 if (response.success) {
-                  this.isDisable = true;
+                  this.transworker = [];
+                  //this.isDisable = true;
                   this.$message({
                   type: 'success',
                   message: '转案成功!'

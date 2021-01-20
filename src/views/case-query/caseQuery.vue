@@ -1,3 +1,4 @@
+
 <template>
   <div class="tab-container">
     <div class="filter-container">
@@ -59,7 +60,12 @@
           />
           <el-table-column label="预审申请号" prop="id" align="center" width="200">
             <template slot-scope="{row}">
-              <a target="_blank" class="buttonText">{{ row.id }}</a>
+              <a
+                v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.pdfPath"
+                target="_blank"
+                class="buttonText"
+              >{{row.id}}</a>
+              <!-- <a target="_blank" class="buttonText">{{ row.id }}</a> -->
               <!-- <router-link to="">{{ row.id }}</router-link> -->
             </template>
           </el-table-column>
@@ -275,7 +281,6 @@ import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import XLSX from 'xlsx'
 import FileSaver from 'file-saver'
-
 export default {
   name: 'Tab',
   components: { Pagination },
@@ -412,11 +417,17 @@ export default {
     },
     //导出table数据到Excel
     exportToExcel(){
+      debugger
+      if('admin' != this.$store.state.user.roles){
+        this.$alert('您当前没有该权限', '提示', {
+          confirmButtonText: '确定'
+        });
+        return
+      }
       let table = document.getElementById('table');
       let worksheet = XLSX.utils.table_to_sheet(table);
       let workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet');
-
       //let workbook = XLSX.utils.table_to_book(document.getElementById('table'))
       try{
         XLSX.writeFile(workbook, 'bhzx.xlsx');
@@ -433,3 +444,4 @@ export default {
     margin: 30px;
   }
 </style>
+
