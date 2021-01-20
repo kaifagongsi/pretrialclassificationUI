@@ -153,7 +153,7 @@ export const asyncRoutes = [
     meta: {
       title: '案件检索',
       icon: 'search',
-      roles: ['admin'] // you can set roles in root nav
+      roles: ['admin','arbiter'] // you can set roles in root nav
     },
     redirect: '/caseQuery',
     children: [
@@ -163,7 +163,7 @@ export const asyncRoutes = [
         name: '案件检索',
         meta: {
           title: '案件检索',
-          roles: ['admin'] // or you can only set roles in sub nav
+          roles: ['admin','arbiter'] // or you can only set roles in sub nav
         }
       }
     ]
@@ -246,11 +246,11 @@ export const asyncRoutes = [
     redirect: '/case-statistics/caseIn',
     children: [
       {
-        path: 'caseIn',
-        component: () => import('@/views/case-statistics/caseIn'),
-        name: '进案统计',
+        path: 'caseOutWithOrg',
+        component: () => import('@/views/case-statistics/caseOutWithOrg'),
+        name: '各中心出案统计',
         meta: {
-          title: '进案统计',
+          title: '各中心出案统计',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       },
@@ -376,7 +376,7 @@ export const asyncRoutes = [
     meta: {
       title: '分类号更正',
       icon: 'updateIpc',
-      roles: ['admin'] // you can set roles in root nav
+      roles: ['admin','arbiter'] // you can set roles in root nav
     },
     children: [
       {
@@ -385,7 +385,7 @@ export const asyncRoutes = [
         name: '分类号更正列表',
         meta: {
           title: '分类号更正列表',
-          roles: ['admin'] // or you can only set roles in sub nav
+          roles: ['admin','arbiter'] // or you can only set roles in sub nav
         }
       }
     ]

@@ -18,3 +18,11 @@ export function countCaseOut(query) {
   })
 }
 
+export function caseOutWithOrg(query) {
+  return request({
+    url: '/caseStatistic/caseOutWithOrg',
+    method: 'get',
+    params: query
+  })
+}
+
