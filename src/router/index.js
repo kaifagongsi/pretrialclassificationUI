@@ -246,11 +246,11 @@ export const asyncRoutes = [
     redirect: '/case-statistics/caseIn',
     children: [
       {
-        path: 'caseIn',
-        component: () => import('@/views/case-statistics/caseIn'),
-        name: '进案统计',
+        path: 'caseOutWithOrg',
+        component: () => import('@/views/case-statistics/caseOutWithOrg'),
+        name: '各中心出案统计',
         meta: {
-          title: '进案统计',
+          title: '各中心出案统计',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       },
