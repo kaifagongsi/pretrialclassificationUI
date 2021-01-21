@@ -297,7 +297,7 @@
             </el-table-column>
             <el-table-column label="进案时间" width="150px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.fenpeitime }}</span>
+                <span>{{ row.fenpeitime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
               </template>
             </el-table-column>
             <el-table-column label="进案来源" width="100px" align="center">
@@ -353,6 +353,7 @@
             <el-button type="primary" :disabled="finishsBtn" @click="finishcase(temp)">出案</el-button>
           </div>
         </el-dialog>
+
         <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
           <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
             <el-table-column prop="key" label="Channel" />
