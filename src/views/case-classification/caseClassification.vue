@@ -107,7 +107,7 @@
           </el-table-column>
           <el-table-column label="进案日期" width="180px" align="center">
             <template slot-scope="{row}">
-              <span>{{ row.jinantime }}</span>
+              <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             </template>
           </el-table-column>
           <el-table-column
