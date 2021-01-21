@@ -67,9 +67,8 @@
           fit
           highlight-current-row
           style="width: 100%;"
-          @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55" />
+          <!-- <el-table-column type="selection" width="55" /> -->
           <el-table-column fixed label="预审申请号" prop="id" align="center" width="180px">
             <template slot-scope="{row}">
               <a
@@ -308,7 +307,7 @@
             </el-table-column>
             <el-table-column label="单一出案时间" width="150px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.chuantime  }}</span>
+                <span>{{ row.chuantime }}</span>
               </template>
             </el-table-column>
             <el-table-column label="IPCI" width="200px" align="center">
