@@ -107,7 +107,7 @@
           </el-table-column>
           <el-table-column label="进案日期" width="180px" align="center">
             <template slot-scope="{row}">
-              <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+              <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -177,7 +177,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="进案时间" prop="jinantime">
-                <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+               <!-- <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>-->
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -296,9 +296,9 @@
                 <span>{{ row.state == '2'|| row.state == '7' ? '已完成' : '未完成' }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="进案时间" width="150px" align="center">
+            <el-table-column label="进案时间" width="160px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.fenpeitime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+                <span>{{ row.fenpeitime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}</span>
               </template>
             </el-table-column>
             <el-table-column label="进案来源" width="100px" align="center">
@@ -306,9 +306,9 @@
                 <span>{{ row.fenpeiren }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="单一出案时间" width="150px" align="center">
+            <el-table-column label="单一出案时间" width="160px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.chuantime  }}</span>
+                <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
               </template>
             </el-table-column>
             <el-table-column label="IPCI" width="200px" align="center">
@@ -414,7 +414,8 @@ import { checkIpcServer, checkIpcCsetsServer } from "@/api/case-arbiter";
 import { findUserInfo, updateWorker } from "@/api/case-disposition";
 import { findClassInfoByID } from "@/api/case-query";
 import waves from "@/directive/waves"; // waves directive
-import { parseTime, param } from "@/utils";
+import { parseTime,param } from "@/utils";
+// import { parseTime } from "@/utils/index";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import api from "@/api/treeApi";
 export default {
@@ -521,7 +522,7 @@ export default {
       user: "",
       createdTimes: 0,
       list: null,
-      classInfoList: null,
+      classInfoList: undefined,
       total: 0,
       listLoading: true,
       search: {
@@ -630,7 +631,7 @@ export default {
     this.getList();
   },
   mounted() {
-    console.log(api);
+    //console.log(api);
     this.initExpand();
   },
   methods: {
@@ -700,6 +701,7 @@ export default {
       //console.log(this.searchInfo.id)
       findClassInfoByID(this.searchInfo).then((response) => {
         //console.log(response)
+        debugger
         this.classInfoList = response.data;
       });
     },
