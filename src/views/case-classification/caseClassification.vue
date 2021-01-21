@@ -92,7 +92,7 @@
           </el-table-column>
           <el-table-column label="分类类型" width="100px" align="center">
             <template slot-scope="{row}">
-              <span>{{ row.maintype }}</span>
+              <span>{{ row.maintype == '主' ? '主分进案' : '转案' }}</span>
             </template>
           </el-table-column>
           <el-table-column label="类型" min-width="50px" align="center">
@@ -107,7 +107,7 @@
           </el-table-column>
           <el-table-column label="进案日期" width="180px" align="center">
             <template slot-scope="{row}">
-              <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+              <span>{{ row.jinantime }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -283,7 +283,7 @@
           >
             <el-table-column label="分类人员类型" align="center" width="120px">
               <template slot-scope="{row}">
-                <a target="_blank" class="buttonText">{{ row.classtype }}</a>
+                <a target="_blank" class="buttonText">{{ row.classtype == '主' ? '主分进案':'转案' }}</a>
               </template>
             </el-table-column>
             <el-table-column label="分类人员代码" width="120px" align="center">
@@ -308,7 +308,7 @@
             </el-table-column>
             <el-table-column label="单一出案时间" width="150px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.chuantime }}</span>
+                <span>{{ row.chuantime  }}</span>
               </template>
             </el-table-column>
             <el-table-column label="IPCI" width="200px" align="center">
@@ -416,7 +416,6 @@ import waves from "@/directive/waves"; // waves directive
 import { parseTime, param } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import api from "@/api/treeApi";
-
 export default {
   name: "Tab",
   components: { Pagination },
