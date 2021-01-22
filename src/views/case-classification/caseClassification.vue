@@ -182,26 +182,26 @@
             <el-col :span="12">
               <el-form-item label="IPCMI" prop="ipcmi">
                 <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号" />
+                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号"   :validate-event="false"/>
                 </div>
                 <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号" />
+                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号"  :validate-event="false" />
                 </div>
                 <div v-else>
-                  <el-input v-model="temp.ipcmi" placeholder="请输入主分类号" />
+                  <el-input v-model="temp.ipcmi" placeholder="请输入主分类号"  :validate-event="false"/>
                 </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="IPCOI" prop="ipcoi">
                 <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" />
+                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号"  :validate-event="false"/>
                 </div>
                 <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" />
+                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" :validate-event="false" />
                 </div>
                 <div v-else>
-                  <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号" />
+                  <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号"  :validate-event="false"/>
                 </div>
               </el-form-item>
             </el-col>
@@ -213,6 +213,7 @@
                     type="textarea"
                     :disabled="true"
                     placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加"
+                    :validate-event="false"
                   />
                 </div>
                 <div v-else-if="this.activeName === '5'">
@@ -221,6 +222,7 @@
                     type="textarea"
                     :disabled="true"
                     placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加"
+                    :validate-event="false"
                   />
                 </div>
                 <div v-else>
@@ -228,6 +230,7 @@
                     v-model="temp.ipca"
                     type="textarea"
                     placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加"
+                    :validate-event="false"
                   />
                 </div>
               </el-form-item>
@@ -235,39 +238,39 @@
             <el-col :span="24">
               <el-form-item label="CCI" prop="cci">
                 <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" />
+                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" :validate-event="false"/>
                 </div>
                 <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" />
+                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" :validate-event="false"/>
                 </div>
                 <div v-else>
-                  <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" />
+                  <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" :validate-event="false"/>
                 </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="CCA" prop="cca">
                 <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" />
+                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" :validate-event="false"/>
                 </div>
                 <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" />
+                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" :validate-event="false"/>
                 </div>
                 <div v-else>
-                  <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" />
+                  <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" :validate-event="false"/>
                 </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="CSETS" prop="csets">
                 <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" />
+                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" :validate-event="false"/>
                 </div>
                 <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" />
+                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" :validate-event="false"/>
                 </div>
                 <div v-else>
-                  <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" />
+                  <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" :validate-event="false" />
                 </div>
               </el-form-item>
             </el-col>
@@ -531,12 +534,12 @@ export default {
         endTime: "",
       },
       rules: {
-        ipcmi: [{ required: true, trigger: "blur", validator: checkIpc }],
-        ipcoi: [{ required: true, trigger: "blur", validator: checkIpc }],
-        ipca: [{ required: true, trigger: "blur", validator: checkIpc }],
-        cci: [{ required: true, trigger: "blur", validator: checkCpc }],
-        cca: [{ required: true, trigger: "blur", validator: checkCpc }],
-        csets: [{ required: true, trigger: "blur", validator: checkCsets }],
+        ipcmi: [{ required: true,  validator: checkIpc }],
+        ipcoi: [{ required: true,  validator: checkIpc }],
+        ipca: [{ required: true,  validator: checkIpc }],
+        cci: [{ required: true,  validator: checkCpc }],
+        cca: [{ required: true,  validator: checkCpc }],
+        csets: [{ required: true,  validator: checkCsets }],
       },
       temp: {
         id: undefined,
@@ -758,8 +761,7 @@ export default {
               confirmButtonText: "确定",
               cancelButtonText: "取消",
               type: "warning",
-            })
-              .then(() => {
+            }).then(() => {
                 // 此处执行保存操作
                 this.saveClassification();
               })
