@@ -43,17 +43,25 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column
-        label="案件编号"
-        prop="id">
+      <el-table-column label="案件编号" prop="id">
+        <template slot-scope="{row}">
+          <span>
+             <a
+               v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.pdfPath"
+               target="_blank"
+               class="buttonText"
+             >{{row.id}}</a>
+          </span>
+        </template>
       </el-table-column>
       <el-table-column
         label="提交人"
         prop="worker">
       </el-table-column>
-      <el-table-column
-        label="提交时间"
-        prop="uploadtime">
+      <el-table-column label="提交时间" prop="uploadtime">
+        <template slot-scope="{row}">
+          <span>{{ row.uploadtime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
       </el-table-column>
 
       <el-table-column label="操作" align="center" width="200" v-if="type=='0' " class-name="small-padding fixed-width" >

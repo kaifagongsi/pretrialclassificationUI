@@ -12,7 +12,14 @@
     >
       <el-table-column label="预审编号" prop="id" sortable="custom" align="center" width="200px" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+
+          <span>
+            <a
+            v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.path"
+            target="_blank"
+            class="buttonText"
+            >{{row.id}}</a>
+          </span>
         </template>
       </el-table-column>
       <el-table-column label="申请号" prop="sqh" width="130px" align="center">
@@ -73,13 +80,14 @@
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+
     <!-- 案件信息以及填写裁决分类号 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="80%" top="5vh">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="margin-left:50px;">
         <el-col :span="12">
           <el-form-item label="案件编号" prop="id">
             <span>
-              <a v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+temp.id+'/'+temp.pdfPath" target="_blank" class="buttonText">
+              <a v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+temp.id+'/'+temp.path" target="_blank" class="buttonText">
                 {{ temp.id }}
               </a>
             </span>
@@ -103,60 +111,60 @@
         <el-col :span="12">
           <el-form-item label="IPCMI" prop="ipcmi">
             <div v-if="temp.state === '8'">
-              <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号" />
+              <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号" :validate-event="false"/>
             </div>
             <div v-if="temp.state === '7'">
-              <el-input v-model="temp.ipcmi"  placeholder="请输入主分类号" />
+              <el-input v-model="temp.ipcmi"  placeholder="请输入主分类号" :validate-event="false"/>
             </div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="IPCOI" prop="ipcoi">
             <div  v-if="temp.state === '8'">
-              <el-input v-model="temp.ipcoi" :disabled="true" type="textarea" placeholder="请输入副分类号" />
+              <el-input v-model="temp.ipcoi" :disabled="true" type="textarea" placeholder="请输入副分类号" :validate-event="false"/>
             </div>
             <div v-if="temp.state === '7'">
-              <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号" />
+              <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号" :validate-event="false"/>
             </div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="IPCA" prop="ipca">
             <div v-if="temp.state === '8'">
-              <el-input v-model="temp.ipca" :disabled="true" type="textarea" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" />
+              <el-input v-model="temp.ipca" :disabled="true" type="textarea" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" :validate-event="false"/>
             </div>
             <div v-if="temp.state === '7'">
-              <el-input v-model="temp.ipca" type="textarea" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" />
+              <el-input v-model="temp.ipca" type="textarea" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" :validate-event="false"/>
             </div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="CCI" prop="cci">
             <div v-if="temp.state === '8'">
-              <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" />
+              <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" :validate-event="false"/>
             </div>
             <div v-if="temp.state === '7'">
-              <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" />
+              <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" :validate-event="false"/>
             </div>
            </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="CCA" prop="cca">
             <div v-if="temp.state === '8'">
-              <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" />
+              <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" :validate-event="false"/>
             </div>
             <div v-if="temp.state === '7'">
-              <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" />
+              <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" :validate-event="false"/>
             </div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="CSETS" prop="csets">
             <div v-if="temp.state === '8'">
-              <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" />
+              <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" :validate-event="false"/>
             </div>
             <div v-if="temp.state === '7'">
-              <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" />
+              <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" :validate-event="false"/>
             </div>
           </el-form-item>
         </el-col>
@@ -239,6 +247,8 @@
         </el-button>
       </div>
     </el-dialog>
+
+
     <!-- 添加裁决员 -->
     <el-dialog :visible.sync="dialogArbiterPerson" width="60%" top="20vh" title="添加裁决员">
       <el-form ref="arbiterPersonFrom">
@@ -436,12 +446,12 @@ export default {
         id: ''
       },
       rules: {
-        ipcmi: [{ required: true, trigger: 'blur', validator: checkIpc }],
-        ipcoi: [{ required: true, trigger: 'blur', validator: checkIpc }],
-        ipca: [{ required: true, trigger: 'blur', validator: checkIpc }],
-        cci: [{ required: true, trigger: 'blur', validator: checkCpc }],
-        cca: [{ required: true, trigger: 'blur', validator: checkCpc }],
-        csets: [{ required: true, trigger: 'blur', validator: checkCsets }]
+        ipcmi: [{ required: true,  validator: checkIpc }],
+        ipcoi: [{ required: true,  validator: checkIpc }],
+        ipca: [{ required: true,  validator: checkIpc }],
+        cci: [{ required: true,  validator: checkCpc }],
+        cca: [{ required: true,  validator: checkCpc }],
+        csets: [{ required: true, validator: checkCsets }]
       },
       arbiterPerson: {
         dep1: '',
@@ -617,11 +627,15 @@ export default {
     },
     // 分类号逻辑判断
     subClassification: function() {
+
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           debugger
-          // ipc 与cpc 同在校验
-          if ((this.temp.ipcmi !== null || this.temp.ipcmi !== '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci === null || this.temp.cci === '') && (this.temp.type !== 'XX') ) {
+          // 案件类型为FM 并且IPCMI或者CCI为空，不容许出案
+          if( (this.temp.type === 'FM') &&   (  (this.temp.ipcmi === null || this.temp.ipcmi === '') ||  (this.temp.cci === null || this.temp.cci === '')  )     ){
+            this.$alert('该案件类型为发明检测，到您的cci或者IPCMI为空。无法继续保存。', '错误', {})
+            return false;
+          } else  if ((this.temp.ipcmi !== null || this.temp.ipcmi !== '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci === null || this.temp.cci === '') && (this.temp.type !== 'XX') ) {  // ipc 与cpc 同在校验
             // 主分不为空，副分为空，cci 为空
             this.$confirm('检测到您的cci为空，是否继续出案', '提示', {
               confirmButtonText: '确定',
@@ -635,7 +649,7 @@ export default {
             })
           } else if ((this.temp.ipcmi === null || this.temp.ipcmi === '') && (this.temp.ipcoi === null || this.temp.ipcoi === '') && (this.temp.cci !== null || this.temp.cci !== '')) {
             // 主，副分为空，cci不为空
-            this.$confirm('检测到您的cci不为空，ipcmi/ipcoi为空，是否继续出案', '提示', {
+            this.$confirm('检测到您的cci不为空，ipcmi和ipcoi为空，是否继续出案', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'

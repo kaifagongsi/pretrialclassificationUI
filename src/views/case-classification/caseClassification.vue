@@ -67,7 +67,6 @@
           fit
           highlight-current-row
           style="width: 100%;"
-          @selection-change="handleSelectionChange"
         >
           <!-- <el-table-column type="selection" width="55" /> -->
           <el-table-column fixed label="预审申请号" prop="id" align="center" width="180px">
@@ -177,32 +176,32 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="进案时间" prop="jinantime">
-               <!-- <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>-->
+                <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="IPCMI" prop="ipcmi">
                 <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号" />
+                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号"   :validate-event="false"/>
                 </div>
                 <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号" />
+                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号"  :validate-event="false" />
                 </div>
                 <div v-else>
-                  <el-input v-model="temp.ipcmi" placeholder="请输入主分类号" />
+                  <el-input v-model="temp.ipcmi" placeholder="请输入主分类号"  :validate-event="false"/>
                 </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="IPCOI" prop="ipcoi">
                 <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" />
+                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号"  :validate-event="false"/>
                 </div>
                 <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" />
+                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" :validate-event="false" />
                 </div>
                 <div v-else>
-                  <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号" />
+                  <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号"  :validate-event="false"/>
                 </div>
               </el-form-item>
             </el-col>
@@ -214,6 +213,7 @@
                     type="textarea"
                     :disabled="true"
                     placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加"
+                    :validate-event="false"
                   />
                 </div>
                 <div v-else-if="this.activeName === '5'">
@@ -222,6 +222,7 @@
                     type="textarea"
                     :disabled="true"
                     placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加"
+                    :validate-event="false"
                   />
                 </div>
                 <div v-else>
@@ -229,6 +230,7 @@
                     v-model="temp.ipca"
                     type="textarea"
                     placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加"
+                    :validate-event="false"
                   />
                 </div>
               </el-form-item>
@@ -236,39 +238,39 @@
             <el-col :span="24">
               <el-form-item label="CCI" prop="cci">
                 <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" />
+                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" :validate-event="false"/>
                 </div>
                 <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" />
+                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" :validate-event="false"/>
                 </div>
                 <div v-else>
-                  <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" />
+                  <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" :validate-event="false"/>
                 </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="CCA" prop="cca">
                 <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" />
+                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" :validate-event="false"/>
                 </div>
                 <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" />
+                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" :validate-event="false"/>
                 </div>
                 <div v-else>
-                  <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" />
+                  <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" :validate-event="false"/>
                 </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="CSETS" prop="csets">
                 <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" />
+                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" :validate-event="false"/>
                 </div>
                 <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" />
+                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" :validate-event="false"/>
                 </div>
                 <div v-else>
-                  <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" />
+                  <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" :validate-event="false" />
                 </div>
               </el-form-item>
             </el-col>
@@ -416,7 +418,7 @@ import { findClassInfoByID, findUpdateInfoByID } from "@/api/case-query";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime, param } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import api from "@/api/treeApi";
+// import api from "@/api/treeApi";
 export default {
   name: "Tab",
   components: { Pagination },
@@ -533,12 +535,12 @@ export default {
         endTime: "",
       },
       rules: {
-        ipcmi: [{ required: true, trigger: "blur", validator: checkIpc }],
-        ipcoi: [{ required: true, trigger: "blur", validator: checkIpc }],
-        ipca: [{ required: true, trigger: "blur", validator: checkIpc }],
-        cci: [{ required: true, trigger: "blur", validator: checkCpc }],
-        cca: [{ required: true, trigger: "blur", validator: checkCpc }],
-        csets: [{ required: true, trigger: "blur", validator: checkCsets }],
+        ipcmi: [{ required: true,  validator: checkIpc }],
+        ipcoi: [{ required: true,  validator: checkIpc }],
+        ipca: [{ required: true,  validator: checkIpc }],
+        cci: [{ required: true,  validator: checkCpc }],
+        cca: [{ required: true,  validator: checkCpc }],
+        csets: [{ required: true,  validator: checkCsets }],
       },
       temp: {
         id: undefined,
@@ -630,8 +632,8 @@ export default {
     this.getList();
   },
   mounted() {
-    console.log(api);
-    this.initExpand();
+    //console.log(api);
+    //this.initExpand();
   },
   methods: {
     changeTab: function (tab, event) {
@@ -764,8 +766,7 @@ export default {
               confirmButtonText: "确定",
               cancelButtonText: "取消",
               type: "warning",
-            })
-              .then(() => {
+            }).then(() => {
                 // 此处执行保存操作
                 this.saveClassification();
               })
