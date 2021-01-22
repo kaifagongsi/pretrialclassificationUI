@@ -247,6 +247,8 @@
         </el-button>
       </div>
     </el-dialog>
+
+
     <!-- 添加裁决员 -->
     <el-dialog :visible.sync="dialogArbiterPerson" width="60%" top="20vh" title="添加裁决员">
       <el-form ref="arbiterPersonFrom">
