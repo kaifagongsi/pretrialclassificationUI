@@ -217,7 +217,7 @@
             </el-table-column>
             <el-table-column label="进案时间" width="150px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.fenpeitime }}</span>
+                <span>{{ row.fenpeitime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
               </template>
             </el-table-column>
             <el-table-column label="进案来源" width="100px" align="center">
@@ -227,12 +227,22 @@
             </el-table-column>
             <el-table-column label="单一出案时间" width="150px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.chuantime }}</span>
+                <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
               </template>
             </el-table-column>
             <el-table-column label="IPC" width="200px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.ipci }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="IPCMI" width="200px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.ipcmi }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="IPCOI" width="200px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.ipcoi }}</span>
               </template>
             </el-table-column>
             <el-table-column label="CCI" width="100px" align="center">

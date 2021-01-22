@@ -412,7 +412,7 @@ import {
 } from "@/api/case-classification";
 import { checkIpcServer, checkIpcCsetsServer } from "@/api/case-arbiter";
 import { findUserInfo, updateWorker } from "@/api/case-disposition";
-import { findClassInfoByID } from "@/api/case-query";
+import { findClassInfoByID, findUpdateInfoByID } from "@/api/case-query";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime, param } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
@@ -517,6 +517,7 @@ export default {
       activeName: "0",
       searchInfo: {
         id: "",
+        worker: ""
       },
       user: "",
       createdTimes: 0,
@@ -570,8 +571,7 @@ export default {
         simpleclasscode: "",
         jinantime: new Date(),
         message: "",
-        worker: "",
-        //transworker: ''
+        worker: ""
       },
       dialogPvVisible: false,
       pvData: [],
@@ -697,16 +697,21 @@ export default {
     },
     // 获取分类信息
     getClassficationList() {
-      //console.log(this.searchInfo.id)
       findClassInfoByID(this.searchInfo).then((response) => {
-        //console.log(response)
         this.classInfoList = response.data;
       });
     },
+
     showDetail(row) {
       this.dialogStatus = "show";
       this.temp = row;
       this.searchInfo.id = row.id;
+      // if (this.activeName === '4') {
+      //   this.searchInfo.worker = this.user;
+      //   findUpdateInfoByID(this.searchInfo).then((response) => {
+      //     console.log(response)
+      //   } )
+      // }
       this.getClassficationList();
       //console.log('temp数据:'+ this.temp)
       this.$nextTick(() => {
@@ -887,10 +892,6 @@ export default {
         return;
       } else {
         // 跳转转案界面
-        /* this.transtemp.id = this.multipleSelection[0].id
-        this.transtemp.mingcheng = this.multipleSelection[0].mingcheng
-        this.transtemp.worker = this.multipleSelection[0].worker
-        this.transtemp.type = this.multipleSelection[0].type */
         this.transtemp.id = row.id;
         this.transtemp.mingcheng = row.mingcheng;
         this.transtemp.worker = row.worker;

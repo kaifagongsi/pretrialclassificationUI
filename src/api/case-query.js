@@ -17,3 +17,11 @@ export function findClassInfoByID(query) {
     params: query
   })
 }
+
+export function findUpdateInfoByID(query) {
+  return request({
+    url: '/caseQuery/caseConditionQuery/findUpdateInfoByID',
+    method: 'get',
+    params: query
+  })
+}
