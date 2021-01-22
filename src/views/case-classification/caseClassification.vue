@@ -67,7 +67,6 @@
           fit
           highlight-current-row
           style="width: 100%;"
-          @selection-change="handleSelectionChange"
         >
           <!-- <el-table-column type="selection" width="55" /> -->
           <el-table-column fixed label="预审申请号" prop="id" align="center" width="180px">
@@ -177,7 +176,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="进案时间" prop="jinantime">
-               <!-- <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>-->
+                <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -416,7 +415,7 @@ import { findClassInfoByID } from "@/api/case-query";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime, param } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import api from "@/api/treeApi";
+// import api from "@/api/treeApi";
 export default {
   name: "Tab",
   components: { Pagination },
@@ -630,8 +629,8 @@ export default {
     this.getList();
   },
   mounted() {
-    console.log(api);
-    this.initExpand();
+    //console.log(api);
+    //this.initExpand();
   },
   methods: {
     changeTab: function (tab, event) {
