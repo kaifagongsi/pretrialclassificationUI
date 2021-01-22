@@ -307,7 +307,7 @@ export default {
         limit: 10,
         state: this.$route.query.tab,
         id: '',
-        name: '',
+        mingcheng: '',
         sqr: '',
         sqh: '',
         worker: '',
@@ -399,7 +399,7 @@ export default {
     },
     getList() { // 获取table表格数据
       this.listLoading = true
-      console.log(this.activeName)
+      //console.log(this.search)
       findAllCase(this.search).then(response => {
         //console.log(response)
         // 返回的list
