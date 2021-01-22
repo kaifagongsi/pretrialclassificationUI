@@ -12,7 +12,14 @@
     >
       <el-table-column label="预审编号" prop="id" sortable="custom" align="center" width="200px" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+
+          <span>
+            <a
+            v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.path"
+            target="_blank"
+            class="buttonText"
+            >{{row.id}}</a>
+          </span>
         </template>
       </el-table-column>
       <el-table-column label="申请号" prop="sqh" width="130px" align="center">
@@ -73,13 +80,14 @@
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+
     <!-- 案件信息以及填写裁决分类号 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="80%" top="5vh">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="margin-left:50px;">
         <el-col :span="12">
           <el-form-item label="案件编号" prop="id">
             <span>
-              <a v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+temp.id+'/'+temp.pdfPath" target="_blank" class="buttonText">
+              <a v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+temp.id+'/'+temp.path" target="_blank" class="buttonText">
                 {{ temp.id }}
               </a>
             </span>

@@ -10,7 +10,13 @@
     >
       <el-table-column label="预审编号" prop="id" sortable="custom" align="center" width="200px" >
         <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+          <span>
+            <a
+              v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.path"
+              target="_blank"
+              class="buttonText"
+            >{{row.id}}</a>
+          </span>
         </template>
       </el-table-column>
       <el-table-column label="申请号" prop="sqh" width="130px" align="center">
