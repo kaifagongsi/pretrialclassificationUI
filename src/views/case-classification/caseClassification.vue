@@ -313,11 +313,11 @@
                 <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="IPCI" width="200px" align="center">
+            <!-- <el-table-column label="IPCI" width="200px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.ipci }}</span>
               </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column label="IPCMI" width="200px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.ipcmi }}</span>
@@ -708,14 +708,20 @@ export default {
       this.dialogStatus = "show";
       this.temp = row;
       this.searchInfo.id = row.id;
-      // if (this.activeName === '4') {
-      //   this.searchInfo.worker = this.user;
-      //   findUpdateInfoByID(this.searchInfo).then((response) => {
-      //     console.log(response)
-      //   } )
-      // }
+      if (this.activeName === '4') {
+        // 更正案件显示更正后的号
+        this.searchInfo.worker = this.user;
+        findUpdateInfoByID(this.searchInfo).then((response) => {
+          console.log(response.data[0])
+          this.temp.ipcmi = response.data[0].ipcmi;
+          this.temp.ipcoi = response.data[0].ipcoi;
+          this.temp.ipca = response.data[0].ipca;
+          this.temp.cci = response.data[0].cci;
+          this.temp.cca = response.data[0].cca;
+          this.temp.csets = response.data[0].csets;
+        } )
+      }
       this.getClassficationList();
-      //console.log('temp数据:'+ this.temp)
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
@@ -918,7 +924,8 @@ export default {
           }
         })
       } */
-      this.finishsBtn = true;
+      
+      // this.finishsBtn = true;
       this.finishIds = row.id;
       this.user = row.worker;
       finishcase(this.finishIds, this.user).then((response) => {
