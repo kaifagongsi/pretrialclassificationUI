@@ -23,11 +23,15 @@
               <el-input v-model="search.worker" placeholder="分类员" class="filter-item" @keyup.enter.native="handleFilter" />
             </el-col>
             <el-col :span="5">
+              <el-input v-model="search.oraginization" placeholder="案件所属保护中心" class="filter-item" @keyup.enter.native="handleFilter" />
+            </el-col>
+            <el-col :span="5">
               <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" class="filter-item" value-format="yyyy-MM-dd" />
             </el-col>
             <el-col :span="5">
               <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
             </el-col>
+            
             <el-col :span="5">
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">
                 Search
@@ -202,7 +206,7 @@
           >
             <el-table-column label="分类人员类型" align="center" width="120px">
               <template slot-scope="{row}">
-                <a target="_blank" class="buttonText">{{ row.classtype }}</a>
+                <a target="_blank" class="buttonText">{{ row.classtype == '主' ? '主分进案':'转案' }}</a>
               </template>
             </el-table-column>
             <el-table-column label="分类人员代码" width="120px" align="center">
@@ -215,7 +219,7 @@
                 <span>{{ row.state== '2' ? '已完成' : '未完成' }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="进案时间" width="150px" align="center">
+            <el-table-column label="进案时间" width="160px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.fenpeitime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
               </template>
@@ -225,16 +229,16 @@
                 <span>{{ row.fenpeiren }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="单一出案时间" width="150px" align="center">
+            <el-table-column label="单一出案时间" width="160px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="IPC" width="200px" align="center">
+            <!-- <el-table-column label="IPC" width="200px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.ipci }}</span>
               </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column label="IPCMI" width="200px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.ipcmi }}</span>
@@ -318,6 +322,7 @@ export default {
         state: this.$route.query.tab,
         id: '',
         mingcheng: '',
+        oraginization: '',
         sqr: '',
         sqh: '',
         worker: '',
