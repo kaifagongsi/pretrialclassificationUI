@@ -943,7 +943,7 @@ export default {
       this.search.page = 1;
       this.getList();
     }
-  },
+  }
 }
 </script>
 
