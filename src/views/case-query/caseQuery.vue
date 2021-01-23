@@ -23,11 +23,15 @@
               <el-input v-model="search.worker" placeholder="分类员" class="filter-item" @keyup.enter.native="handleFilter" />
             </el-col>
             <el-col :span="5">
+              <el-input v-model="search.oraginization" placeholder="案件所属保护中心" class="filter-item" @keyup.enter.native="handleFilter" />
+            </el-col>
+            <el-col :span="5">
               <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" class="filter-item" value-format="yyyy-MM-dd" />
             </el-col>
             <el-col :span="5">
               <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
             </el-col>
+            
             <el-col :span="5">
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">
                 Search
@@ -318,6 +322,7 @@ export default {
         state: this.$route.query.tab,
         id: '',
         mingcheng: '',
+        oraginization: '',
         sqr: '',
         sqh: '',
         worker: '',
