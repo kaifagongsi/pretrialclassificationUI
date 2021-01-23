@@ -439,8 +439,9 @@ export default {
         });
         return
       }
+      let xlsxParam = {raw:true};
       let table = document.getElementById('table');
-      let worksheet = XLSX.utils.table_to_sheet(table);
+      let worksheet = XLSX.utils.table_to_sheet(table,xlsxParam);
       let workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet');
       //let workbook = XLSX.utils.table_to_book(document.getElementById('table'))
