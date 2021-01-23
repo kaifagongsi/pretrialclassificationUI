@@ -95,10 +95,10 @@
           </el-table-column>
           <el-table-column label="预审申请日" width="180px" align="center">
             <template slot-scope="{row}">
-              <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+              <span>{{ row.jinantime | parseTime('{y}{m}{d}') }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="IPC" width="100px" align="center">
+          <el-table-column label="分类号" width="100px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.ipci }}</span>
             </template>
