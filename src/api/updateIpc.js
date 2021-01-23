@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function selectInitList(query,state) {
+export function selectInitList(state) {
   return request({
-    url: process.env.VUE_APP_BASE_API + '/updateipc/selectInitList/' + query.page + '/' + query.limit + '/' + state,
+    url: process.env.VUE_APP_BASE_API + '/updateipc/selectInitList/' + state,
     method: 'get'
   })
 }
