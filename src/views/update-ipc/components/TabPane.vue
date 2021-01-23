@@ -93,21 +93,23 @@ export default {
   data() {
     return {
       list: null,
-      listQuery: {
-        page: 1,
-        limit: 5
-      },
+
       loading: false
     }
   },
   created() {
     this.getList()
   },
+/*  watch:{
+    "$route.path": function (newValue,oldValue) {
+       console.log(oldValue + "改变为：" + newValue)
+    }
+  },*/
   methods: {
     getList() {
       this.loading = true
       // this.$emit('create') // 此处可能是向父组件传递参数
-      selectInitList(this.listQuery, this.type).then(response => {
+      selectInitList(this.type).then(response => {
         debugger
         console.log(response)
         if (response.success) {
