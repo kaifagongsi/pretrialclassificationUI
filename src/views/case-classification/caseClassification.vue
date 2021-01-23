@@ -806,6 +806,8 @@ export default {
             this.saveClassification();
           }
         } else {
+          this.correctBtn = false;
+          this.$alert('分类号校验不通过','错误',{});
           console.log("error submit!!");
           return false;
         }
@@ -950,7 +952,7 @@ export default {
       this.search.page = 1;
       this.getList();
     }
-  },
+  }
 }
 </script>
 
