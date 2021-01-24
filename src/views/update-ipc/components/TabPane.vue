@@ -66,10 +66,10 @@
 
       <el-table-column label="操作" align="center" width="200" v-if="type=='0' " class-name="small-padding fixed-width" >
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleClickType(scope.row.id,'1')">
+          <el-button type="primary" size="small" @click="handleClickType(scope.row.id,'1',scope.row.worker)">
             通过
           </el-button>
-          <el-button type="danger" size="small" @click="handleClickType(scope.row.id,'2')">
+          <el-button type="danger" size="small" @click="handleClickType(scope.row.id,'2',scope.row.worker)">
             驳回
           </el-button>
         </template>
@@ -120,9 +120,9 @@ export default {
         this.loading = false
       })
     },
-    handleClickType(id, type) {
-      console.log(id, type)
-      updateIpcState(id, type).then(response => {
+    handleClickType(id, type,worker) {
+      console.log(id, type,worker)
+      updateIpcState(id, type,worker).then(response => {
         if (response.success) {
           this.$message({
             message: '操作成功',

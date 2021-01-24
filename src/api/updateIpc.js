@@ -8,9 +8,9 @@ export function selectInitList(state) {
 }
 
 
-export function updateIpcState(id,state) {
+export function updateIpcState(id,state,worker) {
   return request({
-    url: process.env.VUE_APP_BASE_API + '/updateipc/updateIpcState/' + id + '/'  + state,
+    url: process.env.VUE_APP_BASE_API + '/updateipc/updateIpcState/' + id + '/'  + state + '/' + worker,
     method: 'get'
   })
 }

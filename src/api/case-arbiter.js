@@ -31,9 +31,9 @@ export function saveAribiterClassfication(data) {
   })
 }
 
-export function findClassInfoByID(query) {
+export function findClassInfoByID(id,state,processingPerson) {
   return request({
-    url: process.env.VUE_APP_BASE_API + '/caseArbiter/findClassInfoByID/' + query,
+    url: process.env.VUE_APP_BASE_API + '/caseArbiter/findClassInfoByID/' + id + '/'+ state + '/' + processingPerson,
     method: 'get'
   })
 }
@@ -63,7 +63,7 @@ export function findAdjudicatorWorker(id) {
 
 export function arbiterChuAn(id) {
   return request({
-    url: process.env.VUE_APP_BASE_API + '/caseArbiter/arbiterChuAn/' + id,
+    url: process.env.VUE_APP_BASE_API + '/caseArbiter/arbiterChuAn/' + id ,
     method: 'get'
   })
 }
@@ -75,9 +75,9 @@ export function getArbiterPersonInitList(query) {
   })
 }
 
-export function beforeTheCaseOfTheChiefJudge(id) {
+export function beforeTheCaseOfTheChiefJudge(id,processingPerson) {
   return request({
-    url: process.env.VUE_APP_BASE_API + '/caseArbiter/beforeTheCaseOfTheChiefJudge/' + id,
+    url: process.env.VUE_APP_BASE_API + '/caseArbiter/beforeTheCaseOfTheChiefJudge/' + id + '/' + processingPerson,
     method: 'get'
   })
 }

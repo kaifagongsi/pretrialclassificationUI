@@ -70,7 +70,7 @@
           <el-button  size="small" type="success" v-if=" row.state === '7'" @click="showArbiterPersons(row.id);dialogArbiterPerson=true">
             添加裁决员
           </el-button>
-          <el-button size="small" type="danger" v-if=" row.state === '7'" @click="arbiterChuAn(row.id)">
+          <el-button size="small" type="danger" v-if=" row.state === '7'" @click="arbiterChuAn(row.id,row.processingPerson)">
             出案
           </el-button>
           <el-button type="primary" size="small" v-if=" row.state === '8'" @click="showDetail(row);dialogFormVisible =true">
@@ -547,13 +547,13 @@ export default {
   },
   methods: {
     // 裁决组长出案 之前判断这个案子有无主分类号 该方法需要同步执行
-    beforeTheCaseOfTheChiefJudge:  function(id) {
-      return beforeTheCaseOfTheChiefJudge(id)
+    beforeTheCaseOfTheChiefJudge:  function(id,processingPerson) {
+      return beforeTheCaseOfTheChiefJudge(id,processingPerson)
     },
     //裁决组长出案 此方法需要同步执行（按顺序执行）
-    arbiterChuAn:  function(id) {
+    arbiterChuAn:  function(id,processingPerson) {
       debugger
-       let promiseObject =  this.beforeTheCaseOfTheChiefJudge(id);
+       let promiseObject =  this.beforeTheCaseOfTheChiefJudge(id,processingPerson);
         promiseObject.then( response => {
           if(response){
             arbiterChuAn(id).then(response => {
@@ -704,18 +704,18 @@ export default {
       })
     },
     showDetail(row) {
-      this.dialogStatus = 'show'
-      this.temp = row
-      this.searchInfo.id = row.id
-      this.getClassficationList()
-      console.log(row)
+      this.dialogStatus = 'show';
+      this.temp = row;
+      this.searchInfo.id = row.id;
+      console.log(row);
+      this.getClassficationList(row);
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
     // 获取裁决案件的分类信息
-    getClassficationList() {
-      findClassInfoByID(this.searchInfo.id).then(response => {
+    getClassficationList(row) {
+      findClassInfoByID(row.id,row.state,row.processingPerson).then(response => {
         this.classInfoList = response.queryResult.map.data
         this.temp.ipcmi = response.queryResult.map.ipcmi
         this.temp.ipcoi = response.queryResult.map.ipcoi
