@@ -311,10 +311,9 @@
           </el-table>
         </el-row>
         <el-form-item align="right" style="margin-top: 15px">
-          <el-button type="primary" @click="onSubmitArbiterPerson()">提交修改</el-button>
+          <el-button type="primary" @click="onSubmitArbiterPerson()">确认协助</el-button>
           <el-button>取消</el-button>
         </el-form-item>
-        {{ personTableData }}， {{ arbiterPersonTempId }}
       </el-form>
     </el-dialog>
   </div>
