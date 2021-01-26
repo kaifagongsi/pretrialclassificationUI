@@ -61,8 +61,8 @@
             </el-form-item>
           </el-col> -->
           <el-col :span="12">
-            <el-form-item label="IPC" prop="ipc">
-              <span>{{ temp.ipci }}</span>
+            <el-form-item label="IPCI" prop="ipc">
+              <span>{{ temp.ipcmi }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -118,9 +118,19 @@
                 <span>{{ row.chuantime }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="IPC" width="200px" align="center">
+            <el-table-column label="IPCMI" width="200px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.ipci }}</span>
+                <span>{{ row.ipcmi }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="IPCOI" width="200px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.ipcoi }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="IPCA" width="200px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.ipca }}</span>
               </template>
             </el-table-column>
             <el-table-column label="CCI" width="100px" align="center">

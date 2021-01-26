@@ -249,6 +249,11 @@
                 <span>{{ row.ipcoi }}</span>
               </template>
             </el-table-column>
+            <el-table-column label="IPCA" width="200px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.ipca }}</span>
+              </template>
+            </el-table-column>
             <el-table-column label="CCI" width="100px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.cci }}</span>
