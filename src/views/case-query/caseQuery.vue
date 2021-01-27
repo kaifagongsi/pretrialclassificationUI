@@ -73,22 +73,22 @@
               <!-- <router-link to="">{{ row.id }}</router-link> -->
             </template>
           </el-table-column>
-          <el-table-column label="申请主体" width="200px" align="center">
+          <el-table-column label="申请主体" width="150px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.sqr }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="发明名称" width="500px" align="center">
+          <el-table-column label="发明名称" width="200px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.mingcheng }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="发明类型" min-width="50px" align="center">
+          <el-table-column label="发明类型" max-width="50px" align="center">
             <template slot-scope="{row}">
               <span class="link-type">{{ row.type== 'FM' ? '发明' : '新型' }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="所属保护中心" min-width="50px" align="center">
+          <el-table-column label="所属保护中心" width="110px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.oraginization }}</span>
             </template>
@@ -98,22 +98,22 @@
               <span>{{ row.jinantime | parseTime('{y}{m}{d}') }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="分类号" width="100px" align="center">
+          <el-table-column label="分类号" min-width="180px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.ipci }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="CCI" width="100px" align="center">
+          <el-table-column label="CCI" min-width="180px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.cci }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="CCA" width="100px" align="center">
+          <el-table-column label="CCA" min-width="180px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.cca }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="C-Sets" width="100px" align="center">
+          <el-table-column label="C-Sets" min-width="100px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.csets }}</span>
             </template>
