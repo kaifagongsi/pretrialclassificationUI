@@ -333,8 +333,8 @@ export default {
         callback()
       } else {
         if (rule.field === 'ipcmi') {
-          if (value.indexOf(',') !== -1) {
-            callback(new Error('主分类有且只有一个'))
+          if (value.indexOf(',') !== -1 ||  value.indexOf('，') !== -1 || value.indexOf('；') !== -1 || value.indexOf(';') !== -1) {
+            callback(new Error('主分类号仅有一个'))
           }
         }
         checkIpcServer(this.temp, rule.field).then(response => {
