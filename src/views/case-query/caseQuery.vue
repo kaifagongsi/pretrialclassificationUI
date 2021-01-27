@@ -269,6 +269,11 @@
                 <span>{{ row.csets }}</span>
               </template>
             </el-table-column>
+            <el-table-column label="转案留言" width="100px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.message }}</span>
+              </template>
+            </el-table-column>
           </el-table>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">
