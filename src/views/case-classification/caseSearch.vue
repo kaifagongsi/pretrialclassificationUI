@@ -9,7 +9,7 @@
                 <el-input v-model.trim="search.id" placeholder="预审案件编号" class="filter-item" @input="inputOnInput($event)"  />
               </el-col>
               <el-col :span="6">
-                <el-input v-model.trim="search.sqh" placeholder="申请号" class="filter-item" @input="inputOnInput($event)" />
+                <el-input v-model.trim="search.sqr" placeholder="申请人" class="filter-item" @input="inputOnInput($event)" />
               </el-col>
               <el-col :span="6">
                 <el-input v-model.trim="search.mingcheng" placeholder="发明名称" class="filter-item" @input="inputOnInput($event)" />
@@ -61,7 +61,7 @@
             </el-form-item>
           </el-col> -->
           <el-col :span="12">
-            <el-form-item label="IPC" prop="ipc">
+            <el-form-item label="IPCI" prop="ipc">
               <span>{{ temp.ipci }}</span>
             </el-form-item>
           </el-col>
@@ -118,9 +118,19 @@
                 <span>{{ row.chuantime }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="IPC" width="200px" align="center">
+            <el-table-column label="IPCMI" width="200px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.ipci }}</span>
+                <span>{{ row.ipcmi }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="IPCOI" width="200px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.ipcoi }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="IPCA" width="200px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.ipca }}</span>
               </template>
             </el-table-column>
             <el-table-column label="CCI" width="100px" align="center">
@@ -185,7 +195,7 @@ export default {
       showDetail: false,
       search: {
         id: '',
-        sqh: '',
+        sqr: '',
         mingcheng: ''
       },
       calendarTypeOptions,
@@ -217,7 +227,7 @@ export default {
       } else {
         searchByCondition(this.search).then(response => {
           console.log(response)
-          if (response.case === null){
+          if (response.case === null) {
             this.showDetail = false
             alert('无匹配结果，请重新搜索')
           } else {

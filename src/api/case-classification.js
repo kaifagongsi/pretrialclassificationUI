@@ -41,7 +41,7 @@ export function searchByCondition(query) {
     method: 'get',
     params: {
       id: query.id,
-      sqh: query.sqh,
+      sqr: query.sqr,
       mingcheng: query.mingcheng
     }
   })
