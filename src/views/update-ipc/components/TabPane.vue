@@ -100,11 +100,12 @@ export default {
   created() {
     this.getList()
   },
-/*  watch:{
-    "$route.path": function (newValue,oldValue) {
-       console.log(oldValue + "改变为：" + newValue)
+  watch:{
+    $route: {
+      // 深度观察监听
+      deep: true
     }
-  },*/
+  },
   methods: {
     getList() {
       this.loading = true
@@ -123,7 +124,8 @@ export default {
     handleClickType(id, type,worker) {
       console.log(id, type,worker)
       updateIpcState(id, type,worker).then(response => {
-        if (response.success) {
+        debugger
+        if (response.code === 20000) {
           this.$message({
             message: '操作成功',
             type: 'success'
