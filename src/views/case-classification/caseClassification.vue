@@ -431,7 +431,7 @@ export default {
         callback();
       } else {
         if (rule.field === "ipcmi") {
-          if (value.indexOf(",") !== -1) {
+          if (value.indexOf(',') !== -1 ||  value.indexOf('，') !== -1 || value.indexOf('；') !== -1 || value.indexOf(';') !== -1 || value.indexOf('、') != -1 ) {
             callback(new Error("主分类有且只有一个"));
           }
         }
@@ -754,7 +754,6 @@ export default {
     },
     // 分类号逻辑判断
     subClassification: function () {
-      debugger
       if (this.activeName == "3") {
         this.correctBtn = true;
       }

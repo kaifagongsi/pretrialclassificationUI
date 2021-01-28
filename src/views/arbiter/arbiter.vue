@@ -333,7 +333,7 @@ export default {
         callback()
       } else {
         if (rule.field === 'ipcmi') {
-          if (value.indexOf(',') !== -1 ||  value.indexOf('，') !== -1 || value.indexOf('；') !== -1 || value.indexOf(';') !== -1 || value.indexof('、') != -1) {
+          if (value.indexOf(',') !== -1 ||  value.indexOf('，') !== -1 || value.indexOf('；') !== -1 || value.indexOf(';') !== -1 || value.indexOf('、') != -1) {
             callback(new Error('主分类号仅有一个'))
           }
         }
