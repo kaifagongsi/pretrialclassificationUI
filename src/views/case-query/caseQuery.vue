@@ -78,9 +78,9 @@
               <span>{{ row.sqr }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="发明名称" width="200px" align="center">
+          <el-table-column label="发明名称" min-width="180px" align="center">
             <template slot-scope="{row}">
-              <span>{{ row.mingcheng }}</span>
+              <span>{{ row.mingcheng }}</span>d
             </template>
           </el-table-column>
           <el-table-column label="发明类型" max-width="50px" align="center">
