@@ -49,7 +49,7 @@
       </el-table-column>
       <el-table-column label="进入保护中心系统时间" min-width="180px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="进入裁决的原因" min-width="250px">
@@ -59,7 +59,7 @@
       </el-table-column>
       <el-table-column label="进入裁决时间" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.rukuTime }}</span>
+          <span>{{ row.rukuTime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="400" class-name="small-padding fixed-width">
@@ -105,7 +105,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="进案时间" prop="jinantime">
-            <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -177,7 +177,7 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="分类人员类型" align="center" width="120px">
+        <el-table-column label="分类人员类型" align="center" width="80px">
           <template slot-scope="{row}">
             <a target="_blank" class="buttonText">{{ row.classtype }}</a>
           </template>
@@ -194,7 +194,7 @@
         </el-table-column>
         <el-table-column label="进案时间" width="150px" align="center">
           <template slot-scope="{row}">
-            <span>{{ row.fenpeitime }}</span>
+            <span>{{ row.fenpeitime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           </template>
         </el-table-column>
         <el-table-column label="进案来源" width="100px" align="center">
@@ -204,7 +204,7 @@
         </el-table-column>
         <el-table-column label="单一出案时间" width="150px" align="center">
           <template slot-scope="{row}">
-            <span>{{ row.chuantime }}</span>
+            <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           </template>
         </el-table-column>
         <el-table-column label="IPMI" width="200px" align="center">
@@ -222,7 +222,7 @@
             <span>{{ row.ipca }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="CCI" width="100px" align="center">
+        <el-table-column label="CCI" width="200px" align="center">
           <template slot-scope="{row}">
             <span>{{ row.cci }}</span>
           </template>
