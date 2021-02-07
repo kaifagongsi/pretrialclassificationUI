@@ -80,7 +80,7 @@
           </el-table-column>
           <el-table-column label="发明名称" min-width="180px" align="center">
             <template slot-scope="{row}">
-              <span>{{ row.mingcheng }}</span>d
+              <span>{{ row.mingcheng }}</span>
             </template>
           </el-table-column>
           <el-table-column label="发明类型" max-width="50px" align="center">
@@ -445,6 +445,12 @@ export default {
       debugger
       if('admin' != this.$store.state.user.roles){
         this.$alert('您当前没有该权限', '提示', {
+          confirmButtonText: '确定'
+        });
+        return
+      }
+      if(this.activeName != '2'){
+        this.$alert('仅限制已出案案件导出', '提示', {
           confirmButtonText: '确定'
         });
         return
