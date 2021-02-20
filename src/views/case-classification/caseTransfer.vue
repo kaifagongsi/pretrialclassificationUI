@@ -203,7 +203,7 @@ export default {
             type: 'warning'
           }).then(() => {
               caseTransfer(formData).then((response) => {
-                console.log(response)
+                //console.log(response)
                 if (response.success) {
                   this.transworker = [];
                   //this.isDisable = true;
