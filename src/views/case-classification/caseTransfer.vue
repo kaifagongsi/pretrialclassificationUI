@@ -196,24 +196,25 @@ export default {
       } else {
           // 被转案人员姓名和留言
           let formData = JSON.stringify(this.transworker)
-          console.log(formData)
+          //console.log(formData)
           this.$confirm('是否确定转案？','提示',{
             confirmButtonText: '是',
             cancelButtonText: '否',
             type: 'warning'
           }).then(() => {
-              caseTransfer(formData).then(response => {
+              caseTransfer(formData).then((response) => {
+                console.log(response)
                 if (response.success) {
                   this.transworker = [];
                   //this.isDisable = true;
                   this.$message({
                   type: 'success',
                   message: '转案成功!'
-                });
+                  })
                 }else {
                   this.$message({
                     type: 'error',
-                    message: '转案失败'
+                    message: response.message,
                   });
                 }
 
@@ -239,13 +240,6 @@ export default {
       })
       this.isLoadingTree = true
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
-      })
-      row.status = status
-    }
   }
 }
 </script>

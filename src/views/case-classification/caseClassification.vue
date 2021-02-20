@@ -857,7 +857,7 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: "保存失败，请稍后重试",
+              message: response.message,
               type: "error",
             });
           }
