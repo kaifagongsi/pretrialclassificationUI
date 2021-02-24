@@ -192,9 +192,9 @@
             <span>{{ row.state== '2' ? '已完成' : '未完成' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="进案时间" width="150px" align="center">
+        <el-table-column label="进案时间" width="160px" align="center">
           <template slot-scope="{row}">
-            <span>{{ row.fenpeitime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            <span>{{ row.fenpeitime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}</span>
           </template>
         </el-table-column>
         <el-table-column label="进案来源" width="100px" align="center">
@@ -202,9 +202,9 @@
             <span>{{ row.fenpeiren }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="单一出案时间" width="150px" align="center">
+        <el-table-column label="单一出案时间" width="160px" align="center">
           <template slot-scope="{row}">
-            <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}</span>
           </template>
         </el-table-column>
         <el-table-column label="IPMI" width="200px" align="center">
@@ -753,7 +753,7 @@ export default {
       if (this.temp.cset != null) {
         this.temp.csets = this.temp.csets.replace(/\s+/g, '')
       }
-    }
+    },
   }
 }
 </script>
