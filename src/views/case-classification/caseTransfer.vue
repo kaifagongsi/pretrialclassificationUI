@@ -151,6 +151,10 @@ export default {
     }, */
     getCheckedNodes() {
       this.transworker = []
+      if(this.transtemp.id === undefined || this.transtemp.worker === undefined){
+          alert('异常,请关闭当前页面后重试')
+          return
+      } 
       getTransWorkerList(this.transtemp).then(response => {
           this.workerlist = response.workerlist
       })
