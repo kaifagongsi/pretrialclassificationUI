@@ -20,7 +20,7 @@
     <div>
       <div class="workerlist" style="width:45%;float:left;">
         <div>
-          <el-button type="primary" style="float:right;" @click="getCheckedNodes">确定</el-button>
+          <el-button type="primary" style="float:right;"  @click="getCheckedNodes">确定</el-button>
         </div>
         <div style="font-size: xx-large; text-align: center">
           <svg-icon icon-class="user" style="width: 60px; height: 60px" /><svg-icon icon-class="exchange" style="height: 60px;margin-left: 50px;margin-right: 50px;" /><svg-icon icon-class="user" style="width: 60px; height: 60px" />
@@ -94,19 +94,6 @@ export default {
   name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
-    }
-  },
   data() {
     return {
       openKeys: [],
@@ -143,12 +130,12 @@ export default {
       },
       transworker: [],
       workerlist: [],
-      saveBtn: false,
+      transBtn: false,
     }
   },
   created() {
     // console.log(this.$route.query.transtemp)
-    this.saveBtn = false;
+    this.transBtn = false;
     this.transtemp = this.$route.query.transtemp
     this.initExpand()
   },
@@ -164,6 +151,9 @@ export default {
     }, */
     getCheckedNodes() {
       this.transworker = []
+      getTransWorkerList(this.transtemp).then(response => {
+          this.workerlist = response.workerlist
+      })
       var list = this.$refs.expandMenuList.getCheckedNodes();
       if(list.length === 0) {
         alert("请至少选择一人进行转案")
@@ -176,7 +166,7 @@ export default {
               alert(list[i].name+'存在重复转案,请重新选择')
             } else {
               // 子节点
-              this.saveBtn = true;
+              this.transBtn = true;
               let workertemp={
                 id: this.transtemp.id,
                 worker: this.transtemp.worker,
@@ -190,7 +180,7 @@ export default {
       }
     },
     save(event){
-      if (!this.saveBtn){
+      if (!this.transBtn){
         alert("请先确定转案人员");
         return;
       } else {
@@ -206,10 +196,12 @@ export default {
                 //console.log(response)
                 if (response.success) {
                   this.transworker = [];
+                  this.transBtn = false;
+                  this.$refs.expandMenuList.setCheckedKeys([]);
                   //this.isDisable = true;
                   this.$message({
-                  type: 'success',
-                  message: '转案成功!'
+                    type: 'success',
+                    message: '转案成功!'
                   })
                 }else {
                   this.$message({
@@ -235,9 +227,9 @@ export default {
           this.defaultExpandKeys.push(a.id)
         })
       })
-      getTransWorkerList(this.transtemp).then(response => {
-        this.workerlist = response.workerlist
-      })
+      // getTransWorkerList(this.transtemp).then(response => {
+      //   this.workerlist = response.workerlist
+      // })
       this.isLoadingTree = true
     },
   }
