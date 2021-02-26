@@ -38,6 +38,10 @@
       <el-table-column prop="dep2" label="处室">
       </el-table-column>
       <el-table-column prop="type" label="权限">
+        <template slot-scope="{row}">
+          <span>{{ row.type == 1 ? '用户' :   row.type == 2 ?  '裁决组长' : '管理员'}}</span>
+          <!-- <router-link to="">{{ row.id }}</router-link> -->
+        </template>
       </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
@@ -58,7 +62,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="登录名称" prop="loginname"  >
-              <el-input v-model="temp.loginname" placeholder="登录名称"/>
+
+              <el-input v-model="temp.loginname" placeholder="登录名称" :disabled=" this.dialogStatus==='update'"/>
             </el-form-item>
           </el-col>
           <el-col :span="12" >
@@ -90,32 +95,36 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="A角，B角">
-              <el-select  v-model="temp.classlevel" class="filter-item" placeholder="角色">
+            <el-form-item label="A、B、C角">
+              <el-select  style="width: 100%" v-model="temp.classlevel" class="filter-item" placeholder="角色">
                 <el-option value="A" >A</el-option>
                 <el-option value="B" >B</el-option>
-                <el-option value="导师" >导师</el-option>
-                <el-option value="专家" >专家</el-option>
+                <el-option value="C" >C（标识为室主任或裁决组长，才选择为C）</el-option>
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="是否在岗">
               <el-radio v-model="temp.isOnline" label="1" >在岗</el-radio>
-              <el-radio v-model="temp.isOnline" label="2" >不在岗</el-radio>
+              <el-radio v-model="temp.isOnline" label="0" >不在岗</el-radio>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+        </el-row>
+        <el-row>
+          <el-col :span="18">
             <el-form-item label="权限">
-              <el-radio v-model="temp.type" label="admin" >管理员</el-radio>
-              <el-radio v-model="temp.type" label="user" >用户</el-radio>
+              <el-radio v-model="temp.type" label="3" >管理员</el-radio>
+              <el-radio v-model="temp.type" label="2" >裁决组长</el-radio>
+              <el-radio v-model="temp.type" label="1" >用户</el-radio>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="个人邮箱" prop="email" >
-              <el-input v-model="temp.email"  placeholder="邮箱" >
+              <el-input v-model="temp.email"  placeholder="邮箱"  :disabled=" this.dialogStatus==='update'">
                 <template slot="append">@cnipa.gov.cn</template>
               </el-input>
             </el-form-item>
@@ -142,13 +151,20 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="裁决组长" prop="adjudicator" >
+              <el-input v-model="temp.adjudicator" placeholder="请输入裁决组长登录编号" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
-          Cancel
+          取消
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
+          提交
         </el-button>
       </div>
     </el-dialog>
@@ -157,7 +173,7 @@
 <script>
 import Pagination from '@/components/Pagination'
 import waves from '@/directive/waves'
-import { userList, createUserinfo, checkRepeatLoginName, getUserInfoByLoginName, deleteUserByLoginname, departmentRotation } from '@/api/user'
+import { userList, createUserinfo, checkRepeatLoginName, getUserInfoByLoginName, deleteUserByLoginname, departmentRotation, updateUserInfo, checkUserInfoEmail } from '@/api/user'
 export default {
   components: { Pagination },
   directives: { waves },
@@ -166,13 +182,30 @@ export default {
       if (!value) {
         return callback(new Error('登录账户不可为空'))
       }
-      checkRepeatLoginName(value).then(response => {
-        if (!response.queryResult.map.flag) {
-          callback('登录账户已存在')
-        } else {
-          callback()
-        }
-      })
+      if (this.dialogStatus==='create' ){
+        checkRepeatLoginName(value).then(response => {
+          if (!response.queryResult.map.flag) {
+            callback('登录账户已存在')
+          } else {
+            callback()
+          }
+        })
+      } else {
+        callback()
+      }
+    }
+    var checkEmail = (rule, value, callback) =>{
+      if (this.dialogStatus==='create') {
+        checkUserInfoEmail(value).then( response =>{
+          if (!response.success) {
+            callback('邮箱地址已存在')
+          }else{
+            callback()
+          }
+        })
+      }else{
+        callback()
+      }
     }
     return {
       listLoading: false,
@@ -207,7 +240,8 @@ export default {
         fields: undefined,
         last_time: undefined,
         last_ipc: undefined,
-        isOnline: '1'
+        isOnline: '1',
+        adjudicator: undefined
       },
       dialogStatus: '',
       dep1s: [{
@@ -227,7 +261,7 @@ export default {
         loginname: [{ required: true, trigger: 'blur', validator: checkLoginName }],
         name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
         password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
-        email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
+        email: [{ required: true, trigger: 'blur', validator: checkEmail }],
         areaname: [{ required: true, message: '领域名称不能为空', trigger: 'blur' }],
         fields: [{ required: true, message: '领域不能为空', trigger: 'blur' }],
         ipcs: [{ required: true, message: 'ipcs不能为空', trigger: 'blur' }]
@@ -359,6 +393,7 @@ export default {
         if (valid) {
           createUserinfo(this.temp).then(() => {
             this.dialogFormVisible = false
+            this.getList()
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -385,8 +420,23 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          updateUserInfo(this.temp).then( response =>{
+            if ( response.success){
+              this.dialogFormVisible = false
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
+              })
+            } else {
+              this.$notify.error({
+                title: '失败',
+                message: '修改失败'
+              })
+            }
+          })
         }
       })
     },

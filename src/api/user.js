@@ -38,6 +38,14 @@ export function createUserinfo(data) {
   })
 }
 
+export function updateUserInfo(data) {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/user/updateUserInfo/',
+    method: 'post',
+    data: data
+  })
+}
+
 export function checkRepeatLoginName(date) {
   return request({
     url: process.env.VUE_APP_BASE_API + '/user/checkLoginName',
@@ -70,5 +78,13 @@ export function departmentRotation(data) {
   return request({
     url: process.env.VUE_APP_BASE_API + '/user/departmentRotation/' + ymlName + '/' + data,
     method: 'get'
+  })
+}
+
+
+export function checkUserInfoEmail(email) {
+  return request({
+    url:  process.env.VUE_APP_BASE_API + '/user/chenckUserEmail/'+email,
+    method: 'post'
   })
 }

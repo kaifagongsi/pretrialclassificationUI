@@ -316,7 +316,7 @@ export const asyncRoutes = [
           title: '人员列表',
           roles: ['admin']
         }
-      },
+      }/*,
       {
         path: 'postList',
         component: () => import('@/views/personnel-management/postIndex'),
@@ -325,7 +325,7 @@ export const asyncRoutes = [
           title: '岗位列表',
           roles: ['admin']
         }
-      }
+      }*/
     ]
   },
   {
