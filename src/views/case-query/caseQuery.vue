@@ -53,6 +53,7 @@
         <el-table
           v-loading="listLoading"
           :data="list"
+          :row-key="getRowKey"
           border
           fit
           highlight-current-row
@@ -60,6 +61,7 @@
         >
           <el-table-column
             type="selection"
+            :reserve-selection="true"
             width="55"
           />
           <el-table-column label="预审申请号" prop="id" align="center" width="200">
@@ -391,6 +393,10 @@ export default {
     this.getList()
   },
   methods: {
+    // 指定一个key标识一行的数据
+    getRowKey (row) {
+      return row.id
+    },
     changeTab: function(tab, event) {
       this.search.state = this.activeName
       console.log(this.search.state)
