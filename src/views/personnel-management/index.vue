@@ -57,7 +57,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" top="7vh">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px" style="width: 75%; margin-left:50px;">
         <el-row>
           <el-col :span="12">
@@ -312,21 +312,15 @@ export default {
       }, {
         value: '五室',
         label: '五室'
-      }, {
-        value: '专家',
-        label: '专家'
-      }, {
-        value: '导师',
-        label: '导师'
       }]
     }
   },
   watch: {
     'temp.dep1': {
       handler(newValue, oldValue) {
-        if (newValue === 'JG') {
+        if (newValue === 'JG' || newValue === '数据加工部') {
           this.dep2s = this.dep2JG
-        } else if (newValue === 'FL') {
+        } else if (newValue === 'FL' || newValue === '分类审查部') {
           this.dep2s = this.dep2FL
         } else {
           this.dep2s = null
@@ -335,9 +329,9 @@ export default {
     },
     'listQuery.dep1': {
       handler(newValue, oldValue) {
-        if (newValue === 'JG') {
+        if (newValue === 'JG' || newValue === '数据加工部' ) {
           this.dep2s = this.dep2JG
-        } else if (newValue === 'FL') {
+        } else if (newValue === 'FL' || newValue === '分类审查部') {
           this.dep2s = this.dep2FL
         } else {
           this.dep2s = null
