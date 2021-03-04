@@ -208,10 +208,18 @@ export default {
                     message: '转案成功!'
                   })
                 }else {
-                  this.$message({
-                    type: 'error',
-                    message: response.message,
+                  if (response.code === 30006) { //重复转案
+                      // console.log(response.queryResult.map.name)
+                      this.$message({
+                        type: 'warning',
+                        message: response.queryResult.map.name + '存在重复转案,请重新选择!'
+                      })
+                  } else{
+                      this.$message({
+                      type: 'error',
+                      message: response.message
                   });
+                  }
                 }
 
               });
