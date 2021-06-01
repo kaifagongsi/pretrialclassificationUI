@@ -12,6 +12,9 @@ import App from './App'
 import store from './store'
 import router from './router'
 
+import Blob from  './excel/Blob'
+import Export2Excel from './excel/Export2Excel'
+
 import './icons' // icon
 import './permission' // permission control
 import './utils/error-log' // error log

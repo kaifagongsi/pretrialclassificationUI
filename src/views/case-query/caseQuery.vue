@@ -49,10 +49,11 @@
             <tab-pane v-if="activeName==item.key" :type="item.key" @create="showCreatedTimes" />
           </keep-alive> -->
         </el-tab-pane>
-        <div id="table">
+        <!--<div id="table"> -->
         <el-table
           v-loading="listLoading"
           :data="list"
+          @selection-change="handleSelectionChange"
           :row-key="getRowKey"
           border
           fit
@@ -97,7 +98,7 @@
           </el-table-column>
           <el-table-column label="预审申请日" width="180px" align="center">
             <template slot-scope="{row}">
-              <span>{{ row.jinantime | parseTime('{y}{m}{d}') }}</span>
+              <span id="jinan">{{ row.jinantime | parseTime('{y}{m}{d}') }}</span>
             </template>
           </el-table-column>
           <el-table-column label="分类号" min-width="180px" align="center">
@@ -138,7 +139,7 @@
             </template>
           </el-table-column>
         </el-table>
-        </div>
+        <!--</div> -->
         <pagination v-show="total>0" :total="total" :page.sync="search.page" :limit.sync="search.limit" @pagination="getList" />
         <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="75%">
           <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px" style="margin-left:50px;">
@@ -305,8 +306,7 @@ import { findAllCase, findClassInfoByID } from '@/api/case-query'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import XLSX from 'xlsx'
-import FileSaver from 'file-saver'
+
 export default {
   name: 'Tab',
   components: { Pagination },
@@ -323,6 +323,8 @@ export default {
       searchInfo: {
         id: ''
       },
+      multipleSelection: [],
+      excelData:'',
       createdTimes: 0,
       list: null,
       classInfoList: null,
@@ -430,9 +432,9 @@ export default {
     },
     getList() { // 获取table表格数据
       this.listLoading = true
-      //console.log(this.search)
+      // console.log(this.search)
       findAllCase(this.search).then(response => {
-        //console.log(response)
+        // console.log(response)
         // 返回的list
         this.list = response.data.items
         console.log(this.list)
@@ -446,33 +448,70 @@ export default {
       this.search.page = 1
       this.getList()
     },
-    //导出table数据到Excel
-    exportToExcel(){
-      debugger
-      if('admin' != this.$store.state.user.roles){
+    //操作多选
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    exportToExcel() {
+      if ('admin' != this.$store.state.user.roles){
         this.$alert('您当前没有该权限', '提示', {
           confirmButtonText: '确定'
-        });
+        })
         return
       }
-      if(this.activeName != '2'){
+      if (this.activeName != '2'){
         this.$alert('仅限制已出案案件导出', '提示', {
           confirmButtonText: '确定'
-        });
+        })
         return
       }
-      let xlsxParam = {raw:true};
-      let table = document.getElementById('table');
-      let worksheet = XLSX.utils.table_to_sheet(table,xlsxParam);
-      let workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet');
-      //let workbook = XLSX.utils.table_to_book(document.getElementById('table'))
-      try{
-        XLSX.writeFile(workbook, 'bhzx.xlsx');
-      } catch(e){
-        console.log(e,workbook);
-      }
+      this.excelData = this.multipleSelection
+      this.excelData.forEach(element => {
+        element.jinantime = parseTime(element.jinantime,'{y}{m}{d}')
+      });
+      //console.log(this.excelData)
+      var that = this;
+      require.ensure([], () => {
+        const {
+          export_json_to_excel
+        } = require("../../excel/Export2Excel")
+        const tHeader = ["预审申请号","申请主体","发明名称","发明类型","所属保护中心","预审申请日","分类号","CCI","CCA","C-Sets","主分类员","副分类员"]; // excel文档第一行显示的标题
+        const filterVal = ["id","sqr","mingcheng","type","oraginization","jinantime","ipci","cci","csets","mainworker","assworker"];
+        const list = that.excelData;
+        const data = this.formatJson(filterVal,list);
+        export_json_to_excel(tHeader,data,"bhzx");
+      })
+    },
+    formatJson(filterVal,jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
     }
+    // 导出table数据到Excel
+    // exportToExcel(){
+    //   debugger
+    //   if('admin' != this.$store.state.user.roles){
+    //     this.$alert('您当前没有该权限', '提示', {
+    //       confirmButtonText: '确定'
+    //     });
+    //     return
+    //   }
+    //   if(this.activeName != '2'){
+    //     this.$alert('仅限制已出案案件导出', '提示', {
+    //       confirmButtonText: '确定'
+    //     });
+    //     return
+    //   }
+    //   let xlsxParam = {raw:true};
+    //   let table = document.getElementById('table');
+    //   let worksheet = XLSX.utils.table_to_sheet(table,xlsxParam);
+    //   let workbook = XLSX.utils.book_new();
+    //   XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet');
+    //   //let workbook = XLSX.utils.table_to_book(document.getElementById('table'))
+    //   try{
+    //     XLSX.writeFile(workbook, 'bhzx.xlsx');
+    //   } catch(e){
+    //     console.log(e,workbook);
+    //   }
+    // }
   }
 }
 </script>
