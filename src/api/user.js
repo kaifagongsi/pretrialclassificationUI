@@ -88,3 +88,32 @@ export function checkUserInfoEmail(email) {
     method: 'post'
   })
 }
+
+/**
+ *  初始化部门
+ */
+export  function getInitDep1s() {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/user/getInitDep1s',
+    method: 'get'
+  })
+}
+
+/**
+ *  根据部门获取处室
+ */
+export function getDep2sByDep1(dep1) {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/user/getInitDep2sByDep1/' + dep1,
+    method: 'get'
+  })
+}
+
+
+export function getUserOnLine() {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/user/getUserOnLine',
+    method: 'get'
+  })
+
+}
