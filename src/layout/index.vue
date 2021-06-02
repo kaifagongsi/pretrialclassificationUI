@@ -20,7 +20,7 @@
 import { AppMain, Navbar, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
-import { getToken, removeToken, getHeader } from '@/utils/auth'
+import { getToken, removeToken, getHeader, setToken } from '@/utils/auth'
 export default {
   name: 'Layout',
   components: {
@@ -28,6 +28,10 @@ export default {
     Navbar,
     Sidebar,
     TagsView
+  },
+  data:{
+    _beforeUnload_time : '',
+    _gap_time: ''
   },
   mixins: [ResizeMixin],
   computed: {
@@ -63,40 +67,11 @@ export default {
       this._beforeUnload_time=new Date().getTime();
     },
      unloadHandler(e){
-
-
-      this._gap_time=new Date().getTime()-this._beforeUnload_time;
       debugger
+      this._gap_time=new Date().getTime()-this._beforeUnload_time;
       //判断是窗口关闭还是刷新
       if(this._gap_time<=5) {
         //如果是登录状态，关闭窗口前，移除用户
-        /*if(!this.showLoginButton){
-
-        }*/
-        console.log("----------------------------------------")
-        console.log( process.env.VUE_APP_BASE_API + '/auth/logout')
-        /*$.ajax({
-          url: process.env.VUE_APP_BASE_API + '/auth/logout',
-          type: 'post',
-          async: false, //或false,是否异步
-          beforeSend:function(){
-            commit('SET_TOKEN', '')
-            commit('SET_ROLES', [])
-            removeToken()
-            resetRouter()
-            dispatch('tagsView/delAllViews', null, {root: true})
-            resolve()
-          },
-          success:function(dt){
-            console.log("success-----------------------")
-            //  console.log(dt)
-          },
-
-          error:function(dt){
-            console.log("error-----------------------")
-          }
-        })*/
-        console.log(getToken())
         // 重要提示：此处的的请求一定是要同步的，axios在此处不可用，已经踩过坑了。直接使用原生js发请求。
         // 根据你的实际情况写请求地址，为了防止跨域此处使用了拼串，请你根据你的情况自定义。
         let url = process.env.VUE_APP_BASE_API + '/auth/logout';
@@ -107,10 +82,11 @@ export default {
         xhr.setRequestHeader("Authorization", getToken())
         // 请求发送的数据，数据太多可以放在变量中。请你根据你的情况自定义
         xhr.send();
-        commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
+        /*commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])*/
+        setToken('SET_TOKEN', '')
         removeToken()
-        resetRouter()
+        // resetRouter()
       }
     }
   }
