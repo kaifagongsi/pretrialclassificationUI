@@ -95,12 +95,13 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="A、B、C、Z角">
+            <el-form-item label="A、B、C、Y、Z角">
               <el-select  style="width: 100%" v-model="temp.classlevel" class="filter-item" placeholder="角色">
                 <el-option value="A" >A</el-option>
                 <el-option value="B" >B</el-option>
                 <el-option value="C" >C</el-option>
-                <el-option value="Z" >Z（标识为室主任或裁决组长，才选择为Z）</el-option>
+                <el-option value="Y" >Y(标识为裁决组长，并且会被分配到案子)</el-option>
+                <el-option value="Z" >Z（标识为室主任或裁决组长，并且不会被分配到案子）</el-option>
               </el-select>
             </el-form-item>
           </el-col>
