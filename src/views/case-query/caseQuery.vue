@@ -476,7 +476,7 @@ export default {
           export_json_to_excel
         } = require("../../excel/Export2Excel")
         const tHeader = ["预审申请号","申请主体","发明名称","发明类型","所属保护中心","预审申请日","分类号","CCI","CCA","C-Sets","主分类员","副分类员"]; // excel文档第一行显示的标题
-        const filterVal = ["id","sqr","mingcheng","type","oraginization","jinantime","ipci","cci","csets","mainworker","assworker"];
+        const filterVal = ["id","sqr","mingcheng","type","oraginization","jinantime","ipci","cci","cca","csets","mainworker","assworker"];
         const list = that.excelData;
         const data = this.formatJson(filterVal,list);
         export_json_to_excel(tHeader,data,"bhzx");
