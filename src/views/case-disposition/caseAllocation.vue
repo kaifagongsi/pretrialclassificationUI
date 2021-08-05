@@ -136,7 +136,7 @@
 </template>
 
 <script>
-import { findMainByState, findUserInfo, updateWorker, sendEmail } from '@/api/case-disposition'
+import { findMainByState, findUserInfo, updateWorker, sendEmail, getInitDep1s, getDep2sByDep1 } from '@/api/case-disposition'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -173,18 +173,22 @@ export default {
   watch: {
     'listQuery.dep1': {
       handler(newValue, oldValue) {
-        if (newValue === '数据加工部') {
-          this.dep2s = this.dep2JG
-        } else if (newValue === '分类审查部') {
-          this.dep2s = this.dep2FL
-        } else {
-          this.dep2s = null
+        debugger
+        if(newValue != null && newValue != ''){
+          this.dep2s = []
+          this.listQuery.dep2 = ''
+          getDep2sByDep1(newValue).then(response =>{
+            let arr =  response.queryResult.list
+            for(let i = 0; i < arr.length; i++) {
+              this.dep2s.push({value: arr[i],label: arr[i]})
+            }
+          })
         }
       }
     },
     'listQuery.dep2': {
       handler(newValue, oldValue) {
-        if (newValue !== oldValue) {
+        if (newValue !== oldValue && newValue!= null && newValue!='') {
           // 触发查询函数
           this.searchFunc(this.listQuery)
         }
@@ -239,61 +243,9 @@ export default {
         dep2: '',
         person: ''
       },*/
-      dep1s: [{
-        value: 'FL',
-        label: '分类审查部'
-      }, {
-        value: 'JG',
-        label: '数据加工部'
-      }],
+      dep1s: [],
       dep2s: undefined,
-      dep2JG: [{
-        value: '一室',
-        label: '一室'
-      }, {
-        value: '二室',
-        label: '二室'
-      }, {
-        value: '三室',
-        label: '三室'
-      }, {
-        value: '四室',
-        label: '四室'
-      }, {
-        value: '五室',
-        label: '五室'
-      }, {
-        value: '六室',
-        label: '六室'
-      }, {
-        value: '七室',
-        label: '七室'
-      }, {
-        value: '八室',
-        label: '八室'
-      }, {
-        value: '九室',
-        label: '九室'
-      }, {
-        value: '十室',
-        label: '十室'
-      }],
-      dep2FL: [{
-        value: '一室',
-        label: '一室'
-      }, {
-        value: '二室',
-        label: '二室'
-      }, {
-        value: '三室',
-        label: '三室'
-      }, {
-        value: '四室',
-        label: '四室'
-      }, {
-        value: '五室',
-        label: '五室'
-      }]
+      dep2JG: []
     }
   },
   created() {
@@ -302,6 +254,7 @@ export default {
   mounted() {
     //console.log(api);
     this.initExpand()
+    this.initdep()
   },
   methods: {
     searchFunc() {
@@ -316,6 +269,14 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+    },
+    initdep() {
+      getInitDep1s().then(response => {
+        let arr =  response.queryResult.list
+        for(let i = 0; i < arr.length; i++) {
+          this.dep1s.push({value: arr[i],label: arr[i]})
+        }
+      })
     },
     initExpand() { // 加载tree
       findUserInfo().then(response => {

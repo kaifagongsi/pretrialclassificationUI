@@ -221,19 +221,7 @@ export default {
       },
       userList: undefined,
       departmentRotation: undefined,
-      departmentRotations: [{
-        value: '一',
-        label: '一部'
-      }, {
-        value: '二',
-        label: '二部'
-      }, {
-        value: '三',
-        label: '三部'
-      }, {
-        value: '四',
-        label: '四部'
-      }],
+      departmentRotations: [],
       temp: {
         loginname: undefined,
         name: undefined,
@@ -285,6 +273,7 @@ export default {
               }
             })
           } else if( newValue != oldValue){
+            debugger
             this.temp.dep2 = ''
             this.dep2s = []
             getDep2sByDep1(newValue).then(response =>{
@@ -294,10 +283,7 @@ export default {
                 this.dep2s.push({value: arr[i],label: arr[i]})
               }
             })
-          }else{
-
           }
-
         }
       }
     },
@@ -312,15 +298,7 @@ export default {
               this.dep2s.push({value: arr[i],label: arr[i]})
             }
           })
-
         }
-       /* if (newValue === 'JG' || newValue === '数据加工部' ) {
-          this.dep2s = this.dep2JG
-        } else if (newValue === 'FL' || newValue === '分类审查部') {
-          this.dep2s = this.dep2FL
-        } else {
-          this.dep2s = null
-        }*/
       }
     }
   },
@@ -332,22 +310,10 @@ export default {
   methods: {
     initDep1s() {
       getInitDep1s().then(response => {
-        /*for(let item of) {
-          debugger
-          console.log(this.dep1s)
-          this.dep1s.push({value: item,label: item})
-        }*/
         let arr =  response.queryResult.list
         for(let i = 0; i < arr.length; i++) {
           this.dep1s.push({value: arr[i],label: arr[i]})
         }
-       /* response.queryResult.list.forEach(function(item, index) {
-          //item 就是当日按循环到的对象
-          //index是循环的索引，从0开始
-          debugger
-          console.log(this.dep1s)
-          this.dep1s.push(item,index)
-        })*/
       })
     },
     handleSearch() {
@@ -456,6 +422,11 @@ export default {
               message: '删除成功!'
             })
             this.getList()
+          }else{
+            this.$message({
+              type: 'error',
+              message: response.message
+            })
           }
         }).catch(() => {
           this.$message({
