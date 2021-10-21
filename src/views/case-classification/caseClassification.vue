@@ -74,7 +74,7 @@
               <a
                 v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.pdfPath"
                 target="_blank"
-                class="buttonText"
+                class="link-type"
               >{{row.id}}</a>
               <!-- <router-link to="">{{ row.id }}</router-link> -->
             </template>
@@ -96,7 +96,7 @@
           </el-table-column>
           <el-table-column label="类型" min-width="50px" align="center">
             <template slot-scope="{row}">
-              <span class="link-type">{{ row.type== 'FM' ? '发明' : '新型' }}</span>
+              <span>{{ row.type== 'FM' ? '发明' : '新型' }}</span>
             </template>
           </el-table-column>
           <el-table-column label="粗分号" width="100px" align="center">

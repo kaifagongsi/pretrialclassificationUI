@@ -54,7 +54,7 @@
       />
       <el-table-column label="ID" prop="id" align="center" width="200">
         <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+          <span class="link-type">{{ row.id }}</span>
         </template>
       </el-table-column>
       <el-table-column label="名称" width="500px" prop="mingcheng" align="center">
@@ -64,7 +64,7 @@
       </el-table-column>
       <el-table-column label="类型" min-width="50px" prop="type" align="center">
         <template slot-scope="{row}">
-          <span class="link-type">{{ row.type=== 'FM' ? '发明' : '新型' }}</span>
+          <span>{{ row.type=== 'FM' ? '发明' : '新型' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="粗分结果" width="200px" prop="simpleclasscode" align="center">

@@ -67,10 +67,10 @@
           />
           <el-table-column label="预审申请号" prop="id" align="center" width="200">
             <template slot-scope="{row}">
-              <a
+              <a 
                 v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.pdfPath"
                 target="_blank"
-                class="buttonText"
+                class="link-type"
               >{{row.id}}</a>
               <!-- <a target="_blank" class="buttonText">{{ row.id }}</a> -->
               <!-- <router-link to="">{{ row.id }}</router-link> -->
@@ -88,7 +88,7 @@
           </el-table-column>
           <el-table-column label="发明类型" max-width="50px" align="center">
             <template slot-scope="{row}">
-              <span class="link-type">{{ row.type== 'FM' ? '发明' : '新型' }}</span>
+              <span>{{ row.type== 'FM' ? '发明' : '新型' }}</span>
             </template>
           </el-table-column>
           <el-table-column label="所属保护中心" width="110px" align="center">
