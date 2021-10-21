@@ -25,3 +25,26 @@ export function findUpdateInfoByID(query) {
     params: query
   })
 }
+
+export function exportToExcel(query) {
+  return request({
+    url: '/caseQuery/caseConditionQuery/exportExcel',
+    method: 'post',
+    params: {
+      list: query
+    },
+    responseType: 'blob',
+    headers: {      
+    }
+  })
+}
+
+export function caseExportFinish(query) {
+  return request({
+    url: '/caseQuery/caseConditionQuery/caseExportFinish',
+    method: 'post',
+    params: {
+      list: query
+    }
+  })
+}
