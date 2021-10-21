@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.dep1" placeholder="部门" clearable style="width: 150px" class="filter-item">
+      <el-select v-model="listQuery.dep1" placeholder="部门" clearable style="width: 230px" class="filter-item">
         <el-option v-for="item in dep1s" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-select v-model="listQuery.dep2" placeholder="处室" clearable class="filter-item" style="width: 130px">
+      <el-select v-model="listQuery.dep2" placeholder="处室" clearable class="filter-item" style="width: 180px">
         <el-option v-for="item in dep2s" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <el-select v-model="listQuery.isOnline" placeholder="是否在岗" clearable class="filter-item" style="width: 130px">
@@ -95,11 +95,13 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="A、B、C角">
+            <el-form-item label="A、B、C、Y、Z角">
               <el-select  style="width: 100%" v-model="temp.classlevel" class="filter-item" placeholder="角色">
                 <el-option value="A" >A</el-option>
                 <el-option value="B" >B</el-option>
-                <el-option value="C" >C（标识为室主任或裁决组长，才选择为C）</el-option>
+                <el-option value="C" >C</el-option>
+                <el-option value="Y" >Y(标识为裁决组长，并且会被分配到案子)</el-option>
+                <el-option value="Z" >Z（标识为室主任或裁决组长，并且不会被分配到案子）</el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -173,7 +175,7 @@
 <script>
 import Pagination from '@/components/Pagination'
 import waves from '@/directive/waves'
-import { userList, createUserinfo, checkRepeatLoginName, getUserInfoByLoginName, deleteUserByLoginname, departmentRotation, updateUserInfo, checkUserInfoEmail } from '@/api/user'
+import { userList, createUserinfo, checkRepeatLoginName, getUserInfoByLoginName, deleteUserByLoginname, departmentRotation, updateUserInfo, checkUserInfoEmail, getInitDep1s, getDep2sByDep1 } from '@/api/user'
 export default {
   components: { Pagination },
   directives: { waves },
@@ -219,13 +221,7 @@ export default {
       },
       userList: undefined,
       departmentRotation: undefined,
-      departmentRotations: [{
-        value: 'FL',
-        label: '分类审查部'
-      }, {
-        value: 'JG',
-        label: '数据加工部'
-      }],
+      departmentRotations: [],
       temp: {
         loginname: undefined,
         name: undefined,
@@ -244,14 +240,8 @@ export default {
         adjudicator: undefined
       },
       dialogStatus: '',
-      dep1s: [{
-        value: 'FL',
-        label: '分类审查部'
-      }, {
-        value: 'JG',
-        label: '数据加工部'
-      }],
-      dep2s: undefined,
+      dep1s: [],
+      dep2s: [],
       dialogFormVisible: false,
       textMap: {
         update: '编辑用户',
@@ -265,84 +255,67 @@ export default {
         areaname: [{ required: true, message: '领域名称不能为空', trigger: 'blur' }],
         fields: [{ required: true, message: '领域不能为空', trigger: 'blur' }],
         ipcs: [{ required: true, message: 'ipcs不能为空', trigger: 'blur' }]
-      },
-      dep2JG: [{
-        value: '一室',
-        label: '一室'
-      }, {
-        value: '二室',
-        label: '二室'
-      }, {
-        value: '三室',
-        label: '三室'
-      }, {
-        value: '四室',
-        label: '四室'
-      }, {
-        value: '五室',
-        label: '五室'
-      }, {
-        value: '六室',
-        label: '六室'
-      }, {
-        value: '七室',
-        label: '七室'
-      }, {
-        value: '八室',
-        label: '八室'
-      }, {
-        value: '九室',
-        label: '九室'
-      }, {
-        value: '十室',
-        label: '十室'
-      }],
-      dep2FL: [{
-        value: '一室',
-        label: '一室'
-      }, {
-        value: '二室',
-        label: '二室'
-      }, {
-        value: '三室',
-        label: '三室'
-      }, {
-        value: '四室',
-        label: '四室'
-      }, {
-        value: '五室',
-        label: '五室'
-      }]
+      }
     }
   },
   watch: {
     'temp.dep1': {
       handler(newValue, oldValue) {
-        if (newValue === 'JG' || newValue === '数据加工部') {
-          this.dep2s = this.dep2JG
-        } else if (newValue === 'FL' || newValue === '分类审查部') {
-          this.dep2s = this.dep2FL
-        } else {
-          this.dep2s = null
+        debugger
+        if(newValue != null && newValue != ''  ){
+          if(oldValue == '' ){
+            this.dep2s = []
+            getDep2sByDep1(newValue).then(response =>{
+              debugger
+              let arr =  response.queryResult.list
+              for(let i = 0; i < arr.length; i++) {
+                this.dep2s.push({value: arr[i],label: arr[i]})
+              }
+            })
+          } else if( newValue != oldValue){
+            debugger
+            this.temp.dep2 = ''
+            this.dep2s = []
+            getDep2sByDep1(newValue).then(response =>{
+              debugger
+              let arr =  response.queryResult.list
+              for(let i = 0; i < arr.length; i++) {
+                this.dep2s.push({value: arr[i],label: arr[i]})
+              }
+            })
+          }
         }
       }
     },
     'listQuery.dep1': {
       handler(newValue, oldValue) {
-        if (newValue === 'JG' || newValue === '数据加工部' ) {
-          this.dep2s = this.dep2JG
-        } else if (newValue === 'FL' || newValue === '分类审查部') {
-          this.dep2s = this.dep2FL
-        } else {
-          this.dep2s = null
+        if(newValue != null && newValue != ''){
+          this.dep2s = []
+          this.listQuery.dep2 = ''
+          getDep2sByDep1(newValue).then(response =>{
+            let arr =  response.queryResult.list
+            for(let i = 0; i < arr.length; i++) {
+              this.dep2s.push({value: arr[i],label: arr[i]})
+            }
+          })
         }
       }
     }
   },
   created() {
     this.getList()
+    this.initDep1s()
   },
+
   methods: {
+    initDep1s() {
+      getInitDep1s().then(response => {
+        let arr =  response.queryResult.list
+        for(let i = 0; i < arr.length; i++) {
+          this.dep1s.push({value: arr[i],label: arr[i]})
+        }
+      })
+    },
     handleSearch() {
       this.listQuery.page = 1
       this.getList()
@@ -350,11 +323,11 @@ export default {
     getList() {
       this.listLoading = true
       userList(this.listQuery).then(response => {
-        console.log(response)
         this.userList = response.queryResult.map.items
         this.total = response.queryResult.map.total
         this.listLoading = false
       })
+
     },
     handleCreate() {
       this.resetTemp()
@@ -363,6 +336,7 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+
     },
     resetTemp() {
       this.temp = {
@@ -399,6 +373,7 @@ export default {
       })
     },
     handleUpdate(row) {
+      this.resetTemp()
       // 1.获取当前用户的详细信息
       getUserInfoByLoginName(row.loginname).then(response => {
         // 2.设置到临时变量上
@@ -447,6 +422,11 @@ export default {
               message: '删除成功!'
             })
             this.getList()
+          }else{
+            this.$message({
+              type: 'error',
+              message: response.message
+            })
           }
         }).catch(() => {
           this.$message({

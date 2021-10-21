@@ -623,6 +623,7 @@ export default {
     },
   },
   created() {
+    debugger
     // init the default selected tab
     const tab = this.$route.query.tab;
     if (tab) {
