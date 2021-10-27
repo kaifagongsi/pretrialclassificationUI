@@ -30,12 +30,12 @@ export default {
     },
     limit: {
       type: Number,
-      default: 10
+      default: 100
     },
     pageSizes: {
       type: Array,
       default() {
-        return [10, 30, 40, 50, 70, 100]
+        return [100, 200, 300, 400, 500]
       }
     },
     layout: {

@@ -237,7 +237,6 @@ export default {
         this.setTree = response.treelist
         this.setTree.map(a => {
           this.defaultExpandKeys.push(a.id)
-          //console.log(a.id + a.name)
           //设置父节点禁用
           this.$set(a,"disabled",true)
         })

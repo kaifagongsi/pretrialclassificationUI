@@ -334,7 +334,7 @@ export default {
       listLoading: true,
       search: {
         page: 1,
-        limit: 10,
+        limit: 100,
         state: this.$route.query.tab,
         id: '',
         mingcheng: '',
@@ -439,7 +439,7 @@ export default {
         // console.log(response)
         // 返回的list
         this.list = response.data.items
-        console.log(this.list)
+        //console.log(this.list)
         this.total = response.data.total
         setTimeout(() => {
           this.listLoading = false
