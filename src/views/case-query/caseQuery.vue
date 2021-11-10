@@ -36,7 +36,7 @@
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">
                 Search
               </el-button>
-              <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportExcel()">
+              <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToExcel()">
                 导出
               </el-button>
             </el-col>
@@ -67,10 +67,10 @@
           />
           <el-table-column label="预审申请号" prop="id" align="center" width="200">
             <template slot-scope="{row}">
-              <a 
+              <a
                 v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.pdfPath"
                 target="_blank"
-                class="link-type"
+                class="buttonText"
               >{{row.id}}</a>
               <!-- <a target="_blank" class="buttonText">{{ row.id }}</a> -->
               <!-- <router-link to="">{{ row.id }}</router-link> -->
@@ -88,12 +88,17 @@
           </el-table-column>
           <el-table-column label="发明类型" max-width="50px" align="center">
             <template slot-scope="{row}">
-              <span>{{ row.type== 'FM' ? '发明' : '新型' }}</span>
+              <span class="link-type">{{ row.type== 'FM' ? '发明' : '新型' }}</span>
             </template>
           </el-table-column>
           <el-table-column label="所属保护中心" width="110px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.oraginization }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="粗分号" width="110px" align="center">
+            <template slot-scope="{row}">
+              <span>{{ row.simpleclasscode }}</span>
             </template>
           </el-table-column>
           <el-table-column label="预审申请日" width="180px" align="center">
@@ -302,7 +307,7 @@
 </template>
 
 <script>
-import { findAllCase, findClassInfoByID, exportToExcel,caseExportFinish } from '@/api/case-query'
+import { findAllCase, findClassInfoByID } from '@/api/case-query'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -324,9 +329,7 @@ export default {
         id: ''
       },
       multipleSelection: [],
-      exportID: [],
       excelData:'',
-      downloadLoading: true,
       createdTimes: 0,
       list: null,
       classInfoList: null,
@@ -439,7 +442,7 @@ export default {
         // console.log(response)
         // 返回的list
         this.list = response.data.items
-        //console.log(this.list)
+        console.log(this.list)
         this.total = response.data.total
         setTimeout(() => {
           this.listLoading = false
@@ -452,23 +455,9 @@ export default {
     },
     //操作多选
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      this.multipleSelection = val;
     },
-
-    //文件导出
-    downloadFile(data) {
-      if (!data) {
-        return
-      }
-      let url = window.URL.createObjectURL(new Blob([data]));
-      let link = document.createElement('a');
-      link.style.display = 'none';
-      link.href = url;
-      link.setAttribute('download','bhzx.xls');
-      document.body.appendChild(link);
-      link.click();
-    },
-    exportExcel() {
+    exportToExcel() {
       if ('admin' != this.$store.state.user.roles){
         this.$alert('您当前没有该权限', '提示', {
           confirmButtonText: '确定'
@@ -476,29 +465,58 @@ export default {
         return
       }
       if (this.activeName != '2'){
-        this.$alert('仅允许已完成案件导出', '提示', {
+        this.$alert('仅限制已出案案件导出', '提示', {
           confirmButtonText: '确定'
         })
         return
       }
-      if (this.multipleSelection === [] || this.multipleSelection.length === 0) {
-        this.$alert('请先选择要导出的案件','提示', {
-          confirmButtonText: '确定'
-        })
-        return
-      }
-      for (var i=0;i<this.multipleSelection.length;i++) {
-        this.exportID.push(this.multipleSelection[i].id)
-      }
-      // this.excelData = this.multipleSelection
-      // console.log(this.exportID)
-      let formData = JSON.stringify(this.exportID)
-      
-      exportToExcel(formData).then((response) => {
-        this.downloadFile(response);
-        this.exportID = [];
+      this.excelData = this.multipleSelection
+      this.excelData.forEach(element => {
+        element.jinantime = parseTime(element.jinantime,'{y}{m}{d}')
+      });
+      //console.log(this.excelData)
+      var that = this;
+      require.ensure([], () => {
+        const {
+          export_json_to_excel
+        } = require("../../excel/Export2Excel")
+        const tHeader = ["预审申请号","申请主体","发明名称","发明类型","所属保护中心","预审申请日","分类号","CCI","CCA","C-Sets","主分类员","副分类员"]; // excel文档第一行显示的标题
+        const filterVal = ["id","sqr","mingcheng","type","oraginization","jinantime","ipci","cci","csets","mainworker","assworker"];
+        const list = that.excelData;
+        const data = this.formatJson(filterVal,list);
+        export_json_to_excel(tHeader,data,"bhzx");
       })
     },
+    formatJson(filterVal,jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    }
+    // 导出table数据到Excel
+    // exportToExcel(){
+    //   debugger
+    //   if('admin' != this.$store.state.user.roles){
+    //     this.$alert('您当前没有该权限', '提示', {
+    //       confirmButtonText: '确定'
+    //     });
+    //     return
+    //   }
+    //   if(this.activeName != '2'){
+    //     this.$alert('仅限制已出案案件导出', '提示', {
+    //       confirmButtonText: '确定'
+    //     });
+    //     return
+    //   }
+    //   let xlsxParam = {raw:true};
+    //   let table = document.getElementById('table');
+    //   let worksheet = XLSX.utils.table_to_sheet(table,xlsxParam);
+    //   let workbook = XLSX.utils.book_new();
+    //   XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet');
+    //   //let workbook = XLSX.utils.table_to_book(document.getElementById('table'))
+    //   try{
+    //     XLSX.writeFile(workbook, 'bhzx.xlsx');
+    //   } catch(e){
+    //     console.log(e,workbook);
+    //   }
+    // }
   }
 }
 </script>
