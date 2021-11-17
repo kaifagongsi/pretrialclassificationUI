@@ -196,7 +196,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 10,
+        limit: 100,
         importance: undefined,
         title: undefined,
         type: undefined,
