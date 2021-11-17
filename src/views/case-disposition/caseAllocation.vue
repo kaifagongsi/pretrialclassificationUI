@@ -106,19 +106,11 @@
           <span style="width: 50px;margin-left: 200px;">{{ temp.worker }}</span> <span style="width: 50px;margin-left: 80px">{{ temp.pdfPath }}</span>
         </div>
         <div>
-          <el-tree
-            v-if="isLoadingTree"
-            ref="expandMenuList"
-            class="expand-tree"
-            :data="setTree"
-            node-key="name"
-            highlight-current
-            :props="defaultProps"
-            :default-expanded-keys="openKeys"
-            :expand-on-click-node="false"
-            center
-            @node-click="handleNodeClick"
-          />
+          <el-tree v-if="isLoadingTree" class="expand-tree" :data="setTree" node-key="name" highlight-current :props="defaultProps"
+                   :default-expanded-keys="openKeys" :expand-on-click-node="false" center @node-click="handleNodeClick"  />
+         <!-- <el-tree v-if="isLoadingTree" class="expand-tree" :data="setTree" node-key="name" highlight-current :props="defaultProps"
+            :default-expanded-keys="openKeys" :expand-on-click-node="false" center @node-click="handleNodeClick" @check-change="handleCheckChange"
+            ref="treeForm" show-checkbox/>-->
         </div>
       </div>
     </el-dialog>
@@ -197,6 +189,7 @@ export default {
   },
   data() {
     return {
+      //checkOne: 0,// 树结构单选
       openKeys: [],
       list: null,
       total: 0,
@@ -283,6 +276,8 @@ export default {
         this.setTree = response.treelist;
         this.setTree.map(a => {
           this.defaultExpandKeys.push(a.id)
+          //设置父节点禁用
+          //this.$set(a,"disabled",true)
         })
       });
       this.isLoadingTree = true
@@ -290,6 +285,19 @@ export default {
     handleNodeClick(d, n, s) { // 点击节点
       this.temp.pdfPath = d.name
     },
+    /*handleCheckChange(data, checked,node){
+      this.checkOne++;
+      if(this.checkOne % 2 == 0){
+        debugger
+          if(checked){
+             this.$refs.treeForm.setCheckedNodes([]);
+            this.$refs.treeForm.setCheckedNodes([data]);
+          }else{
+            this.$refs.treeForm.setCheckedNodes([]);
+          }
+      }
+
+    },*/
     getList() { // 获取table表格数据
       this.listLoading = true;
       findMainByState(this.listQuery).then(response => {
