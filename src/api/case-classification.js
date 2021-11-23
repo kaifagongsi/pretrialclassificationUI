@@ -64,3 +64,14 @@ export function caseTransfer(query) {
     }
   })
 }
+
+export  function  judgeMoreIpcmi(id) {
+  debugger
+  return request({
+    url: '/caseClassification/lastFinishAndMoreIPCMI',
+    method: 'get',
+    params: {
+      id: id
+    }
+  })
+}

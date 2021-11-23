@@ -6,9 +6,11 @@
         <el-form-item>
           <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
           <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
-          <el-select  v-model="search.dept"  filterable   class="filter-item"  placeholder="请选择部门">
-            <el-option value="FL" label="分类部"></el-option>
-            <el-option value="JG" label="加工部"></el-option>
+          <el-select  v-model="search.dept1"  filterable   class="filter-item"  placeholder="请选择部门">
+            <el-option v-for="item in dep1s" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+          <el-select  v-model="search.dept2"  filterable   class="filter-item"  placeholder="请选择处室">
+            <el-option v-for="item in dep2s" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">
             查询
@@ -85,15 +87,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="search.page" :limit.sync="search.limit" @pagination="getList" />
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>
+
   </div>
 </template>
 
@@ -103,6 +97,7 @@ import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import api from '@/api/treeApi'
+import { getInitDep1s, getDep2sByDep1 } from  '@/api/user'
 
 const calendarTypeOptions = [
   { key: 'CN', display_name: 'China' },
@@ -145,8 +140,11 @@ export default {
         limit: 100,
         beginTime: '',
         endTime: '',
-        dept:''
+        dept1: undefined,
+        dept2: undefined
       },
+      dep1s: [],
+      dep2s: [],
       calendarTypeOptions,
       temp: {
         id: undefined,
@@ -159,7 +157,6 @@ export default {
       },
       dialogFormVisible: false,
       dialogStatus: '',
-      dialogPvVisible: false,
       pvData: [],
       downloadLoading: false,
       isLoadingTree: false, // 是否加载节点树
@@ -174,12 +171,38 @@ export default {
   },
   created() {
     this.getList()
+    this.initDept()
+  },
+  watch: {
+    'search.dept1': {
+      handler(newValue, oldValue) {
+        if(newValue != null && newValue != ''){
+          debugger
+          this.dep2s = []
+          this.search.dept2 = ''
+          getDep2sByDep1(newValue).then(response =>{
+            let arr =  response.queryResult.list
+            for(let i = 0; i < arr.length; i++) {
+              this.dep2s.push({value: arr[i],label: arr[i]})
+            }
+          })
+        }
+      }
+    }
   },
   mounted() {
     console.log(api)
     this.initExpand()
   },
   methods: {
+    initDept() {
+      getInitDep1s().then(response => {
+        let arr =  response.queryResult.list
+        for(let i = 0; i < arr.length; i++) {
+          this.dep1s.push({value: arr[i],label: arr[i]})
+        }
+      })
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
