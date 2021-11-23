@@ -9,17 +9,6 @@
             Search
           </el-button>-->
           <el-row>
-            <!-- <el-col :span="6">
-              <el-button type="primary" :disabled="modifyBtn" class="filter-item" @click="modifycase();dialogFormVisible =false">
-                分类号更正
-              </el-button>
-              <el-button type="primary" :disabled="transBtn" class="filter-item" @click="transfercase();dialogFormVisible =false">
-                转案
-              </el-button>
-              <el-button type="primary" :disabled="finishsBtn" class="filter-item" @click="finishcase();">
-                出案
-              </el-button>
-            </el-col>-->
             <el-col :span="24" :offset="0">
               <el-date-picker
                 v-model="search.beginTime"
@@ -60,6 +49,14 @@
           :label="item.label"
           :name="item.key"
         ></el-tab-pane>
+
+        <el-button
+          type="primary"
+          size="mini"
+          v-show="oneclickBtn"
+          @click="finishcaseAll(row);"
+          >一键出案</el-button>
+
         <el-table
           v-loading="listLoading"
           :data="list"
@@ -134,6 +131,12 @@
                 :disabled="finishsBtn"
                 @click="finishcase(row);"
               >出案</el-button>
+              <!-- <el-button
+                type="success"
+                size="mini"
+                :disabled="oneclickBtn"
+                @click="finishcaseAll(row);"
+              >一键出案</el-button> -->
             </template>
           </el-table-column>
         </el-table>
