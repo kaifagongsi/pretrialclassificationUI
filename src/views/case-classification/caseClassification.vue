@@ -411,6 +411,7 @@ import {
   finishcase,
   updateClassificationInfo,
   correctCase,
+  judgeMoreIpcmi
 } from "@/api/case-classification";
 import { checkIpcServer, checkIpcCsetsServer } from "@/api/case-arbiter";
 import { findUserInfo, updateWorker } from "@/api/case-disposition";
@@ -753,65 +754,77 @@ export default {
         }, 0.5 * 1000);
       });
     },
-    // 分类号逻辑判断
-    subClassification: function () {
-      if (this.activeName == "3") {
-        this.correctBtn = true;
-      }
-      this.$refs["dataForm"].validate((valid) => {
-        if (valid) {
-          // ipc 与cpc 同在校验
-          if (
-            (this.temp.ipcmi !== null || this.temp.ipcmi !== "") &&
-            (this.temp.ipcoi === null || this.temp.ipcoi === "") &&
-            (this.temp.cci === null || this.temp.cci === "") &&
-            (this.temp.type !== 'XX')
-          ) {
-            // 主分不为空，副分为空，cci 为空
-            this.$confirm("检测到您的cci为空，是否继续保存", "提示", {
-              confirmButtonText: "确定",
-              cancelButtonText: "取消",
-              type: "warning",
-            }).then(() => {
-                // 此处执行保存操作
-                this.saveClassification();
-              })
-              .catch(() => {
-                // 取消操作
-              });
-          } else if (
-            (this.temp.ipcmi === null || this.temp.ipcmi === "") &&
-            (this.temp.ipcoi === null || this.temp.ipcoi === "") &&
-            (this.temp.cci !== null || this.temp.cci !== "")
-          ) {
-            // 主，副分为空，cci不为空
-            this.$confirm(
-              "检测到您的cci不为空，ipcmi/ipcoi为空，是否继续保存",
-              "提示",
-              {
+    // 验证分类号是否正确
+    vaildateClassification(){
+      return new Promise((resolve, reject) => {
+        this.$refs["dataForm"].validate((valid) => {
+          if (valid) {
+            // ipc 与cpc 同在校验
+            if (
+              (this.temp.ipcmi !== null || this.temp.ipcmi !== "") &&
+              (this.temp.ipcoi === null || this.temp.ipcoi === "") &&
+              (this.temp.cci === null || this.temp.cci === "") &&
+              (this.temp.type !== 'XX')
+            ) {
+              // 主分不为空，副分为空，cci 为空
+              this.$confirm("检测到您的cci为空，是否继续保存", "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning",
-              }
-            )
-              .then(() => {
-                // 此处执行出案操作
-                this.saveClassification();
-              })
-              .catch(() => {
-                // 取消操作
+              }).then(() => {
+                // 此处执行保存操作
+                //this.saveClassification();
+                resolve(true);
+              }).catch(() => {
+                  // 取消操作
+                  resolve(false);
+                });
+            } else if (
+              (this.temp.ipcmi === null || this.temp.ipcmi === "") &&
+              (this.temp.ipcoi === null || this.temp.ipcoi === "") &&
+              (this.temp.cci !== null || this.temp.cci !== "")
+            ) {
+              // 主，副分为空，cci不为空
+              this.$confirm("检测到您的cci不为空，ipcmi/ipcoi为空，是否继续保存","提示",
+                {
+                  confirmButtonText: "确定",
+                  cancelButtonText: "取消",
+                  type: "warning",
+                }
+              ).then(() => {
+                  // 此处执行出案操作
+                  //this.saveClassification();
+                  resolve(true);
+              }).catch(() => {
+                  // 取消操作
+                  resolve(false);
               });
+            } else {
+              // 一切正常的情况下
+              //this.saveClassification();
+              resolve(true);
+            }
           } else {
-            // 一切正常的情况下
-            this.saveClassification();
+            this.correctBtn = false;
+            this.$alert('分类号校验不通过','错误',{});
+            console.log("error submit!!");
+            resolve(false);
           }
-        } else {
-          this.correctBtn = false;
-          this.$alert('分类号校验不通过','错误',{});
-          console.log("error submit!!");
-          return false;
-        }
+        });
       });
+    },
+    // 分类号逻辑判断
+    async subClassification () {
+      if (this.activeName == "3") {
+        this.correctBtn = true;
+      }
+      let flag = await this.vaildateClassification();
+      if(flag){
+        //执行保存和更正操作
+        this.saveClassification();
+      }else{
+        //取消操作
+      }
     },
     // 逻辑判断通过后，进行后台保存：保存或更正
     saveClassification: function () {
@@ -821,8 +834,7 @@ export default {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
-        }
-        )
+        })
         .then(() => {
           correctCase(this.temp).then((response) => {
             if (response.success) {
@@ -847,6 +859,12 @@ export default {
           });
         }else {
         //进行保存操作
+        this.doSaveClassificationInfo(1);
+      }
+    },
+    doSaveClassificationInfo(type){
+      debugger
+      if(1 === type){
         updateClassificationInfo(this.temp).then((response) => {
           if (response.success) {
             this.dialogFormVisible = false;
@@ -862,6 +880,16 @@ export default {
               type: "error",
             });
           }
+        });
+      }else{
+        return new Promise((resolve, reject) => {
+          updateClassificationInfo(this.temp).then((response) => {
+            if (response.success) {
+              resolve(true);
+            } else {
+              reject(false);
+            }
+          });
         });
       }
     },
@@ -913,21 +941,105 @@ export default {
         });
       }
     },
-    finishcase(row) {
-      // 出案
-      /* if (this.finishIds == ''){
-        alert('请至少选择一个案件')
-      } else {
-          finishcase(this.finishIds, this.user).then(response => {
-          if(response.success) {
-            alert('出案成功')
-          } else {
-            alert('出案失败')
+    // 判断是否可以正常出案
+    judgeMoreIpcmi(id) {
+      return new Promise((resolve, reject) => {
+        judgeMoreIpcmi(id).then( (response) =>{
+          debugger
+          if(response.success){
+            console.log('没有多余1')
+            resolve(true);
+          }else{
+            console.log('有别人给出主分')
+            this.$confirm('检测到有其他人员给出主分，您也同时填写主分，是否继续出案','提示',{
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(()=>{
+              console.log('坚持出案')
+              resolve(true);
+            }).catch( ()=>{
+              console.log('放弃出案')
+              resolve(false);
+            })
           }
         })
-      } */
-      
-      // this.finishsBtn = true;
+      } )
+    },
+    //现在再写一个async 函数，从而可以使用await 关键字， await 后面放置的就是返回promise对象的一个表达式，所以它后面可以写上 judgeMoreIpcmi 函数的调用
+    async finishcase(row) {
+      if (row.ipcmi === '' || row.ipcmi == undefined) {
+        //正常出案
+        this.dofinishcase(row);
+      } else {
+        debugger
+        //1.验证分类号
+        console.log(1);
+        let vaildateFlag = await this.vaildateClassification();
+        console.log(2);
+        debugger
+        if(vaildateFlag){
+          console.log(3);
+          debugger
+          //2.保存分类号
+          let saveResult = await this.doSaveClassificationInfo(2);
+          console.log(4);
+          if(saveResult){
+            console.log(5);
+            //3.判断可以正常出案
+            //3.1 有主分，自己也写了主分，任然坚持出案或者无主分自己出案
+            let result = await this.judgeMoreIpcmi(row.id);
+            console.log(6);
+            if(result){
+              console.log(7);
+              debugger
+              //坚持出案
+              this.dofinishcase(row);
+
+            }else{
+              this.$message({
+                showClose: true,
+                message: '您已放弃出案，可以重新填写',
+                type: "error",
+              });
+            }
+          }else{
+            this.$message({
+              showClose: true,
+              message: '出案之前，自动保存分类号失败，请稍候重试',
+              type: "error",
+            });
+            this.getList();
+          }
+        }else{
+          //取消操作
+          console.log('验证没通过');
+        }
+      }
+    },
+    dofinishcase(row){
+      this.finishIds = row.id;
+      this.user = row.worker;
+      finishcase(this.finishIds, this.user).then((response) => {
+        if (response.success) {
+          this.$message({
+            message: "出案成功",
+            type: "success",
+          });
+          this.getList();
+        } else {
+          this.$message({
+            showClose: true,
+            message: response.message,
+            type: "error",
+          });
+          this.getList();
+        }
+        this.dialogFormVisible = false;
+      });
+    },
+    /* 旧版本出案
+    finishcase(row) {
       this.finishIds = row.id;
       this.user = row.worker;
       finishcase(this.finishIds, this.user).then((response) => {
@@ -947,7 +1059,7 @@ export default {
           this.getList();
         }
       });
-    },
+    },*/
     handleFilter() {
       this.search.page = 1;
       this.getList();
