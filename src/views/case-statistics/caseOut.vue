@@ -142,7 +142,7 @@ export default {
       listLoading: true,
       search: {
         page: 1,
-        limit: 10,
+        limit: 100,
         beginTime: '',
         endTime: '',
         dept:''
