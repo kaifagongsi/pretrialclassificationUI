@@ -10,50 +10,20 @@
           </el-button>-->
           <el-row>
             <el-col :span="24" :offset="0">
-              <el-date-picker
-                v-model="search.beginTime"
-                type="date"
-                placeholder="出案开始日期"
-                class="filter-item"
-                value-format="yyyy-MM-dd"
-              />
-              <el-date-picker
-                v-model="search.endTime"
-                type="date"
-                placeholder="出案截止日期"
-                class="filter-item"
-                value-format="yyyy-MM-dd"
-              />
-              <el-button
-                v-waves
-                class="filter-item"
-                type="primary"
-                icon="el-icon-search"
-                plain
-                native-type="submit"
-                @click.prevent="searchFunc(search)"
-              >Search</el-button>
+              <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" class="filter-item" value-format="yyyy-MM-dd" />
+              <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
+              <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" plain native-type="submit" @click.prevent="searchFunc(search)">Search</el-button>
             </el-col>
           </el-row>
         </el-form-item>
       </el-form>
-      <el-tabs
-        v-model="activeName"
-        style="margin-top:15px;"
-        type="border-card"
-        @tab-click="changeTab"
-      >
-        <el-tab-pane
-          v-for="item in tabMapOptions"
-          :key="item.key"
-          :label="item.label"
-          :name="item.key"
-        ></el-tab-pane>
+      <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" @tab-click="changeTab">
+        <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key"></el-tab-pane>
 
         <el-button
           type="primary"
-          size="mini"
           v-show="oneclickBtn"
+          size="mini"
           @click="finishcaseAll(row);"
           >一键出案</el-button>
 
@@ -72,7 +42,7 @@
                 v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.pdfPath"
                 target="_blank"
                 class="link-type"
-              >{{row.id}}</a>
+              >{{ row.id }}</a>
               <!-- <router-link to="">{{ row.id }}</router-link> -->
             </template>
           </el-table-column>
@@ -147,6 +117,7 @@
           :limit.sync="search.limit"
           @pagination="getList"
         />
+
         <!-- 案件信息以及填写裁决分类号 -->
         <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="80%" top="5vh">
           <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="margin-left:50px;">
@@ -170,86 +141,84 @@
                 <span>{{ temp.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="IPCMI" prop="ipcmi">
-                <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号"   :validate-event="false"/>
-                </div>
-                <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.ipcmi" :disabled="true"  placeholder="请输入主分类号"  :validate-event="false" />
-                </div>
-                <div v-else>
-                  <el-input v-model="temp.ipcmi" placeholder="请输入主分类号"  :validate-event="false"/>
-                </div>
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <el-form-item label="IPCOI" prop="ipcoi" >
-                <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号"  :validate-event="false"/>
-                </div>
-                <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" :validate-event="false" />
-                </div>
-                <div v-else>
-                  <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号"  :validate-event="false"/>
-                </div>
-              </el-form-item>
+            <el-form-item label="IPCMI" prop="ipcmi">
+              <div v-if="activeName === '4'">
+                <el-input v-model="temp.ipcmi" :disabled="true" placeholder="请输入主分类号" :validate-event="false" />
+              </div>
+              <div v-else-if="activeName === '5'">
+                <el-input v-model="temp.ipcmi" :disabled="true" placeholder="请输入主分类号" :validate-event="false" />
+              </div>
+              <div v-else>
+                <el-input v-model="temp.ipcmi" placeholder="请输入主分类号" :validate-event="false" />
+              </div>
+            </el-form-item>
+            <el-form-item label="IPCOI" prop="ipcoi">
+              <div v-if="activeName === '4'">
+                <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" :validate-event="false" />
+              </div>
+              <div v-else-if="activeName === '5'">
+                <el-input v-model="temp.ipcoi" type="textarea" :disabled="true" placeholder="请输入副分类号" :validate-event="false" />
+              </div>
+              <div v-else>
+                <el-input v-model="temp.ipcoi" type="textarea" placeholder="请输入副分类号" :validate-event="false" />
+              </div>
+            </el-form-item>
 
-            </el-col>
-            <el-col :span="24">
-              <el-form-item label="IPCA" prop="ipca">
-                <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.ipca" type="textarea" :disabled="true" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" :validate-event="false"/>
-                </div>
-                <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.ipca" type="textarea" :disabled="true" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" :validate-event="false"/>
-                </div>
-                <div v-else>
-                  <el-input v-model="temp.ipca" type="textarea" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" :validate-event="false"/>
-                </div>
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <el-form-item label="CCI" prop="cci" :inline="true">
-                <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" :validate-event="false"/>
-                </div>
-                <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" :validate-event="false"/>
-                </div>
-                <div v-else >
-                  <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" :validate-event="false"   />
-                  <el-button type="warning">警告按钮</el-button>
-                </div>
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <el-form-item label="CCA" prop="cca">
-                <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" :validate-event="false"/>
-                </div>
-                <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" :validate-event="false"/>
-                </div>
-                <div v-else>
-                  <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" :validate-event="false"/>
-                </div>
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <el-form-item label="CSETS" prop="csets">
-                <div v-if="this.activeName === '4'">
-                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" :validate-event="false" />
-                </div>
-                <div v-else-if="this.activeName === '5'">
-                  <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" :validate-event="false" />
-                </div>
-                <div v-else>
-                  <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" :validate-event="false" />
-                </div>
-              </el-form-item>
-            </el-col>
+            <el-form-item label="IPCA" prop="ipca">
+              <div v-if="activeName === '4'">
+                <el-input v-model="temp.ipca" type="textarea" :disabled="true" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" :validate-event="false" />
+              </div>
+              <div v-else-if="activeName === '5'">
+                <el-input v-model="temp.ipca" type="textarea" :disabled="true" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" :validate-event="false" />
+              </div>
+              <div v-else>
+                <el-input v-model="temp.ipca" type="textarea" placeholder="请输入附加信息号，切勿添加*，我们会为您自动添加" :validate-event="false" />
+              </div>
+            </el-form-item>
+            <el-form-item label="CCI" prop="cci" :inline="true">
+              <div v-if="activeName === '4'">
+                <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" :validate-event="false" />
+              </div>
+              <div v-else-if="activeName === '5'">
+                <el-input v-model="temp.cci" :disabled="true" placeholder="请输入cci号" :validate-event="false" />
+              </div>
+              <div v-else>
+                <el-row>
+                  <el-col :span="18">
+                    <el-input v-model="temp.cci" :disabled="temp.type === 'XX'" placeholder="请输入cci号" :validate-event="false" />
+                  </el-col>
+                </el-row>
+              </div>
+            </el-form-item>
+            <el-form-item label="CCA" prop="cca">
+              <div v-if="activeName === '4'">
+                <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" :validate-event="false" />
+              </div>
+              <div v-else-if="activeName === '5'">
+                <el-input v-model="temp.cca" :disabled="true" placeholder="请输入cca号" :validate-event="false" />
+              </div>
+              <div v-else>
+                <el-row>
+                  <el-col :span="18">
+                    <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" :validate-event="false" />
+                  </el-col>
+                  <el-col :span="6">
+                    <el-button type="primary" round size="medium" style="margin-left: 20px" @click="cpc2ipc()">CPC转ICP</el-button>
+                  </el-col>
+                </el-row>
+              </div>
+            </el-form-item>
+            <el-form-item label="CSETS" prop="csets">
+              <div v-if="activeName === '4'">
+                <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" :validate-event="false" />
+              </div>
+              <div v-else-if="activeName === '5'">
+                <el-input v-model="temp.csets" type="textarea" :disabled="true" placeholder="请输入csets号" :validate-event="false" />
+              </div>
+              <div v-else>
+                <el-input v-model="temp.csets" type="textarea" :disabled="temp.type === 'XX'" placeholder="请输入csets号" :validate-event="false" />
+              </div>
+            </el-form-item>
           </el-form>
           <el-table
             v-loading="listLoading"
@@ -276,7 +245,7 @@
             </el-table-column>
             <el-table-column label="进案时间" width="160px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.fenpeitime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}</span>
+                <span>{{ row.fenpeitime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
               </template>
             </el-table-column>
             <el-table-column label="进案来源" width="100px" align="center">
@@ -391,7 +360,8 @@ import {
   finishcase,
   updateClassificationInfo,
   correctCase,
-  judgeMoreIpcmi
+  judgeMoreIpcmi,
+  cpcToIpc
 } from '@/api/case-classification'
 import { checkIpcServer, checkIpcCsetsServer } from '@/api/case-arbiter'
 import { findUserInfo } from '@/api/case-disposition'
@@ -616,6 +586,25 @@ export default {
     // this.initExpand();
   },
   methods: {
+    // cpc转变为ipc
+    cpc2ipc() {
+      cpcToIpc(this.temp.cci, this.temp.cca).then((response) => {
+        if (response.success) {
+          this.temp.ipcmi = response.queryResult.map.ipcmi
+          this.temp.ipcoi = response.queryResult.map.ipcoi
+          this.temp.ipca = response.queryResult.map.ipca
+          this.$message({
+            message: '转换成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: '转换失败，请自行核验',
+            type: 'error'
+          })
+        }
+      })
+    },
     changeTab: function(tab, event) {
       this.search.state = this.activeName
       this.getList()
