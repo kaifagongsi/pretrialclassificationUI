@@ -22,7 +22,7 @@
 
         <el-button
           type="primary"
-          v-show="oneclickBtn"
+          v-show="this.activeName == '2'"
           @click="finishcaseAll();"
           size="mini"
           >一键出案</el-button>
