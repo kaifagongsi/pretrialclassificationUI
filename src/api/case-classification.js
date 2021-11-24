@@ -66,12 +66,22 @@ export function caseTransfer(query) {
 }
 
 export  function  judgeMoreIpcmi(id) {
-  debugger
   return request({
     url: '/caseClassification/lastFinishAndMoreIPCMI',
     method: 'get',
     params: {
       id: id
+    }
+  })
+}
+
+export  function cpcToIpc(cci,cca) {
+  return request({
+    url: '/caseClassification/cpc2ipc',
+    method: 'get',
+    params: {
+      cci: cci,
+      cca: cca
     }
   })
 }
