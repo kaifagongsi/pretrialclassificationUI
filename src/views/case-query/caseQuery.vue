@@ -32,12 +32,15 @@
               <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
             </el-col>
             
-            <el-col :span="5">
+            <el-col :span="10">
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">
                 Search
               </el-button>
               <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToExcel()">
-                导出
+                导出详情
+              </el-button>
+              <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToZip()">
+                下载Excel
               </el-button>
             </el-col>
           </el-row>
@@ -45,11 +48,7 @@
       </el-form>
       <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" @tab-click="changeTab">
         <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
-          <!-- <keep-alive>
-            <tab-pane v-if="activeName==item.key" :type="item.key" @create="showCreatedTimes" />
-          </keep-alive> -->
         </el-tab-pane>
-        <!--<div id="table"> -->
         <el-table
           v-loading="listLoading"
           :data="list"
@@ -72,8 +71,6 @@
                 target="_blank"
                 class="buttonText"
               >{{row.id}}</a>
-              <!-- <a target="_blank" class="buttonText">{{ row.id }}</a> -->
-              <!-- <router-link to="">{{ row.id }}</router-link> -->
             </template>
           </el-table-column>
           <el-table-column label="申请主体" width="150px" align="center">
@@ -307,7 +304,7 @@
 </template>
 
 <script>
-import { findAllCase, findClassInfoByID } from '@/api/case-query'
+import { findAllCase, findClassInfoByID, exportExcelToZip } from '@/api/case-query'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -329,6 +326,7 @@ export default {
         id: ''
       },
       multipleSelection: [],
+      exportID: [],
       excelData:'',
       createdTimes: 0,
       list: null,
@@ -457,6 +455,7 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
+    //前端直接导出Excel
     exportToExcel() {
       if ('admin' != this.$store.state.user.roles){
         this.$alert('您当前没有该权限', '提示', {
@@ -481,7 +480,7 @@ export default {
           export_json_to_excel
         } = require("../../excel/Export2Excel")
         const tHeader = ["预审申请号","申请主体","发明名称","发明类型","所属保护中心","预审申请日","分类号","CCI","CCA","C-Sets","主分类员","副分类员"]; // excel文档第一行显示的标题
-        const filterVal = ["id","sqr","mingcheng","type","oraginization","jinantime","ipci","cci","csets","mainworker","assworker"];
+        const filterVal = ["id","sqr","mingcheng","type","oraginization","jinantime","ipci","cci","cca","csets","mainworker","assworker"];
         const list = that.excelData;
         const data = this.formatJson(filterVal,list);
         export_json_to_excel(tHeader,data,"bhzx");
@@ -489,34 +488,54 @@ export default {
     },
     formatJson(filterVal,jsonData) {
       return jsonData.map(v => filterVal.map(j => v[j]))
-    }
-    // 导出table数据到Excel
-    // exportToExcel(){
-    //   debugger
-    //   if('admin' != this.$store.state.user.roles){
-    //     this.$alert('您当前没有该权限', '提示', {
-    //       confirmButtonText: '确定'
-    //     });
-    //     return
-    //   }
-    //   if(this.activeName != '2'){
-    //     this.$alert('仅限制已出案案件导出', '提示', {
-    //       confirmButtonText: '确定'
-    //     });
-    //     return
-    //   }
-    //   let xlsxParam = {raw:true};
-    //   let table = document.getElementById('table');
-    //   let worksheet = XLSX.utils.table_to_sheet(table,xlsxParam);
-    //   let workbook = XLSX.utils.book_new();
-    //   XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet');
-    //   //let workbook = XLSX.utils.table_to_book(document.getElementById('table'))
-    //   try{
-    //     XLSX.writeFile(workbook, 'bhzx.xlsx');
-    //   } catch(e){
-    //     console.log(e,workbook);
-    //   }
-    // }
+    },
+    
+    //后台打包导出Excel压缩文件
+    exportToZip() {
+      if ('admin' != this.$store.state.user.roles){
+        this.$alert('您当前没有该权限', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      if (this.activeName != '2'){
+        this.$alert('仅允许已完成案件导出', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      if (this.multipleSelection === [] || this.multipleSelection.length === 0) {
+        this.$alert('请先选择要导出的案件','提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      for (var i=0;i<this.multipleSelection.length;i++) {
+        this.exportID.push(this.multipleSelection[i].id)
+      }
+      // this.excelData = this.multipleSelection
+      // console.log(this.exportID)
+      let formData = JSON.stringify(this.exportID)
+      
+      exportExcelToZip(formData).then((response) => {
+        this.downloadFile(response);
+        this.exportID = [];
+      })
+    },
+    //文件导出
+    downloadFile(data) {
+      if (!data) {
+        return
+      }
+      let url = window.URL.createObjectURL(new Blob([data]));
+      let link = document.createElement('a');
+      link.style.display = 'none';
+      link.href = url;
+      link.setAttribute('download','bhzx.zip');
+      document.body.appendChild(link);
+      link.click();
+    },
+
   }
 }
 </script>

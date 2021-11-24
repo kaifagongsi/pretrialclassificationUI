@@ -54,7 +54,7 @@
           type="primary"
           size="mini"
           v-show="oneclickBtn"
-          @click="finishcaseAll(row);"
+          @click="finishcaseAll();"
           >一键出案</el-button>
        
         <el-table
@@ -131,12 +131,6 @@
                 :disabled="finishsBtn"
                 @click="finishcase(row);"
               >出案</el-button>
-              <!-- <el-button
-                type="success"
-                size="mini"
-                :disabled="oneclickBtn"
-                @click="finishcaseAll(row);"
-              >一键出案</el-button> -->
             </template>
           </el-table-column>
         </el-table>

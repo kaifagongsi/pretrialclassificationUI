@@ -39,6 +39,24 @@ export function exportToExcel(query) {
   })
 }
 
+/**
+ * 2021.11.11修改 根据保护中心拆分打包导出Excel
+ * @param {*} query 
+ * @returns 
+ */
+export function exportExcelToZip(query) {
+  return request({
+    url: '/caseQuery/caseConditionQuery/exportExcelToZip',
+    method: 'post',
+    params: {
+      list: query
+    },
+    responseType: 'blob',
+    headers: {      
+    }
+  })
+}
+
 export function caseExportFinish(query) {
   return request({
     url: '/caseQuery/caseConditionQuery/caseExportFinish',
