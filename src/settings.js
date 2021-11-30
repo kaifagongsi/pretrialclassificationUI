@@ -1,5 +1,5 @@
 module.exports = {
-  title: '保护中心预审分类系统',
+  title: '保护中心预审案件新分类系统',
 
   /**
    * @type {boolean} true | false
