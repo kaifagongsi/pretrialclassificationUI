@@ -30,17 +30,16 @@
             </el-col>
             <el-col :span="5">
               <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
-            </el-col>
-            
+            </el-col>            
             <el-col :span="10">
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">
                 Search
               </el-button>
               <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToExcel()">
-                导出详情
+                导出Excel
               </el-button>
               <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToZip()">
-                下载Excel
+                下载Zip
               </el-button>
             </el-col>
           </el-row>
@@ -306,9 +305,8 @@
 <script>
 import { findAllCase, findClassInfoByID, exportExcelToZip } from '@/api/case-query'
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-
+import { parseTime } from '@/utils'
 export default {
   name: 'Tab',
   components: { Pagination },
@@ -327,7 +325,7 @@ export default {
       },
       multipleSelection: [],
       exportID: [],
-      excelData:'',
+      excelData: '',
       createdTimes: 0,
       list: null,
       classInfoList: null,
@@ -399,7 +397,7 @@ export default {
   },
   methods: {
     // 指定一个key标识一行的数据
-    getRowKey (row) {
+    getRowKey(row) {
       return row.id
     },
     changeTab: function(tab, event) {
@@ -435,10 +433,7 @@ export default {
     },
     getList() { // 获取table表格数据
       this.listLoading = true
-      // console.log(this.search)
       findAllCase(this.search).then(response => {
-        // console.log(response)
-        // 返回的list
         this.list = response.data.items
         console.log(this.list)
         this.total = response.data.total
@@ -451,20 +446,26 @@ export default {
       this.search.page = 1
       this.getList()
     },
-    //操作多选
+    // 操作多选
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.multipleSelection = val
     },
-    //前端直接导出Excel
+    // 前端直接导出Excel
     exportToExcel() {
-      if ('admin' != this.$store.state.user.roles){
+      if (this.$store.state.user.roles != "admin") {
         this.$alert('您当前没有该权限', '提示', {
           confirmButtonText: '确定'
         })
         return
       }
-      if (this.activeName != '2'){
-        this.$alert('仅限制已出案案件导出', '提示', {
+      if (this.activeName !== '2') {
+        this.$alert('仅允许已出案案件导出', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      if (this.multipleSelection === [] || this.multipleSelection.length === 0) {
+        this.$alert('请先选择要导出的案件', '提示', {
           confirmButtonText: '确定'
         })
         return
@@ -473,69 +474,64 @@ export default {
       this.excelData.forEach(element => {
         element.jinantime = parseTime(element.jinantime,'{y}{m}{d}')
       });
-      //console.log(this.excelData)
-      var that = this;
+      var that = this
       require.ensure([], () => {
         const {
           export_json_to_excel
-        } = require("../../excel/Export2Excel")
-        const tHeader = ["预审申请号","申请主体","发明名称","发明类型","所属保护中心","预审申请日","分类号","CCI","CCA","C-Sets","主分类员","副分类员"]; // excel文档第一行显示的标题
-        const filterVal = ["id","sqr","mingcheng","type","oraginization","jinantime","ipci","cci","cca","csets","mainworker","assworker"];
-        const list = that.excelData;
-        const data = this.formatJson(filterVal,list);
-        export_json_to_excel(tHeader,data,"bhzx");
+        } = require('../../excel/Export2Excel')
+        const tHeader = ['预审申请号', '申请主体', '发明名称', '发明类型', '所属保护中心', '预审申请日', '分类号', 'CCI', 'CCA', 'C-Sets', '主分类员', '副分类员'] // excel文档第一行显示的标题
+        const filterVal = ['id', 'sqr', 'mingcheng', 'type', 'oraginization', 'jinantime', 'ipci', 'cci', 'cca', 'csets', 'mainworker', 'assworker']
+        const list = that.excelData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, 'bhzx')
       })
     },
-    formatJson(filterVal,jsonData) {
+    formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => v[j]))
     },
-    
-    //后台打包导出Excel压缩文件
+    // 后台打包导出Excel压缩文件
     exportToZip() {
-      if ('admin' != this.$store.state.user.roles){
+      if (this.$store.state.user.roles != "admin") {
         this.$alert('您当前没有该权限', '提示', {
           confirmButtonText: '确定'
         })
         return
       }
-      if (this.activeName != '2'){
+      if (this.activeName !== '2') {
         this.$alert('仅允许已完成案件导出', '提示', {
           confirmButtonText: '确定'
         })
         return
       }
       if (this.multipleSelection === [] || this.multipleSelection.length === 0) {
-        this.$alert('请先选择要导出的案件','提示', {
+        this.$alert('请先选择要导出的案件', '提示', {
           confirmButtonText: '确定'
         })
         return
       }
-      for (var i=0;i<this.multipleSelection.length;i++) {
+      for (var i = 0; i < this.multipleSelection.length; i++) {
         this.exportID.push(this.multipleSelection[i].id)
       }
-      // this.excelData = this.multipleSelection
-      // console.log(this.exportID)
-      let formData = JSON.stringify(this.exportID)
-      
+      const formData = JSON.stringify(this.exportID)
       exportExcelToZip(formData).then((response) => {
-        this.downloadFile(response);
-        this.exportID = [];
+        this.downloadFile(response)
+        this.exportID = []
+        this.multipleSelection = []
       })
     },
-    //文件导出
+    // 文件导出
     downloadFile(data) {
       if (!data) {
         return
       }
-      let url = window.URL.createObjectURL(new Blob([data]));
-      let link = document.createElement('a');
-      link.style.display = 'none';
-      link.href = url;
-      link.setAttribute('download','bhzx.zip');
-      document.body.appendChild(link);
-      link.click();
-    },
-
+      const url = window.URL.createObjectURL(new Blob([data]))
+      const link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      link.setAttribute('download', 'bhzx.zip')
+      document.body.appendChild(link)
+      link.click()
+    }
   }
 }
 </script>

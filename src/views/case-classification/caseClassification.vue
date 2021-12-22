@@ -13,30 +13,37 @@
               <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" class="filter-item" value-format="yyyy-MM-dd" />
               <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" plain native-type="submit" @click.prevent="searchFunc(search)">Search</el-button>
+              <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToExcel()">
+                导出
+              </el-button>
             </el-col>
           </el-row>
         </el-form-item>
       </el-form>
-      <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" @tab-click="changeTab">
-        <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key"></el-tab-pane>
-
-        <el-button
+      <!-- <el-button
           type="primary"
           v-show="this.activeName == '2'"
           @click="finishcaseAll();"
           size="mini"
-          >一键出案</el-button>
-
+        >一键出案</el-button> -->
+      <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" @tab-click="changeTab">
+        <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key"></el-tab-pane>
         <el-table
           v-loading="listLoading"
           :data="list"
+          @selection-change="handleSelectionChange"
+          :row-key="getRowKey"
           border
           fit
           highlight-current-row
           style="width: 100%;"
         >
-          <!-- <el-table-column type="selection" width="55" /> -->
-          <el-table-column fixed label="预审申请号" prop="id" align="center" width="180px">
+          <el-table-column
+            type="selection"
+            :reserve-selection="true"
+            width="55"
+          />
+          <el-table-column fixed label="预审申请号" prop="id" align="center" width="165px">
             <template slot-scope="{row}">
               <a
                 v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.pdfPath"
@@ -46,19 +53,14 @@
               <!-- <router-link to="">{{ row.id }}</router-link> -->
             </template>
           </el-table-column>
-          <el-table-column label="发明名称" width="400px" align="center">
+          <el-table-column label="发明名称" width="280px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.mingcheng }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="申请人" width="200px" align="center">
+          <el-table-column label="申请人" width="180px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.sqr }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="分类类型" width="100px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.maintype == '主' ? '主分进案' : '转案' }}</span>
             </template>
           </el-table-column>
           <el-table-column label="类型" min-width="50px" align="center">
@@ -66,14 +68,29 @@
               <span>{{ row.type== 'FM' ? '发明' : '新型' }}</span>
             </template>
           </el-table-column>
+          <el-table-column v-if="this.activeName == '3'" label="出案类型" width="100px" align="center" >
+            <template slot-scope="{row}">
+              <span>{{ row.chuantype }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="进案类型" width="80px" align="center">
+            <template slot-scope="{row}">
+              <span>{{ row.maintype == '主' ? '主分进案' : '转案' }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="进案日期" width="160px" align="center">
+            <template slot-scope="{row}">
+              <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column v-if="this.activeName == '3'" label="出案日期" width="180px" align="center" >
+            <template slot-scope="{row}">
+              <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="粗分号" width="100px" align="center">
             <template slot-scope="{row}">
               <span>{{ row.simpleclasscode }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="进案日期" width="180px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -99,7 +116,7 @@
                 type="success"
                 size="mini"
                 :disabled="finishsBtn"
-                @click="finishcase(row);"
+                @click="finishonecase(row);"
               >出案</el-button>
             </template>
           </el-table-column>
@@ -196,9 +213,9 @@
                   <el-col :span="18">
                     <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" :validate-event="false" />
                   </el-col>
-                  <el-col :span="6">
+                  <!-- <el-col :span="6">
                     <el-button type="primary" round size="medium" style="margin-left: 20px" @click="cpc2ipc()">CPC转ICP</el-button>
-                  </el-col>
+                  </el-col> -->
                 </el-row>
               </div>
             </el-form-item>
@@ -293,6 +310,7 @@
             <el-button type="primary" :disabled="saveBtn" @click="subClassification()">保存</el-button>
             <el-button type="primary" :disabled="correctBtn" @click="subClassification()">更正</el-button>
             <el-button type="primary" :disabled="finishsBtn" @click="finishcase(temp)">出案</el-button>
+            <!-- <el-button type="primary" :disabled="finishsBtn" @click="finishonecase(temp)">出案</el-button> -->
           </div>
         </el-dialog>
 
@@ -352,6 +370,7 @@
 import {
   findCaseByState,
   finishcase,
+  caseOutInBulk,
   updateClassificationInfo,
   correctCase,
   judgeMoreIpcmi,
@@ -360,8 +379,8 @@ import {
 import { checkIpcServer, checkIpcCsetsServer } from '@/api/case-arbiter'
 import { findUserInfo } from '@/api/case-disposition'
 import { findClassInfoByID, findUpdateInfoByID } from '@/api/case-query'
+import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
-// import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 export default {
@@ -465,6 +484,7 @@ export default {
         id: '',
         worker: ''
       },
+      excelData: '',
       user: '',
       createdTimes: 0,
       list: null,
@@ -501,7 +521,8 @@ export default {
         ipci: '',
         ipca: '',
         ipcmi: '',
-        ipcoi: ''
+        ipcoi: '',
+        chuantype: ''
       },
       dialogFormVisible: false,
       userDialogFormVisible: false,
@@ -531,6 +552,7 @@ export default {
       },
       defaultExpandKeys: [], // 默认展开节点列表
       multipleSelection: [], // 多选
+      finishCases: [], // 批量出案案件id
       finishsBtn: true, // 出案按钮显示
       transBtn: false, // 转案按钮
       saveBtn: false, // 保存按钮
@@ -580,6 +602,55 @@ export default {
     // this.initExpand();
   },
   methods: {
+    getRowKey(row) {
+      return row.id
+    },
+    // 操作多选
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    // 2021.12.20 新增导出
+    // 前端直接导出Excel
+    exportToExcel() {
+      if (this.activeName !== '3') {
+        this.$alert('仅允许已出案案件导出', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      this.excelData = this.multipleSelection
+      if (this.multipleSelection === [] || this.multipleSelection.length === 0) {
+        this.$alert('请先选择要导出的案件', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      this.excelData.forEach(element => {
+        element.jinantime = parseTime(element.jinantime, '{y}{m}{d}')
+        element.chuantime = parseTime(element.chuantime, '{y}{m}{d}')
+        console.log('element.maintype' + element.maintype)
+        if(element.maintype == '副') {
+          element.maintype = "转案"
+        }else{
+          element.maintype = "主分进案"
+        }
+      })
+      // console.log(this.excelData)
+      var that = this
+      require.ensure([], () => {
+        const {
+          export_json_to_excel
+        } = require('../../excel/Export2Excel')
+        const tHeader = ['预审申请号', '发明名称', '申请人', '进案类型', '出案类型', '发明类型', '粗分号', '进案日期','出案日期'] // excel文档第一行显示的标题
+        const filterVal = ['id', 'mingcheng', 'sqr', 'maintype', 'chuantype', 'type', 'simpleclasscode', 'jinantime','chuantime']
+        const list = that.excelData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, 'bhzx')
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    },
     // cpc转变为ipc
     cpc2ipc() {
       cpcToIpc(this.temp.cci, this.temp.cca).then((response) => {
@@ -648,14 +719,58 @@ export default {
       })
     },*/
     // 获取选中行id
-    handleSelectionChange(val) {
-      this.finishIds = ''
-      for (var i = 0; i < val.length - 1; i++) {
-        var halo = val[i].id
-        this.finishIds += halo + ','
-      }
-      this.finishIds += val[i].id
-      this.multipleSelection = val
+    // handleSelectionChange(val) {
+    //   this.finishIds = ''
+    //   for (var i = 0; i < val.length - 1; i++) {
+    //     var halo = val[i].id
+    //     this.finishIds += halo + ','
+    //   }
+    //   this.finishIds += val[i].id
+    //   this.multipleSelection = val
+    // },
+    // 一键出案,2021.11/24 lsy
+    finishcaseAll() {
+      this.$confirm('对已选中的案件批量出案，请确认', '一键出案', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'success',
+        callback: action => {
+          if (action === 'confirm') {
+            if (this.multipleSelection === [] || this.multipleSelection.length === 0) {
+              this.$alert('请先选择要出案的案件', '提示', {
+                confirmButtonText: '确定'
+              })
+              return
+            } else {
+              this.worker = this.multipleSelection[0].worker
+              // 批量出案
+              for (var i = 0; i < this.multipleSelection.length; i++) {
+                this.finishCases.push(this.multipleSelection[i].id)
+              }
+              const bulkData = JSON.stringify(this.finishCases)
+              caseOutInBulk(bulkData, this.worker).then((response) => {
+                if (response.success) {
+                  this.$message({
+                    message: '出案成功',
+                    type: 'success'
+                  })
+                  this.getList()
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: response.message,
+                    type: 'error'
+                  })
+                  this.getList()
+                }
+                this.finishCases = []
+              })
+            }
+          } else {
+            alert('已取消')
+          }
+        }
+      })
     },
     // 获取分类信息
     getClassficationList() {
@@ -671,7 +786,7 @@ export default {
         // 更正案件显示更正后的号
         this.searchInfo.worker = this.user
         findUpdateInfoByID(this.searchInfo).then((response) => {
-          console.log(response.data[0])
+          // console.log(response.data[0])
           this.temp.ipcmi = response.data[0].ipcmi
           this.temp.ipcoi = response.data[0].ipcoi
           this.temp.ipca = response.data[0].ipca
@@ -704,8 +819,8 @@ export default {
       findCaseByState(this.search).then((response) => {
         console.log(response)
         // 返回的list
-        this.list = response.data.items
-        this.total = response.data.total
+        this.list = response.data
+        this.total = response.data.length
         this.user = response.user
         setTimeout(() => {
           this.listLoading = false
@@ -715,6 +830,9 @@ export default {
     // 验证分类号是否正确
     vaildateClassification() {
       return new Promise((resolve, reject) => {
+        this.$nextTick(() => {
+          this.$refs['dataForm']
+        })
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             // ipc 与cpc 同在校验
@@ -900,7 +1018,7 @@ export default {
     judgeMoreIpcmi(id) {
       return new Promise((resolve, reject) => {
         judgeMoreIpcmi(id).then((response) => {
-          if (response.success) {
+          if (!response.success) {
             console.log('没有多余1')
             resolve(true)
           } else {
@@ -980,28 +1098,26 @@ export default {
         this.dialogFormVisible = false
       })
     },
-    /* 旧版本出案
-    finishcase(row) {
-      this.finishIds = row.id;
-      this.user = row.worker;
+    // 单一出案，默认不用校验
+    finishonecase(row) {
+      this.finishIds = row.id
+      this.user = row.worker
       finishcase(this.finishIds, this.user).then((response) => {
         if (response.success) {
-          this.dialogFormVisible = false;
           this.$message({
-              message: '出案成功',
-              type: "success",
-          });
-          this.getList();
+            message: response.message,
+            type: 'success'
+          })
+          this.getList()
         } else {
           this.$message({
-              showClose: true,
-              message: response.message,
-              type: 'error'
-          });
-          this.getList();
+            message: response.message,
+            type: 'error'
+          })
+          this.getList()
         }
-      });
-    },*/
+      })
+    },
     handleFilter() {
       this.search.page = 1
       this.getList()

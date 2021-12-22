@@ -27,6 +27,17 @@ export function finishcase(finishIds,user) {
   })
 }
 
+export function caseOutInBulk(list,worker){
+  return request({
+    url: '/caseClassification/caseOutInBulk',
+    method: 'post',
+    params: {
+      list: list,
+      worker: worker
+    },
+  })
+}
+
 export function correctCase(data){
   return request({
     url: '/caseClassification/caseCorrect',
