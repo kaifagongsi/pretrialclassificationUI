@@ -68,7 +68,7 @@
               <span>{{ row.type== 'FM' ? '发明' : '新型' }}</span>
             </template>
           </el-table-column>
-          <el-table-column v-if="this.activeName == '3'" label="出案类型" width="100px" align="center" >
+          <el-table-column v-if="this.activeName == '3'" key="row.chuantype" label="出案类型" width="100px" align="center" >
             <template slot-scope="{row}">
               <span>{{ row.chuantype }}</span>
             </template>
@@ -83,7 +83,7 @@
               <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             </template>
           </el-table-column>
-          <el-table-column v-if="this.activeName == '3'" label="出案日期" width="180px" align="center" >
+          <el-table-column v-if="this.activeName == '3'" key="row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')" label="出案日期" width="180px" align="center" >
             <template slot-scope="{row}">
               <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             </template>
