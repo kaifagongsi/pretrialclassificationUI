@@ -6,10 +6,10 @@
         <el-form-item>
           <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />到
           <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" style="width: 200px;" class="filter-item" value-format="yyyy-MM-dd" />
-          <el-select  v-model="search.dept1"  filterable   class="filter-item"  placeholder="请选择部门">
+          <el-select  v-model="search.dept1"  filterable clearable    class="filter-item"  placeholder="请选择部门">
             <el-option v-for="item in dep1s" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-select  v-model="search.dept2"  filterable   class="filter-item"  placeholder="请选择处室">
+          <el-select  v-model="search.dept2"  filterable  clearable   class="filter-item"  placeholder="请选择处室">
             <el-option v-for="item in dep2s" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">

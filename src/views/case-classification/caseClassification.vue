@@ -314,53 +314,7 @@
           </div>
         </el-dialog>
 
-        <!--
-        2021-11-23 15:20:02  看起来没用的样子，去掉了 李晓亮
-        <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-          <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-            <el-table-column prop="key" label="Channel" />
-            <el-table-column prop="pv" label="Pv" />
-          </el-table>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-          </span>
-        </el-dialog>
-        -->
-        <!--
-        <el-dialog :title="textMap[dialogStatus]" :visible.sync="userDialogFormVisible">
-          <div :model="transtemp">
-            <div>
-              <el-button type="info" style="float: right;" @click="handleChangeState">确认转案</el-button>
-            </div>
-            <div style="font-size: xx-large; text-align: center">
-              <svg-icon icon-class="user" style="width: 60px; height: 60px" />
-              <svg-icon
-                icon-class="exchange"
-                style="height: 60px;margin-left: 50px;margin-right: 50px;"
-              />
-              <svg-icon icon-class="user" style="width: 60px; height: 60px" />
-            </div>
-            <div style="font-size: large;padding-top: 5px;">
-              <span style="width: 50px;margin-left: 200px;">{{ transtemp.worker }}</span>
-              <span style="width: 50px;margin-left: 80px">{{ transtemp.pdfPath }}</span>
-            </div>
-            <div>
-              <el-tree
-                v-if="isLoadingTree"
-                ref="expandMenuList"
-                class="expand-tree"
-                :data="setTree"
-                node-key="name"
-                highlight-current
-                :props="defaultProps"
-                :expand-on-click-node="false"
-                center
-                @node-click="handleNodeClick"
-              ></el-tree>
-            </div>
-          </div>
-        </el-dialog>
-        -->
+
       </el-tabs>
     </div>
   </div>
@@ -894,7 +848,7 @@ export default {
       if (this.activeName === '3') {
         this.correctBtn = true
       }
-      const flag = await this.vaildateClassification()
+      const flag = await this.vaildateClassification();
       if (flag) {
         // 执行保存和更正操作
         this.saveClassification()
@@ -913,7 +867,7 @@ export default {
         }).then(() => {
           correctCase(this.temp).then((response) => {
             if (response.success) {
-              this.dialogFormVisible = false
+              this.dialogFormVisible = false;
               this.$message({
                 message: '已提交更正，等待管理员审核',
                 type: 'success'
@@ -940,7 +894,7 @@ export default {
       if (type === 1) {
         updateClassificationInfo(this.temp).then((response) => {
           if (response.success) {
-            this.dialogFormVisible = false
+            this.dialogFormVisible = false;
             this.$message({
               message: '保存成功',
               type: 'success'
@@ -990,22 +944,22 @@ export default {
       // 转案
       // 已出案、更正、裁决案件不可进行转案
       if (this.activeName === '3') {
-        alert('已出案案件不可进行转案')
+        alert('已出案案件不可进行转案');
         return
       }
       if (this.activeName === '4') {
-        alert('更正案件不可进行转案')
+        alert('更正案件不可进行转案');
         return
       }
       if (this.activeName === '5') {
-        alert('裁决案件不可进行转案')
+        alert('裁决案件不可进行转案');
         return
       } else {
         // 跳转转案界面
-        this.transtemp.id = row.id
-        this.transtemp.mingcheng = row.mingcheng
-        this.transtemp.worker = row.worker
-        this.transtemp.type = row.type
+        this.transtemp.id = row.id;
+        this.transtemp.mingcheng = row.mingcheng;
+        this.transtemp.worker = row.worker;
+        this.transtemp.type = row.type;
         this.$router.push({
           path: '/anjianfenlei/caseTransfer',
           query: {
@@ -1019,19 +973,19 @@ export default {
       return new Promise((resolve, reject) => {
         judgeMoreIpcmi(id).then((response) => {
           if (!response.success) {
-            console.log('没有多余1')
+            console.log('没有多余1');
             resolve(true)
           } else {
-            console.log('有别人给出主分')
+            console.log('有别人给出主分');
             this.$confirm('检测到有其他人员给出主分，您也同时填写主分，是否继续出案', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
             }).then(() => {
-              console.log('坚持出案')
+              console.log('坚持出案');
               resolve(true)
             }).catch(() => {
-              console.log('放弃出案')
+              console.log('放弃出案');
               resolve(false)
             })
           }
@@ -1055,7 +1009,7 @@ export default {
             const result = await this.judgeMoreIpcmi(row.id)
             if (result) {
               // 坚持出案
-              this.dofinishcase(row)
+              this.finishonecase(row)
             } else {
               this.$message({
                 showClose: true,
@@ -1077,28 +1031,7 @@ export default {
         }
       }
     },
-    dofinishcase(row) {
-      this.finishIds = row.id
-      this.user = row.worker
-      finishcase(this.finishIds, this.user).then((response) => {
-        if (response.success) {
-          this.$message({
-            message: '出案成功',
-            type: 'success'
-          })
-          this.getList()
-        } else {
-          this.$message({
-            showClose: true,
-            message: response.message,
-            type: 'error'
-          })
-          this.getList()
-        }
-        this.dialogFormVisible = false
-      })
-    },
-    // 单一出案，默认不用校验
+    // 单一（直接）出案，默认不用校验
     finishonecase(row) {
       this.finishIds = row.id
       this.user = row.worker
