@@ -20,12 +20,12 @@
           </el-row>
         </el-form-item>
       </el-form>
-      <!-- <el-button
+      <el-button
           type="primary"
           v-show="this.activeName == '2'"
           @click="finishcaseAll();"
           size="mini"
-        >一键出案</el-button> -->
+        >一键出案</el-button>
       <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" @tab-click="changeTab">
         <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key"></el-tab-pane>
         <el-table
@@ -213,9 +213,9 @@
                   <el-col :span="18">
                     <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" :validate-event="false" />
                   </el-col>
-                  <!-- <el-col :span="6">
+                  <el-col :span="6">
                     <el-button type="primary" round size="medium" style="margin-left: 20px" @click="cpc2ipc()">CPC转ICP</el-button>
-                  </el-col> -->
+                  </el-col>
                 </el-row>
               </div>
             </el-form-item>
