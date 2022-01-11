@@ -214,7 +214,7 @@
                     <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" :validate-event="false" />
                   </el-col>
                   <el-col :span="6">
-                    <el-button type="primary" round size="medium" style="margin-left: 20px" @click="cpc2ipc()">CPC转ICP</el-button>
+                    <el-button type="primary" round size="medium" :disabled="temp.type === 'XX'" style="margin-left: 20px" @click="cpc2ipc()">CPC转IPC</el-button>
                   </el-col>
                 </el-row>
               </div>
@@ -617,10 +617,17 @@ export default {
             type: 'success'
           })
         } else {
-          this.$message({
-            message: '转换失败，请自行核验',
-            type: 'error'
-          })
+          if(response.message !== ''){
+            this.$message({
+              message:  response.message,
+              type: 'error'
+            })
+          }else{
+            this.$message({
+              message: '转换失败，请自行核验',
+              type: 'error'
+            })
+          }
         }
       })
     },
@@ -972,7 +979,7 @@ export default {
     judgeMoreIpcmi(id) {
       return new Promise((resolve, reject) => {
         judgeMoreIpcmi(id).then((response) => {
-          if (!response.success) {
+          if (response.success) {
             console.log('没有多余1');
             resolve(true)
           } else {
@@ -994,9 +1001,9 @@ export default {
     },
     // 现在再写一个async 函数，从而可以使用await 关键字， await 后面放置的就是返回promise对象的一个表达式，所以它后面可以写上 judgeMoreIpcmi 函数的调用
     async finishcase(row) {
-      if (row.ipcmi === '' || row.ipcmi === undefined) {
+      if (row.ipcmi === '' || row.ipcmi === undefined || row.ipcmi == null) {
         // 正常出案
-        this.dofinishcase(row)
+        this.finishonecase(row)
       } else {
         // 1.验证分类号
         const vaildateFlag = await this.vaildateClassification()
