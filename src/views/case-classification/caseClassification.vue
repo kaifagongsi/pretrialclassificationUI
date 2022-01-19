@@ -651,44 +651,6 @@ export default {
       })
       this.isLoadingTree = true
     },
-    /*
-    handleChangeState() {
-      this.$confirm(' ' + this.transtemp.id + '转案给：' + this.transtemp.pdfPath, '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).then(() => {
-        const tempData = Object.assign({}, this.transtemp)
-        tempData.chuantime = +new Date(tempData.chuantime)
-        tempData.jinantime = +new Date(tempData.jinantime)
-        console.log(tempData)
-        caseTransfer(tempData).then((response) => {
-          this.$message({
-            type: 'success',
-            message: '转案成功！'
-          })
-          this.userDialogFormVisible = false
-          this.getList()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消转案'
-        })
-      })
-    },*/
-    // 获取选中行id
-    // handleSelectionChange(val) {
-    //   this.finishIds = ''
-    //   for (var i = 0; i < val.length - 1; i++) {
-    //     var halo = val[i].id
-    //     this.finishIds += halo + ','
-    //   }
-    //   this.finishIds += val[i].id
-    //   this.multipleSelection = val
-    // },
     // 一键出案,2021.11/24 lsy
     finishcaseAll() {
       this.$confirm('对已选中的案件批量出案，请确认', '一键出案', {
@@ -1017,6 +979,7 @@ export default {
             if (result) {
               // 坚持出案
               this.finishonecase(row)
+              this.dialogFormVisible = false
             } else {
               this.$message({
                 showClose: true,
