@@ -30,7 +30,7 @@
             </el-col>
             <el-col :span="5">
               <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
-            </el-col>            
+            </el-col>
             <el-col :span="10">
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">
                 Search
@@ -57,6 +57,7 @@
           fit
           highlight-current-row
           style="width: 100%;"
+          ref="multipleTables"
         >
           <el-table-column
             type="selection"
@@ -452,7 +453,7 @@ export default {
     },
     // 前端直接导出Excel
     exportToExcel() {
-      if (this.$store.state.user.roles != "admin") {
+      if (this.$store.state.user.roles !== 'admin') {
         this.$alert('您当前没有该权限', '提示', {
           confirmButtonText: '确定'
         })
@@ -472,8 +473,8 @@ export default {
       }
       this.excelData = this.multipleSelection
       this.excelData.forEach(element => {
-        element.jinantime = parseTime(element.jinantime,'{y}{m}{d}')
-      });
+        element.jinantime = parseTime(element.jinantime, '{y}{m}{d}')
+      })
       var that = this
       require.ensure([], () => {
         const {
@@ -491,7 +492,7 @@ export default {
     },
     // 后台打包导出Excel压缩文件
     exportToZip() {
-      if (this.$store.state.user.roles != "admin") {
+      if (!this.$store.state.user.roles === 'admin') {
         this.$alert('您当前没有该权限', '提示', {
           confirmButtonText: '确定'
         })
@@ -509,14 +510,14 @@ export default {
         })
         return
       }
+      this.exportID = []
       for (var i = 0; i < this.multipleSelection.length; i++) {
         this.exportID.push(this.multipleSelection[i].id)
       }
       const formData = JSON.stringify(this.exportID)
       exportExcelToZip(formData).then((response) => {
         this.downloadFile(response)
-        this.exportID = []
-        this.multipleSelection = []
+        this.$refs.multipleTables.clearSelection()
       })
     },
     // 文件导出
