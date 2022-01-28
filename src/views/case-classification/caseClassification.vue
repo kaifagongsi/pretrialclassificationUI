@@ -215,7 +215,7 @@
                     <el-input v-model="temp.cca" :disabled="temp.type === 'XX'" placeholder="请输入cca号" :validate-event="false" />
                   </el-col>
                   <el-col :span="6">
-                    <el-button type="primary" round size="medium" style="margin-left: 20px" @click="cpc2ipc()">CPC转ICP</el-button>
+                    <el-button type="primary" round size="medium" :disabled="temp.type === 'XX'" style="margin-left: 20px" @click="cpc2ipc()">CPC转IPC</el-button>
                   </el-col>
                 </el-row>
               </div>
@@ -618,10 +618,17 @@ export default {
             type: 'success'
           })
         } else {
-          this.$message({
-            message: '转换失败，请自行核验',
-            type: 'error'
-          })
+          if(response.message !== ''){
+            this.$message({
+              message:  response.message,
+              type: 'error'
+            })
+          }else{
+            this.$message({
+              message: '转换失败，请自行核验',
+              type: 'error'
+            })
+          }
         }
       })
     },
@@ -645,44 +652,6 @@ export default {
       })
       this.isLoadingTree = true
     },
-    /*
-    handleChangeState() {
-      this.$confirm(' ' + this.transtemp.id + '转案给：' + this.transtemp.pdfPath, '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).then(() => {
-        const tempData = Object.assign({}, this.transtemp)
-        tempData.chuantime = +new Date(tempData.chuantime)
-        tempData.jinantime = +new Date(tempData.jinantime)
-        console.log(tempData)
-        caseTransfer(tempData).then((response) => {
-          this.$message({
-            type: 'success',
-            message: '转案成功！'
-          })
-          this.userDialogFormVisible = false
-          this.getList()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消转案'
-        })
-      })
-    },*/
-    // 获取选中行id
-    // handleSelectionChange(val) {
-    //   this.finishIds = ''
-    //   for (var i = 0; i < val.length - 1; i++) {
-    //     var halo = val[i].id
-    //     this.finishIds += halo + ','
-    //   }
-    //   this.finishIds += val[i].id
-    //   this.multipleSelection = val
-    // },
     // 一键出案,2021.11/24 lsy
     finishcaseAll() {
       this.$confirm('对已选中的案件批量出案，请确认', '一键出案', {
@@ -976,7 +945,7 @@ export default {
     judgeMoreIpcmi(id) {
       return new Promise((resolve, reject) => {
         judgeMoreIpcmi(id).then((response) => {
-          if (!response.success) {
+          if (response.success) {
             console.log('没有多余1');
             resolve(true)
           } else {
@@ -998,9 +967,9 @@ export default {
     },
     // 现在再写一个async 函数，从而可以使用await 关键字， await 后面放置的就是返回promise对象的一个表达式，所以它后面可以写上 judgeMoreIpcmi 函数的调用
     async finishcase(row) {
-      if (row.ipcmi === '' || row.ipcmi === undefined) {
+      if (row.ipcmi === '' || row.ipcmi === undefined || row.ipcmi == null) {
         // 正常出案
-        this.dofinishcase(row)
+        this.finishonecase(row)
       } else {
         // 1.验证分类号
         const vaildateFlag = await this.vaildateClassification()
@@ -1014,6 +983,7 @@ export default {
             if (result) {
               // 坚持出案
               this.finishonecase(row)
+              this.dialogFormVisible = false
             } else {
               this.$message({
                 showClose: true,
