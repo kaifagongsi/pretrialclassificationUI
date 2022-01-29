@@ -453,7 +453,7 @@ export default {
     },
     // 前端直接导出Excel
     exportToExcel() {
-      if (this.$store.state.user.roles !== 'admin') {
+      if (!this.$store.state.user.roles === 'admin') {
         this.$alert('您当前没有该权限', '提示', {
           confirmButtonText: '确定'
         })
