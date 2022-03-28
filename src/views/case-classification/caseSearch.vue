@@ -27,7 +27,11 @@
         <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px" style="margin-left:50px;">
           <el-col :span="12">
             <el-form-item label="案件编号" prop="id">
-              <span>{{ temp.id }}</span>
+              <a
+                v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+temp.id+'/'+temp.pdfPath"
+                target="_blank"
+                class="link-type"
+              >{{ temp.id }}</a>
             </el-form-item>
           </el-col>
           <el-col :span="12">
