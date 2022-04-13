@@ -37,6 +37,7 @@
           fit
           highlight-current-row
           style="width: 100%;"
+          ref="multipleTables"
         >
           <el-table-column
             type="selection"
@@ -687,6 +688,7 @@ export default {
                   this.getList()
                 }
                 this.finishCases = []
+                this.$refs.multipleTables.clearSelection()
               })
             }
           } else {
@@ -745,6 +747,8 @@ export default {
         this.list = response.data
         this.total = response.data.length
         this.user = response.user
+        this.multipleSelection = []
+        this.finishCases = []
         setTimeout(() => {
           this.listLoading = false
         }, 0.5 * 1000)
