@@ -214,7 +214,7 @@ export default {
       total: 0,
       listQuery: {
         page: 1,
-        limit: 10,
+        limit: 100,
         dep1: undefined,
         dep2: undefined,
         isOnline: undefined
@@ -402,7 +402,7 @@ export default {
             } else {
               this.$notify.error({
                 title: '失败',
-                message: '修改失败'
+                message: response.message
               })
             }
           })
