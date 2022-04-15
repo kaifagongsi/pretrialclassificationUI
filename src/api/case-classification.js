@@ -58,6 +58,14 @@ export function searchByCondition(query) {
   })
 }
 
+export function searchByVagueCondition(query) {
+  return request({
+    url: '/caseClassification/searchByVagueCondition',
+    method: 'get',
+    params: query
+  })
+}
+
 export function getTransWorkerList(query) {
   return request({
     url: '/caseClassification/getTransWorkerList',
