@@ -197,7 +197,7 @@ export default {
       }
     }
     var checkEmail = (rule, value, callback) =>{
-      if (this.dialogStatus==='create') {
+      if (this.dialogStatus==='create' ) {
         checkUserInfoEmail(value).then( response =>{
           if (!response.success) {
             callback('邮箱地址已存在')
@@ -205,6 +205,28 @@ export default {
             callback()
           }
         })
+      }else{
+        callback()
+      }
+    }
+    var checkAdjuducator = (rule, value, callback) =>{
+      if (this.dialogStatus==='create' || this.dialogStatus==='update') {
+        if(value == null || value == undefined){
+          callback('裁决组长需要为6位数字')
+        }else{
+          if(value.length == 6){
+            var numReg = /^[0-9]*$/
+            var numRe = new RegExp(numReg)
+            if (!numRe.test(value)) {
+              callback('裁决组长需要为6位数字')
+            }else{
+              callback()
+            }
+          }else{
+            callback('裁决组长需要为6位数字')
+          }
+        }
+
       }else{
         callback()
       }
@@ -254,7 +276,8 @@ export default {
         email: [{ required: true, trigger: 'blur', validator: checkEmail }],
         areaname: [{ required: true, message: '领域名称不能为空', trigger: 'blur' }],
         fields: [{ required: true, message: '领域不能为空', trigger: 'blur' }],
-        ipcs: [{ required: true, message: 'ipcs不能为空', trigger: 'blur' }]
+        ipcs: [{ required: true, message: 'ipcs不能为空', trigger: 'blur' }],
+        adjudicator: [{required: true, message: '裁决组长仅限制6位数字',validator: checkAdjuducator }]
       }
     }
   },
