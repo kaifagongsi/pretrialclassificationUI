@@ -18,12 +18,13 @@
               <el-input v-model="search.sqh" placeholder="申请号" class="filter-item" @keyup.enter.native="handleFilter" />
             </el-col>
           </el-row>
+
           <el-row :gutter="10">
             <el-col :span="5">
-              <el-input v-model="search.worker" placeholder="分类员" class="filter-item" @keyup.enter.native="handleFilter" />
+              <el-date-picker v-model="search.enterBeginTime" type="date" placeholder="进案开始日期" class="filter-item" value-format="yyyy-MM-dd" />
             </el-col>
             <el-col :span="5">
-              <el-input v-model="search.oraginization" placeholder="案件所属保护中心" class="filter-item" @keyup.enter.native="handleFilter" />
+              <el-date-picker v-model="search.enterEndTime" type="date" placeholder="进案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
             </el-col>
             <el-col :span="5">
               <el-date-picker v-model="search.beginTime" type="date" placeholder="出案开始日期" class="filter-item" value-format="yyyy-MM-dd" />
@@ -31,12 +32,24 @@
             <el-col :span="5">
               <el-date-picker v-model="search.endTime" type="date" placeholder="出案截止日期" class="filter-item" value-format="yyyy-MM-dd" />
             </el-col>
+          </el-row>
+
+          <el-row :gutter="10">
+            <el-col :span="5">
+              <el-input v-model="search.worker" placeholder="分类员" class="filter-item" @keyup.enter.native="handleFilter" />
+            </el-col>
+            <el-col :span="5">
+              <el-input v-model="search.oraginization" placeholder="案件所属保护中心" class="filter-item" @keyup.enter.native="handleFilter" />
+            </el-col>
             <el-col :span="10">
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"  plain native-type="submit" @click.prevent="searchFunc(search)">
                 Search
               </el-button>
               <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToExcel()">
                 导出Excel
+              </el-button>
+              <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportAllExcel()">
+                导出全部Excel
               </el-button>
               <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToZip()">
                 下载Zip
@@ -61,7 +74,7 @@
         >
           <el-table-column
             type="selection"
-            :reserve-selection="true"
+            :reserve-selection="false"
             width="55"
           />
           <el-table-column label="预审申请号" prop="id" align="center" width="200">
@@ -98,9 +111,14 @@
               <span>{{ row.simpleclasscode }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="预审申请日" width="180px" align="center">
+          <el-table-column label="进案日期" width="180px" align="center">
             <template slot-scope="{row}">
-              <span id="jinan">{{ row.jinantime | parseTime('{y}{m}{d}') }}</span>
+              <span id="jinan">{{row.jinantime | parseTime('{y}{m}{d}') }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="出案日期" width="180px" align="center">
+            <template slot-scope="{row}">
+              <span id="chuan">{{ row.chuantime | parseTime('{y}{m}{d}') }}</span>
             </template>
           </el-table-column>
           <el-table-column label="分类号" min-width="180px" align="center">
@@ -332,6 +350,7 @@ export default {
       classInfoList: null,
       total: 0,
       listLoading: true,
+      oldLimit:100,
       search: {
         page: 1,
         limit: 100,
@@ -343,7 +362,9 @@ export default {
         sqh: '',
         worker: '',
         beginTime: '',
-        endTime: ''
+        endTime: '',
+        enterBeginTime:'',
+        enterEndTime:''
       },
       temp: {
         id: undefined,
@@ -434,12 +455,41 @@ export default {
     },
     getList() { // 获取table表格数据
       this.listLoading = true
+      this.search.limit = this.oldLimit
       findAllCase(this.search).then(response => {
+        console.log(response.data.items.length)
         this.list = response.data.items
         console.log(this.list)
         this.total = response.data.total
         setTimeout(() => {
           this.listLoading = false
+        }, 0.5 * 1000)
+      })
+    },
+    refreshList(){
+      this.listLoading = true
+      findAllCase(this.search).then(response => {
+        this.list = response.data.items
+        this.total = response.data.total
+        setTimeout(() => {
+          this.listLoading = false
+          this.excelData = this.list
+          this.excelData.forEach(element => {
+            element.jinantime = parseTime(element.jinantime, '{y}{m}{d}')
+            element.chuantime = parseTime(element.chuantime, '{y}{m}{d}')
+          })
+          var that = this
+          require.ensure([], () => {
+            const {
+              export_json_to_excel
+            } = require('../../excel/Export2Excel')
+            const tHeader = ['预审申请号', '申请主体', '发明名称', '发明类型', '所属保护中心', '粗分号',  '进案日期','出案日期', '分类号', 'CCI', 'CCA', 'C-Sets', '主分类员', '副分类员'] // excel文档第一行显示的标题
+            const filterVal = ['id', 'sqr', 'mingcheng', 'type', 'oraginization','simpleclasscode',  'jinantime', 'chuantime', 'ipci', 'cci', 'cca', 'csets', 'mainworker', 'assworker']
+            const list = that.excelData
+            const data = this.formatJson(filterVal, list)
+            export_json_to_excel(tHeader, data, 'allbhzx')
+          })
+          this.getList()
         }, 0.5 * 1000)
       })
     },
@@ -474,18 +524,36 @@ export default {
       this.excelData = this.multipleSelection
       this.excelData.forEach(element => {
         element.jinantime = parseTime(element.jinantime, '{y}{m}{d}')
+        element.chuantime = parseTime(element.chuantime, '{y}{m}{d}')
       })
       var that = this
       require.ensure([], () => {
         const {
           export_json_to_excel
         } = require('../../excel/Export2Excel')
-        const tHeader = ['预审申请号', '申请主体', '发明名称', '发明类型', '所属保护中心', '预审申请日', '分类号', 'CCI', 'CCA', 'C-Sets', '主分类员', '副分类员'] // excel文档第一行显示的标题
-        const filterVal = ['id', 'sqr', 'mingcheng', 'type', 'oraginization', 'jinantime', 'ipci', 'cci', 'cca', 'csets', 'mainworker', 'assworker']
+        const tHeader = ['预审申请号', '申请主体', '发明名称', '发明类型', '所属保护中心', '粗分号', '进案日期','出案日期', '分类号', 'CCI', 'CCA', 'C-Sets', '主分类员', '副分类员'] // excel文档第一行显示的标题
+        const filterVal = ['id', 'sqr', 'mingcheng', 'type', 'oraginization', 'simpleclasscode', 'jinantime', 'chuantime', 'ipci', 'cci', 'cca', 'csets', 'mainworker', 'assworker']
         const list = that.excelData
         const data = this.formatJson(filterVal, list)
         export_json_to_excel(tHeader, data, 'bhzx')
       })
+    },
+    exportAllExcel() {
+      if (!this.$store.state.user.roles === 'admin') {
+        this.$alert('您当前没有该权限', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      if (this.activeName !== '2') {
+        this.$alert('仅允许已出案案件导出', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      this.oldLimit = this.search.limit
+      this.search.limit = this.total
+      this.refreshList()
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => v[j]))
