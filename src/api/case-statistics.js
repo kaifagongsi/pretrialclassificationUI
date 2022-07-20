@@ -26,3 +26,11 @@ export function caseOutWithOrg(query) {
   })
 }
 
+export function accountWork(query) {
+  return request({
+    // url: 'http://192.168.8.108:9100/caseDisposition/caseAllocation/findMainByState',
+    url: '/caseStatistic/accountWork',
+    method: 'get',
+    params: query
+  })
+}
