@@ -262,6 +262,15 @@ export const asyncRoutes = [
           title: '出案统计',
           roles: ['admin'] // or you can only set roles in sub nav
         }
+      },
+      {
+        path: 'caseAccountWork',
+        component: () => import('@/views/case-statistics/caseAccountWork'),
+        name: '出案工作量统计',
+        meta: {
+          title: '出案工作量统计',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
       }
     ]
   },
