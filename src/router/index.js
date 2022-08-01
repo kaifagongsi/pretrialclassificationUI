@@ -391,6 +391,37 @@ export const asyncRoutes = [
     ]
   },
   /*{
+    path: '/zip',
+    component: Layout,
+    redirect: '/zip/download',
+    alwaysShow: true,
+    name: 'Zip',
+    meta: { title: 'Zip', icon: 'zip' },
+    children: [
+      {
+        path: 'download',
+        component: () => import('@/views/zip/index'),
+        name: 'ExportZip',
+        meta: { title: 'Export Zip' }
+      }
+    ]
+  },
+  {
+    path: '/searchlike',
+    component: Layout,
+    alwaysShow: true,
+    name: 'fuzzyMatch',
+    meta: { title: '相似案件匹配', icon: 'searchlike' },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/fuzzy-match/fuzzyMatch'),
+        name: '相似案件匹配',
+        meta: { title: '相似案件匹配' }
+      }
+    ]
+  },*/
+  /*{
     path: '/tab',
     component: Layout,
     children: [
@@ -608,22 +639,7 @@ export const asyncRoutes = [
     ]
   },
 
-  {
-    path: '/zip',
-    component: Layout,
-    redirect: '/zip/download',
-    alwaysShow: true,
-    name: 'Zip',
-    meta: { title: 'Zip', icon: 'zip' },
-    children: [
-      {
-        path: 'download',
-        component: () => import('@/views/zip/index'),
-        name: 'ExportZip',
-        meta: { title: 'Export Zip' }
-      }
-    ]
-  },
+  ,
 
   {
     path: '/pdf',
