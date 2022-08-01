@@ -58,6 +58,7 @@
               maxlength="100"
               auto-complete="on"
               placeholder="请输入验证码"
+              @keyup.enter.native="handleLogin"
             />
           </el-form-item>
         </el-col>
@@ -76,6 +77,9 @@
 </template>
 
 <script>
+
+import Cookies from 'js-cookie'
+
 
 export default {
   name: 'Login',
@@ -188,6 +192,7 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
+          Cookies.set('loginname', this.loginForm.loginname)
           this.loading = true
           this.$store.dispatch('user/loginBySelf', this.loginForm).then(() => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })

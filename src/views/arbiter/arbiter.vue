@@ -556,6 +556,7 @@ export default {
         promiseObject.then( response => {
           if(response){
             arbiterChuAn(id).then(response => {
+              console.log(response)
               if (response.success) {
                 this.$message({
                   message: '出案成功',
@@ -564,7 +565,7 @@ export default {
                 this.getList()
               } else {
                 this.$message({
-                  message: '出案失败',
+                  message: response.message,
                   type: 'error'
                 })
               }
