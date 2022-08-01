@@ -54,7 +54,7 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
-import {checkRepeatLoginName, checkUserInfoEmail, getInfo, getUserInfoByLoginName,updateUserInfo} from "@/api/user";
+import {checkRepeatLoginName, checkUserInfoEmail, getInfo, getUserInfoByLoginName,updateUserInfo,changePssword} from "@/api/user";
 import Cookies from "js-cookie";
 
 export default {
@@ -106,7 +106,7 @@ export default {
       },
       dialogStatus: '',
       dialogFormVisible: false,
-
+      userOldPassword: '',
       rules: {
         loginname: [{ required: true, trigger: 'blur',}],
         name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
@@ -128,7 +128,7 @@ export default {
     updatepassword() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          updateUserInfo(this.temp).then( response =>{
+          changePssword(this.userOldPassword,this.temp.repassword,this.temp.loginname).then( response =>{
             if ( response.success){
               this.dialogFormVisible = false
               //this.getList()
@@ -154,6 +154,7 @@ export default {
       getUserInfoByLoginName(a).then(response => {
         // 2.设置到临时变量上
         this.temp = response.queryResult.map.item
+        this.userOldPassword = response.queryResult.map.item.password
         //})
 
         this.dialogFormVisible = true

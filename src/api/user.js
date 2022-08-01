@@ -117,3 +117,14 @@ export function getUserOnLine() {
   })
 
 }
+
+/**
+ * 修改密码
+ * @returns 
+ */
+export function changePssword(oldPassword,newPassword,loginname){
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/user/changePssword/' + oldPassword+ "/" + newPassword + "/" + loginname,
+    method: 'post'
+  })
+}
