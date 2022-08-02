@@ -69,7 +69,7 @@
         </el-col>
       </el-row>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
     </el-form>
 
@@ -79,6 +79,8 @@
 <script>
 
 import Cookies from 'js-cookie'
+import md5 from 'js-md5';
+
 
 
 export default {
@@ -194,6 +196,7 @@ export default {
         if (valid) {
           Cookies.set('loginname', this.loginForm.loginname)
           this.loading = true
+          this.loginForm.password = md5(this.loginForm.password)
           this.$store.dispatch('user/loginBySelf', this.loginForm).then(() => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
