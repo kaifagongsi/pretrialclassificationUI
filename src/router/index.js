@@ -399,6 +399,21 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/searchlike',
+    component: Layout,
+    alwaysShow: true,
+    name: 'fuzzyMatch',
+    meta: { title: '相似案件匹配', icon: 'searchlike' },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/fuzzy-match/fuzzyMatch'),
+        name: '相似案件匹配',
+        meta: { title: '相似案件匹配' }
+      }
+    ]
+  },
   /*{
     path: '/zip',
     component: Layout,
@@ -415,21 +430,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/searchlike',
-    component: Layout,
-    alwaysShow: true,
-    name: 'fuzzyMatch',
-    meta: { title: '相似案件匹配', icon: 'searchlike' },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/fuzzy-match/fuzzyMatch'),
-        name: '相似案件匹配',
-        meta: { title: '相似案件匹配' }
-      }
-    ]
-  },*/
+  */
   /*{
     path: '/tab',
     component: Layout,

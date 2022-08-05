@@ -94,6 +94,17 @@
               <span>{{ row.simpleclasscode }}</span>
             </template>
           </el-table-column>
+          <el-table-column label="是否存在相似案件" width="150px" align="center" >
+              <template slot-scope="{row}">
+                <span v-if=" row.similarCases == true">
+                  <el-button type="info" round @click="searchSimilarCases(row.id,row.fuzzyMatchResult)">存在相似案件</el-button>
+                </span>
+                <span v-else=" row.similarCases == false">
+                 <!-- {{ row.similarCases == true ? '存在相似案件' : '不存在相似案件' }} -->
+                 不存在相似案件
+                </span>
+              </template>
+          </el-table-column>
           <el-table-column
             fixed="right"
             label="操作"
@@ -317,6 +328,59 @@
 
 
       </el-tabs>
+      <!-- 相似案件dialog  -->
+      <el-dialog :title="dialogTitleSimilarCases" :visible.sync="dialogSimilarCases" width="80%">
+        <el-table   :data="tableDataSimilarCases"  border style="width: 100%" :row-class-name="tableRowClassName">
+           <el-table-column fixed label="预审申请号" prop="id" align="center" width="165px">
+              <template slot-scope="{row}">
+                <a
+                  v-bind:href="'ftp://baohuUserT:123456@192.168.8.130/'+row.id+'/'+row.pdfPath"
+                  target="_blank"
+                  class="link-type"
+                >{{ row.id }}</a>
+              </template>
+            </el-table-column>
+            <el-table-column label="所属保护中心" width="100px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.oraginization }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="发明名称" width="260px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.mingcheng }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="申请人" width="80px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.sqr }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="IPCI" width="260px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.ipci }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="CCI" width="260px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.cci }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="CCA" width="260px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.cca }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="CSETS" width="260px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.csets }}</span>
+              </template>
+          </el-table-column>
+        </el-table>
+        
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogSimilarCases = false">关闭</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -329,7 +393,8 @@ import {
   updateClassificationInfo,
   correctCase,
   judgeMoreIpcmi,
-  cpcToIpc
+  cpcToIpc,
+  searchFuzzyMatchResult
 } from '@/api/case-classification'
 import { checkIpcServer, checkIpcCsetsServer } from '@/api/case-arbiter'
 import { findUserInfo } from '@/api/case-disposition'
@@ -442,7 +507,7 @@ export default {
       excelData: '',
       user: '',
       createdTimes: 0,
-      list: null,
+      list: [],
       classInfoList: null,
       total: 0,
       listLoading: true,
@@ -452,6 +517,7 @@ export default {
         state: this.$route.query.tab,
         beginTime: '',
         endTime: ''
+
       },
       rules: {
         ipcmi: [{ required: true, validator: checkIpc }],
@@ -486,6 +552,10 @@ export default {
         show: '案件详情及分类信息',
         update: '转案'
       },
+      // 相似案件的dialog
+      dialogSimilarCases: false,
+      dialogTitleSimilarCases: '相似案件',
+      tableDataSimilarCases: [],
       transtemp: {
         id: undefined,
         mingcheng: '',
@@ -745,7 +815,7 @@ export default {
         console.log(response)
         // 返回的list
         this.list = response.data
-        this.total = response.data.length
+        this.total = response.total
         this.user = response.user
         this.multipleSelection = []
         this.finishCases = []
@@ -1027,14 +1097,47 @@ export default {
     },
     handleFilter() {
       this.search.page = 1
+      this.search.limit = 10
       this.getList()
+    },
+    searchSimilarCases(id,fuzzyMatchResult){
+      debugger
+      this.listLoading = true
+      searchFuzzyMatchResult(id,fuzzyMatchResult).then((response) => {
+        console.log(response)
+        if(response.success){
+          this.listLoading = false
+          this.dialogSimilarCases = true
+          this.tableDataSimilarCases = response.queryResult.list
+        }else{
+          this.listLoading = false
+          this.$message({
+            type: 'error',
+            message: response.message
+          })
+        }
+        
+      })
+    },
+    tableRowClassName({row, rowIndex}){
+      if ((rowIndex %2) === 1) {
+        return 'success-row';
+      }
+      return '';
     }
   }
 }
 </script>
 
 <style scoped>
-.tab-container {
-  margin: 30px;
-}
+  .tab-container {
+    margin: 30px;
+  }
+  .el-table .warning-row {
+    background: oldlace;
+  }
+
+  .el-table .success-row {
+    background: #f0f9eb;
+  }
 </style>

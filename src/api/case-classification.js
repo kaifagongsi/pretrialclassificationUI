@@ -104,3 +104,12 @@ export  function cpcToIpc(cci,cca) {
     }
   })
 }
+
+
+export function searchFuzzyMatchResult(id,abcd){
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/caseClassification/searchfuzzymatchresult/'+id,
+    method: 'post',
+    data: abcd
+  })
+}
