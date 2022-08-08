@@ -15,3 +15,13 @@ export function matchAllState(query) {
       params: query
     })
 }
+
+export function uploadFileApi(params){
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/fuzzymactch/uploadFile',
+    method: 'post',
+    data: params,
+    responseType:'blob'
+  })
+ 
+}

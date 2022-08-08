@@ -2,12 +2,26 @@
   <div class="app-container">
     <el-button @click="taskdistribution">重跑库中所有相似案件匹配</el-button>
     <el-progress :percentage="percentage" :color="customColors"></el-progress>
-    <el-button >上传文件对比</el-button>
+     <el-upload
+        multiple 
+        :limit="limitNum"
+        accept=".xls,.xlsx,csv"
+        class="upload-demo"
+        action="uploadFile"
+        :on-exceed="onExceed"
+        :show-file-list="showFileList"
+        :before-upload="beforeAvatarUpload"
+        :file-list="fileList"
+        :http-request="uploadFile"
+        >
+        <el-button   type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传xls/xlsx文件</div>
+     </el-upload>
   </div>
 </template>
 
 <script>
-  import {matchAll, matchAllState} from '@/api/fuzzymactch.js'
+  import {matchAll, matchAllState, uploadFileApi} from '@/api/fuzzymactch.js'
   import {getUserInfoByLoginName} from '@/api/user.js'
   import Cookies from "js-cookie";
 
@@ -25,7 +39,11 @@
           {color: '#6f7ad3', percentage: 100}
         ],
         shouldSearchState: false,
-        timer: ''
+        timer: '',
+        // fileUrl: process.env.VUE_APP_BASE_API+'/fuzzymactch/uploadFile', //上传文件的域名地址
+				limitNum: 3, //文件上传个数限制
+				fileList: [], //文件列表
+				showFileList: true //文件列表是否显示,默认不显示
       }
     },
     watch: {
@@ -72,7 +90,6 @@
           })
         },5000)
       },
-      
       getUserinfo: function(){
         return new Promise( (resolve, reject) =>{
           let loginname = Cookies.get('loginname')
@@ -88,6 +105,45 @@
             }
           })
         })
+      },
+      //文件上传之前的钩子,可以做一些验证或限制
+      beforeAvatarUpload(file){
+        const regExp = file.name.replace(/.+\./, '');
+				const lower = regExp.toLowerCase(); //把大写字符串全部转为小写字符串
+				const suffix = ['xls', 'xlsx'];
+        const isExcel =  suffix.indexOf(lower) !== -1
+        if (!isExcel) {
+            this.$message.error('请上传后缀名为 xls、xlsx 的格式!');
+        }
+        const isLt2M = file.size / 1024 / 1024 < 50;
+        if (!isLt2M) {
+          this.$message.error('文件大小不可超过 50MB!');
+        }
+        return isExcel && isLt2M;
+      },
+      //文件超出个数限制时的钩子
+			onExceed(files, fileList) {
+				console.log('onExceed-files', files);
+				console.log('onExceed-fileList', fileList);
+				return this.$message.warning(`只能选择${this.limitNum}个文件,当前共选择了${files.length+fileList.length}个`)
+			},
+      uploadFile(param){
+        const {file} = param;
+        var formData = new FormData();
+         formData.append("file", file); 
+         uploadFileApi(formData).then(res => {
+          let blob = new Blob([res],{type: "application/vnd.ms-excel",});
+          let fileName = param.file.name;
+          fileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".xlsx"
+          let link = document.createElement("a");
+          let href = window.URL.createObjectURL(blob);
+          link.href = href;
+          link.download = fileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(href); //释放该URL
+        })
       }
     }
   }
@@ -96,5 +152,5 @@
 </script>
 
 <style scoped>
-
+ 
 </style>
