@@ -8,6 +8,8 @@
 
 <script>
   import {matchAll, matchAllState} from '@/api/fuzzymactch.js'
+  import {getUserInfoByLoginName} from '@/api/user.js'
+  import Cookies from "js-cookie";
 
   export default {
     name: "fuzzyMatch",
@@ -30,23 +32,31 @@
 
     },
     methods: {
-      taskdistribution: function(){
-        matchAll().then((response) => {
-          if(response.code == 20000){
-            this.$message({
+      async taskdistribution(){
+        let flage = await this.getUserinfo()
+        if(flage){
+          matchAll().then((response) => {
+            if(response.code == 20000){
+              this.$message({
+                  message: response.message,
+                  type: 'success'
+              })
+              debugger
+              this.startInter()
+            }else{
+              this.$message({
                 message: response.message,
-                type: 'success'
-            })
-            debugger
-            this.startInter()
-          }else{
-            this.$message({
-              message: response.message,
-              type: 'error'
-            })
-            this.startInter()
-          }
-        })
+                type: 'error'
+              })
+              this.startInter()
+            }
+          })
+        }else{
+          this.$message({
+            message: '暂无权限执行此操作',
+            type: 'error'
+          })
+        }
       },
       startInter: function(){
         this.timer = setInterval(() => {
@@ -61,6 +71,23 @@
             }
           })
         },5000)
+      },
+      
+      getUserinfo: function(){
+        return new Promise( (resolve, reject) =>{
+          let loginname = Cookies.get('loginname')
+          getUserInfoByLoginName(loginname).then(response => {
+            if(response.success){
+              if(response.queryResult.map.item.dep1 === '系统建设与运维部'){
+                resolve(true)
+              }else{
+                resolve(false)
+              }
+            }else{
+              resolve(false)
+            }
+          })
+        })
       }
     }
   }

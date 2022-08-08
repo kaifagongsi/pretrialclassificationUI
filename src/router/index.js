@@ -404,7 +404,11 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     name: 'fuzzyMatch',
-    meta: { title: '相似案件匹配', icon: 'searchlike' },
+    meta: { 
+      title: '相似案件匹配', 
+      icon: 'searchlike' ,
+      roles: ['admin']
+    },
     children: [
       {
         path: 'index',

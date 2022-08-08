@@ -18,9 +18,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="3">
             <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" plain native-type="submit" @click.prevent="searchFunc(listQuery)">
               查询
+            </el-button>
+          </el-col>
+          <el-col :span="3">
+            <el-button  class="filter-item" type="primary" icon="el-icon-s-flag"   @click="matchNeedCurDay">
+              执行相似案件
             </el-button>
           </el-col>
           <el-col :span="6">
@@ -128,7 +133,7 @@
 </template>
 
 <script>
-import { findMainByState, findUserInfo, updateWorker, sendEmail, getInitDep1s, getDep2sByDep1 } from '@/api/case-disposition'
+import { findMainByState, findUserInfo, updateWorker, sendEmail, getInitDep1s, getDep2sByDep1, matchNeed } from '@/api/case-disposition'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -401,6 +406,23 @@ export default {
     getSortClass: function(key) {
       const sort = this.listQuery.sort;
       return sort === `+${key}` ? 'ascending' : 'descending'
+    },
+    matchNeedCurDay: function(){
+      this.listLoading = true
+      matchNeed().then(response => {
+        this.listLoading = false
+        if(response.success){
+          this.$message({
+            typpe: 'success',
+            message: response.message
+          })
+        }else{
+          this.$message({
+            type: 'error',
+            message: response.message
+          })
+        }
+      })
     }
   }
 }

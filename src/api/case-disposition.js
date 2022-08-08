@@ -55,3 +55,10 @@ export function getDep2sByDep1(dep1) {
     method: 'get'
   })
 }
+
+export function matchNeed(){
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/caseClassification/matchNeed/',
+    method: 'get'
+  })
+}
