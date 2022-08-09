@@ -3,12 +3,9 @@
     <el-button @click="taskdistribution">重跑库中所有相似案件匹配</el-button>
     <el-progress :percentage="percentage" :color="customColors"></el-progress>
      <el-upload
-        multiple 
-        :limit="limitNum"
         accept=".xls,.xlsx,csv"
         class="upload-demo"
         action="uploadFile"
-        :on-exceed="onExceed"
         :show-file-list="showFileList"
         :before-upload="beforeAvatarUpload"
         :file-list="fileList"
@@ -41,9 +38,9 @@
         shouldSearchState: false,
         timer: '',
         // fileUrl: process.env.VUE_APP_BASE_API+'/fuzzymactch/uploadFile', //上传文件的域名地址
-				limitNum: 3, //文件上传个数限制
 				fileList: [], //文件列表
 				showFileList: true //文件列表是否显示,默认不显示
+        
       }
     },
     watch: {
@@ -121,20 +118,20 @@
         }
         return isExcel && isLt2M;
       },
-      //文件超出个数限制时的钩子
-			onExceed(files, fileList) {
-				console.log('onExceed-files', files);
-				console.log('onExceed-fileList', fileList);
-				return this.$message.warning(`只能选择${this.limitNum}个文件,当前共选择了${files.length+fileList.length}个`)
-			},
       uploadFile(param){
+        const loading = this.$loading({
+          lock: true,
+          text: '处理中，请稍后',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         const {file} = param;
         var formData = new FormData();
          formData.append("file", file); 
          uploadFileApi(formData).then(res => {
           let blob = new Blob([res],{type: "application/vnd.ms-excel",});
           let fileName = param.file.name;
-          fileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".xlsx"
+          fileName = fileName.substring(0, fileName.lastIndexOf(".")) + "_匹配后文件.xlsx"
           let link = document.createElement("a");
           let href = window.URL.createObjectURL(blob);
           link.href = href;
@@ -143,6 +140,7 @@
           link.click();
           document.body.removeChild(link);
           window.URL.revokeObjectURL(href); //释放该URL
+          loading.close();
         })
       }
     }
