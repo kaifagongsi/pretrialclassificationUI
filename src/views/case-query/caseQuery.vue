@@ -455,7 +455,6 @@ export default {
     },
     getList() { // 获取table表格数据
       this.listLoading = true
-      this.search.limit = this.oldLimit
       findAllCase(this.search).then(response => {
         console.log(response.data.items.length)
         this.list = response.data.items
@@ -489,6 +488,7 @@ export default {
             const data = this.formatJson(filterVal, list)
             export_json_to_excel(tHeader, data, 'allbhzx')
           })
+          this.search.limit = this.oldLimit
           this.getList()
         }, 0.5 * 1000)
       })
