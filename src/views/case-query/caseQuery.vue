@@ -1,4 +1,3 @@
-
 <template>
   <div class="tab-container">
     <div class="filter-container">
