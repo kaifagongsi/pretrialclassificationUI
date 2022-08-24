@@ -550,38 +550,35 @@ export default {
       return beforeTheCaseOfTheChiefJudge(id,processingPerson)
     },
     //裁决组长出案 此方法需要同步执行（按顺序执行）
-    arbiterChuAn:  function(id,processingPerson) {
-      debugger
-       let promiseObject =  this.beforeTheCaseOfTheChiefJudge(id,processingPerson);
-        promiseObject.then( response => {
-          if(response){
-            arbiterChuAn(id).then(response => {
-              console.log(response)
-              if (response.success) {
-                this.$message({
-                  message: '出案成功',
-                  type: 'success'
-                })
-                this.getList()
-              } else {
-                this.$message({
-                  message: response.message,
-                  type: 'error'
-                })
-              }
-            }).catch(() => {
+    async arbiterChuAn(id,processingPerson) {
+        let promiseObject = await this.beforeTheCaseOfTheChiefJudge(id,processingPerson);
+        if(promiseObject){
+          arbiterChuAn(id).then(response => {
+            if (response.success) {
               this.$message({
-                message: '出案失败，请稍后重试',
+                message: '出案成功',
+                type: 'success'
+              })
+              this.getList()
+            } else {
+              this.$message({
+                message: response.message,
                 type: 'error'
               })
-            })
-          } else {
+            }
+          }).catch(() => {
             this.$message({
-              message: '该案件没有主分类号，无法出案',
+              message: '出案失败，请稍后重试',
               type: 'error'
             })
-          }
-        })
+          })
+        } else {
+          this.$message({
+            message: '该案件没有主分类号，无法出案',
+            type: 'error'
+          })
+        }
+        
     },
     // 删除裁决员dialog框中列表的人员
     deleteArbiterPersonRow: function(index, rows) {
