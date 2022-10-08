@@ -57,7 +57,7 @@
         width="55"
         :default-sort="{prop: 'worker', order: 'descending'}"
       />
-      <el-table-column label="ID" prop="id" align="center" width="200">
+      <el-table-column label="ID" prop="id" align="center" width="200" sortable >
         <template slot-scope="{row}">
           <span class="link-type">{{ row.id }}</span>
         </template>
@@ -72,7 +72,7 @@
           <span>{{ row.type=== 'FM' ? '发明' : '新型' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="粗分结果" width="200px" prop="simpleclasscode" align="center">
+      <el-table-column label="粗分结果" width="200px" prop="simpleclasscode" align="center" sortable >
         <template slot-scope="{row}">
           <span>{{ row.simpleclasscode }}</span>
         </template>
@@ -201,7 +201,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 100,
+        limit: 200,
         importance: undefined,
         title: undefined,
         type: undefined,
