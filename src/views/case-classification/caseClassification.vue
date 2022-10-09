@@ -54,12 +54,12 @@
               <!-- <router-link to="">{{ row.id }}</router-link> -->
             </template>
           </el-table-column>
-          <el-table-column label="发明名称" width="280px" align="center">
+          <el-table-column label="发明名称" sortable width="280px" align="center" prop="mingcheng" :sort-method="(a,b) => a.mingcheng.localeCompare(b.mingcheng)">
             <template slot-scope="{row}">
               <span>{{ row.mingcheng }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="申请人" width="180px" align="center">
+          <el-table-column label="申请人" sortable width="180px" align="center" prop="sqr" :sort-method="sortDevName">
             <template slot-scope="{row}">
               <span>{{ row.sqr }}</span>
             </template>
@@ -84,7 +84,7 @@
               <span>{{ row.jinantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             </template>
           </el-table-column>
-          <el-table-column v-if="this.activeName == '3'" key="row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')" label="出案日期" width="180px" align="center" >
+          <el-table-column v-if="this.activeName == '3'" key="row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')"  label="出案日期" width="180px" align="center" prop="chuantime" sortable>
             <template slot-scope="{row}">
               <span>{{ row.chuantime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             </template>
@@ -376,7 +376,7 @@
               </template>
           </el-table-column>
         </el-table>
-        
+
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogSimilarCases = false">关闭</el-button>
         </div>
@@ -630,6 +630,55 @@ export default {
     getRowKey(row) {
       return row.id
     },
+    //排序
+    sortDevName(str1, str2) {
+      let res = 0
+      for (let i = 0; ;i++) {
+        if (!str1[i] || !str2[i]) {
+          res = str1.length - str2.length
+          break
+        }
+        const char1 = str1[i]
+        const char1Type = this.getChartType(char1)
+        const char2 = str2[i]
+        const char2Type = this.getChartType(char2)
+        // 类型相同的逐个比较字符
+        if (char1Type[0] === char2Type[0]) {
+          if (char1 === char2) {
+            continue
+          } else {
+            if (char1Type[0] === 'zh') {
+              res = char1.localeCompare(char2)
+            } else if (char1Type[0] === 'en') {
+              res = char1.charCodeAt(0) - char2.charCodeAt(0)
+            } else {
+              res = char1 - char2
+            }
+            break
+          }
+        } else {
+          // 类型不同的，直接用返回的数字相减
+          res = char1Type[1] - char2Type[1]
+          break
+        }
+      }
+      return res
+    },
+    getChartType(char) {
+      // 数字可按照排序的要求进行自定义，我这边产品的要求是
+      // 数字（0->9）->大写字母（A->Z）->小写字母（a->z）->中文拼音（a->z）
+      if (/^[\u4e00-\u9fa5]$/.test(char)) {
+        return ['zh', 300]
+      }
+      if (/^[a-zA-Z]$/.test(char)) {
+        return ['en', 200]
+      }
+      if (/^[0-9]$/.test(char)) {
+        return ['number', 100]
+      }
+      return ['others', 999]
+    },
+
     // 操作多选
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -1116,7 +1165,7 @@ export default {
             message: response.message
           })
         }
-        
+
       })
     },
     tableRowClassName({row, rowIndex}){
