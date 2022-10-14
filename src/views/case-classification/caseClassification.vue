@@ -54,6 +54,17 @@
               <!-- <router-link to="">{{ row.id }}</router-link> -->
             </template>
           </el-table-column>
+          <el-table-column label="是否存在相似案件" width="150px" align="center" >
+              <template slot-scope="{row}">
+                <span v-if=" row.similarCases == true">
+                  <el-button type="info" round @click="searchSimilarCases(row.id,row.fuzzyMatchResult)">存在相似案件</el-button>
+                </span>
+                <span v-else=" row.similarCases == false">
+                 <!-- {{ row.similarCases == true ? '存在相似案件' : '不存在相似案件' }} -->
+                 不存在相似案件
+                </span>
+              </template>
+          </el-table-column>
           <el-table-column label="发明名称" sortable width="280px" align="center" prop="mingcheng" :sort-method="(a,b) => a.mingcheng.localeCompare(b.mingcheng)">
             <template slot-scope="{row}">
               <span>{{ row.mingcheng }}</span>
@@ -94,17 +105,7 @@
               <span>{{ row.simpleclasscode }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="是否存在相似案件" width="150px" align="center" >
-              <template slot-scope="{row}">
-                <span v-if=" row.similarCases == true">
-                  <el-button type="info" round @click="searchSimilarCases(row.id,row.fuzzyMatchResult)">存在相似案件</el-button>
-                </span>
-                <span v-else=" row.similarCases == false">
-                 <!-- {{ row.similarCases == true ? '存在相似案件' : '不存在相似案件' }} -->
-                 不存在相似案件
-                </span>
-              </template>
-          </el-table-column>
+          
           <el-table-column
             fixed="right"
             label="操作"
