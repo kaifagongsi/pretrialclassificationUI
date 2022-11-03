@@ -458,14 +458,20 @@ export default {
         person: ''
       },
       dep1s: [{
-        value: 'FL',
-        label: '分类审查部'
+        value: '一',
+        label: '一部'
       }, {
-        value: 'JG',
-        label: '数据加工部'
+        value: '二',
+        label: '二部'
+      }, {
+        value: '三',
+        label: '三部'
+      }, {
+        value: '四',
+        label: '四部'
       }],
       dep2s: undefined,
-      dep2JG: [{
+      dep2One: [{
         value: '一室',
         label: '一室'
       }, {
@@ -474,29 +480,18 @@ export default {
       }, {
         value: '三室',
         label: '三室'
-      }, {
-        value: '四室',
-        label: '四室'
-      }, {
-        value: '五室',
-        label: '五室'
-      }, {
-        value: '六室',
-        label: '六室'
-      }, {
-        value: '七室',
-        label: '七室'
-      }, {
-        value: '八室',
-        label: '八室'
-      }, {
-        value: '九室',
-        label: '九室'
-      }, {
-        value: '十室',
-        label: '十室'
       }],
-      dep2FL: [{
+      dep2Two: [{
+        value: '一室',
+        label: '一室'
+      }, {
+        value: '二室',
+        label: '二室'
+      }, {
+        value: '三室',
+        label: '三室'
+      }],
+      dep2Three: [{
         value: '一室',
         label: '一室'
       }, {
@@ -511,6 +506,19 @@ export default {
       }, {
         value: '五室',
         label: '五室'
+      }],
+      dep2Four: [{
+        value: '一室',
+        label: '一室'
+      }, {
+        value: '二室',
+        label: '二室'
+      }, {
+        value: '三室',
+        label: '三室'
+      }, {
+        value: '四室',
+        label: '四室'
       }],
       // 人员下拉框的list
       persons: null,
@@ -523,10 +531,14 @@ export default {
   watch: {
     'arbiterPerson.dep1': {
       handler(newValue, oldValue) {
-        if (newValue === '数据加工部') {
-          this.dep2s = this.dep2JG
-        } else if (newValue === '分类审查部') {
-          this.dep2s = this.dep2FL
+        if (newValue === '一部') {
+          this.dep2s = this.dep2One
+        } else if (newValue === '二部') {
+          this.dep2s = this.dep2Two
+        } else if (newValue === '三部') {
+          this.dep2s = this.dep2Three
+        } else if (newValue === '四部') {
+          this.dep2s = this.dep2Four
         } else {
           this.dep2s = null
         }
