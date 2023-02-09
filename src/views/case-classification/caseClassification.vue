@@ -945,31 +945,51 @@ export default {
           this.$refs['dataForm']
         })
         this.$refs['dataForm'].validate((valid) => {
-          if (this.temp.ipcmi !== null && this.temp.ipcmi !== '') {
+          if ((this.temp.ipcmi !== null && this.temp.ipcmi !== '') || (this.temp.ipcoi !== null && this.temp.ipcoi !== '')) {
             var a = 0
-            if (this.temp.cityCode.indexOf(this.temp.ipcmi.substring(0, 4)) !== -1) {
-              resolve(true)
-            } else {
-              if (this.temp.oraginization === '北京') {
-                resolve(false)
+            if (this.temp.ipcmi !== null && this.temp.ipcmi !== '') {
+              if (this.temp.cityCode.indexOf(this.temp.ipcmi.substring(0, 4)) !== -1) {
+                resolve(true)
               } else {
-                if (this.temp.ipcoi !== null && this.temp.ipcoi !== '') {
-                  const strIpcoi = this.temp.ipcoi.split(',')
-                  for (var i = 0; i < strIpcoi.length; i++) {
-                    if (this.temp.cityCode.indexOf(strIpcoi[i].substring(0, 4)) !== -1) {
-                      a = a + 1
-                    } else {
-                      // 遍历副分
+                if (this.temp.oraginization === '北京') {
+                  resolve(false)
+                } else {
+                  if (this.temp.ipcoi !== null && this.temp.ipcoi !== '') {
+                    const strIpcoi = this.temp.ipcoi.split(',')
+                    for (var i = 0; i < strIpcoi.length; i++) {
+                      if (this.temp.cityCode.indexOf(strIpcoi[i].substring(0, 4)) !== -1) {
+                        a = a + 1
+                      } else {
+                        // 遍历副分
+                      }
                     }
-                  }
-                  if (a > 0) {
-                    resolve(true)
+                    if (a > 0) {
+                      resolve(true)
+                    } else {
+                      resolve(false)
+                    }
                   } else {
                     resolve(false)
                   }
+                }
+              }
+            } else {
+              if (this.temp.ipcoi !== null && this.temp.ipcoi !== '') {
+                const strIpcoi = this.temp.ipcoi.split(',')
+                for (var i = 0; i < strIpcoi.length; i++) {
+                  if (this.temp.cityCode.indexOf(strIpcoi[i].substring(0, 4)) !== -1) {
+                    a = a + 1
+                  } else {
+                    // 遍历副分
+                  }
+                }
+                if (a > 0) {
+                  resolve(true)
                 } else {
                   resolve(false)
                 }
+              } else {
+                resolve(false)
               }
             }
           } else {
