@@ -66,3 +66,13 @@ export function caseExportFinish(query) {
     }
   })
 }
+
+export function exportAllExcelToZip( search ){
+  return request({
+    url: '/caseQuery/caseConditionQuery/exportAllExcelToZip',
+    method: 'get',
+    params: search,
+    timeout: 100000,
+    responseType: 'blob'
+  })
+}
