@@ -29,7 +29,7 @@
           <el-input
             :key="passwordType"
             ref="password"
-            v-model="loginForm.password"
+            v-model="loginForm.uncodepassword"
             :type="passwordType"
             placeholder="Password"
             name="password"
@@ -108,7 +108,7 @@ export default {
         codeText: ''
       },
       loginRules: {
-        password: [
+        uncodepassword: [
           { required: true, trigger: 'blur', validator: validatePassword }
         ],
         codeText: [
@@ -196,7 +196,7 @@ export default {
         if (valid) {
           Cookies.set('loginname', this.loginForm.loginname)
           this.loading = true
-          this.loginForm.password = md5(this.loginForm.password)
+          this.loginForm.password = md5(this.loginForm.uncodepassword)
           this.$store.dispatch('user/loginBySelf', this.loginForm).then(() => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false

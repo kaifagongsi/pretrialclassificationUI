@@ -50,7 +50,10 @@
               <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportAllExcel()">
                 导出全部Excel
               </el-button>
-              <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToZip()">
+              <!-- <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportToZip()">
+                下载Zip
+              </el-button> -->
+              <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportAllToZip()">
                 下载Zip
               </el-button>
             </el-col>
@@ -321,7 +324,7 @@
 </template>
 
 <script>
-import { findAllCase, findClassInfoByID, exportExcelToZip } from '@/api/case-query'
+import { findAllCase, findClassInfoByID, exportExcelToZip, exportAllExcelToZip } from '@/api/case-query'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { parseTime } from '@/utils'
@@ -556,6 +559,24 @@ export default {
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => v[j]))
+    },
+    // 后台导出全部excel 文件
+    exportAllToZip(){
+      if (!this.$store.state.user.roles === 'admin') {
+        this.$alert('您当前没有该权限', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      if (this.activeName !== '2') {
+        this.$alert('仅允许已出案案件导出', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      exportAllExcelToZip(this.search).then((response) => {
+        this.downloadFile(response)
+      })
     },
     // 后台打包导出Excel压缩文件
     exportToZip() {

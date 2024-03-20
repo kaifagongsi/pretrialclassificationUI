@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { searchByCondition, getTransWorkerList, caseTransfer } from '@/api/case-classification'
+import { getTransWorkerList, caseTransfer } from '@/api/case-classification'
 import { findUserInfo, updateWorker } from '@/api/case-disposition'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'

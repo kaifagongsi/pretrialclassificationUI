@@ -230,6 +230,15 @@ export const asyncRoutes = [
           title: '案件调配',
           roles: ['admin','arbiter'] // or you can only set roles in sub nav
         }
+      },
+      {
+        path: 'caseChangeAll',
+        component: () => import('@/views/case-disposition/caseChangeAll'),
+        name: '修改案件分类号',
+        meta: {
+          title: '修改案件分类号',
+          roles: ['admin','arbiter'] // or you can only set roles in sub nav
+        }
       }
     ]
   },

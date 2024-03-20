@@ -180,6 +180,19 @@ export default {
   components: { Pagination },
   directives: { waves },
   data() {
+    var checkPassWord = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('密码不可为空'))
+      }
+      var passwordreg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,12}/
+      var isValid = passwordreg.test(value);
+      if (isValid != true) {
+        callback(new Error("密码必须是大小写字母，数字，特殊字符组成，且长度为8到12位"))
+        return;
+      } else {
+        callback()
+      }
+    }
     var checkLoginName = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('登录账户不可为空'))
@@ -272,7 +285,7 @@ export default {
       rules: {
         loginname: [{ required: true, trigger: 'blur', validator: checkLoginName }],
         name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
-        password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
+        password: [{ required: true, validator: checkPassWord, trigger: 'blur', }],
         email: [{ required: true, trigger: 'blur', validator: checkEmail }],
         areaname: [{ required: true, message: '领域名称不能为空', trigger: 'blur' }],
         fields: [{ required: true, message: '领域不能为空', trigger: 'blur' }],

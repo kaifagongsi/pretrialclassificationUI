@@ -56,9 +56,33 @@ export function getDep2sByDep1(dep1) {
   })
 }
 
-export function matchNeed(){
+export function matchNeed() {
   return request({
     url: process.env.VUE_APP_BASE_API + '/caseClassification/matchNeed/',
     method: 'get'
+  })
+}
+
+export function changOneResult(data) {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/caseDisposition/caseChange/changeOne',
+    method: 'post',
+    data: data
+  })
+}
+
+export function deleteOne(data) {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/caseDisposition/caseChange/deleteOne',
+    method: 'delete',
+    data: data
+  })
+}
+
+export function caseFinishAllByAdmin(data) {
+  return request({
+    url: process.env.VUE_APP_BASE_API + '/caseDisposition/caseChange/caseFinishAll',
+    method: 'post',
+    data: data
   })
 }

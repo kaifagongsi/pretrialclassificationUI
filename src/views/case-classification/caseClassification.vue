@@ -105,7 +105,7 @@
               <span>{{ row.simpleclasscode }}</span>
             </template>
           </el-table-column>
-          
+
           <el-table-column
             fixed="right"
             label="操作"
@@ -319,6 +319,7 @@
             </el-table-column>
           </el-table>
           <div slot="footer" class="dialog-footer">
+            <el-button @click="alertcitycode(temp)">加快保护领域分类号</el-button>
             <el-button @click="dialogFormVisible = false">关闭</el-button>
             <el-button type="primary" :disabled="saveBtn" @click="subClassification()">保存</el-button>
             <el-button type="primary" :disabled="correctBtn" @click="subClassification()">更正</el-button>
@@ -544,7 +545,9 @@ export default {
         ipca: '',
         ipcmi: '',
         ipcoi: '',
-        chuantype: ''
+        chuantype: '',
+        oraginization: '',
+        cityCode: ''
       },
       dialogFormVisible: false,
       userDialogFormVisible: false,
@@ -936,17 +939,100 @@ export default {
         })
       })
     },
+    vaildateCitycode() {
+      return new Promise((resolve, reject) => {
+        this.$nextTick(() => {
+          this.$refs['dataForm']
+        })
+        this.$refs['dataForm'].validate((valid) => {
+          if ((this.temp.ipcmi !== null && this.temp.ipcmi !== '') || (this.temp.ipcoi !== null && this.temp.ipcoi !== '')) {
+            var a = 0
+            if (this.temp.ipcmi !== null && this.temp.ipcmi !== '') {
+              if (this.temp.cityCode.indexOf(this.temp.ipcmi.substring(0, 4)) !== -1) {
+                resolve(true)
+              } else {
+                if (this.temp.oraginization === '北京') {
+                  resolve(false)
+                } else {
+                  if (this.temp.ipcoi !== null && this.temp.ipcoi !== '') {
+                    const strIpcoi = this.temp.ipcoi.split(',')
+                    for (var i = 0; i < strIpcoi.length; i++) {
+                      if (this.temp.cityCode.indexOf(strIpcoi[i].substring(0, 4)) !== -1) {
+                        a = a + 1
+                      } else {
+                        // 遍历副分
+                      }
+                    }
+                    if (a > 0) {
+                      resolve(true)
+                    } else {
+                      resolve(false)
+                    }
+                  } else {
+                    resolve(false)
+                  }
+                }
+              }
+            } else {
+              if (this.temp.ipcoi !== null && this.temp.ipcoi !== '') {
+                const strIpcoi = this.temp.ipcoi.split(',')
+                for (var i = 0; i < strIpcoi.length; i++) {
+                  if (this.temp.cityCode.indexOf(strIpcoi[i].substring(0, 4)) !== -1) {
+                    a = a + 1
+                  } else {
+                    // 遍历副分
+                  }
+                }
+                if (a > 0) {
+                  resolve(true)
+                } else {
+                  resolve(false)
+                }
+              } else {
+                resolve(false)
+              }
+            }
+          } else {
+            resolve(false)
+          }
+        })
+      })
+    },
+    alertcitycode(temp) {
+      this.$alert('<b>粗分号：</b></br>' + temp.simpleclasscode + '</br></br><b>' + temp.oraginization + '保护中心分类号：</b></br>'+ temp.cityCode, '加快保护领域范围', {
+        dangerouslyUseHTMLString: true
+      })
+    },
     // 分类号逻辑判断
     async subClassification() {
       if (this.activeName === '3') {
         this.correctBtn = true
       }
       const flag = await this.vaildateClassification();
-      if (flag) {
-        // 执行保存和更正操作
-        this.saveClassification()
+      const citycodeflag = await this.vaildateCitycode();
+      if (citycodeflag) {
+        if (flag) {
+          // 执行保存和更正操作
+          this.saveClassification()
+        } else {
+          // 取消操作
+        }
       } else {
-        // 取消操作
+        this.$confirm('检测到您的分类号未在该保护中心的分类号中，是否继续保存', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          console.log('未在加快保护领域中，用户确认保存')
+          if (flag) {
+            // 执行保存和更正操作
+            this.saveClassification()
+          } else {
+            // 取消操作
+          }
+        }).catch(() => {
+          // 取消操作
+        })
       }
     },
     // 逻辑判断通过后，进行后台保存：保存或更正
@@ -1091,37 +1177,55 @@ export default {
         // 正常出案
         this.finishonecase(row)
       } else {
-        // 1.验证分类号
-        const vaildateFlag = await this.vaildateClassification()
-        if (vaildateFlag) {
-          // 2.保存分类号
-          const saveResult = await this.doSaveClassificationInfo(2)
-          if (saveResult) {
-            // 3.判断可以正常出案
-            // 3.1 有主分，自己也写了主分，任然坚持出案或者无主分自己出案
-            const result = await this.judgeMoreIpcmi(row.id)
-            if (result) {
-              // 坚持出案
-              this.finishonecase(row)
-              this.dialogFormVisible = false
+        const citycodeflag = await this.vaildateCitycode()
+        var citycodecount = 0
+        if (citycodeflag) {
+          citycodecount = 1
+        } else {
+          this.$confirm('检测到您的分类号未在该保护中心的分类号中，是否继续出案', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            console.log('未在加快保护领域中，用户确认出案')
+            citycodecount = 1
+          }).catch(() => {
+            // 取消操作
+          })
+        }
+        if (citycodecount === 1) {
+          // 1.验证分类号
+          const vaildateFlag = await this.vaildateClassification()
+          if (vaildateFlag) {
+            // 2.保存分类号
+            const saveResult = await this.doSaveClassificationInfo(2)
+            if (saveResult) {
+              // 3.判断可以正常出案
+              // 3.1 有主分，自己也写了主分，任然坚持出案或者无主分自己出案
+              const result = await this.judgeMoreIpcmi(row.id)
+              if (result) {
+                // 坚持出案
+                this.finishonecase(row)
+                this.dialogFormVisible = false
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: '您已放弃出案，可以重新填写',
+                  type: 'error'
+                })
+              }
             } else {
               this.$message({
                 showClose: true,
-                message: '您已放弃出案，可以重新填写',
+                message: '出案之前，自动保存分类号失败，请稍候重试',
                 type: 'error'
               })
+              this.getList()
             }
           } else {
-            this.$message({
-              showClose: true,
-              message: '出案之前，自动保存分类号失败，请稍候重试',
-              type: 'error'
-            })
-            this.getList()
+            // 取消操作
+            console.log('验证没通过')
           }
-        } else {
-          // 取消操作
-          console.log('验证没通过')
         }
       }
     },
@@ -1155,11 +1259,11 @@ export default {
       this.listLoading = true
       searchFuzzyMatchResult(id,fuzzyMatchResult).then((response) => {
         console.log(response)
-        if(response.success){
+        if (response.success) {
           this.listLoading = false
           this.dialogSimilarCases = true
           this.tableDataSimilarCases = response.queryResult.list
-        }else{
+        } else {
           this.listLoading = false
           this.$message({
             type: 'error',
