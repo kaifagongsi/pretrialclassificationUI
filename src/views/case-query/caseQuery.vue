@@ -56,6 +56,9 @@
               <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="exportAllToZip()">
                 下载Zip
               </el-button>
+              <el-button v-waves class="filter-item" type="primary"  plain native-type="submit" @click.prevent="downloadAllToZip()">
+                规划导出分类结果Zip
+              </el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -366,7 +369,8 @@ export default {
         beginTime: '',
         endTime: '',
         enterBeginTime:'',
-        enterEndTime:''
+        enterEndTime:'',
+        exprotFlag:''
       },
       temp: {
         id: undefined,
@@ -578,6 +582,31 @@ export default {
         this.downloadFile(response)
       })
     },
+    // 后台导出全部excel 文件压缩包
+    downloadAllToZip(){
+      if (!this.$store.state.user.roles === 'admin') {
+        this.$alert('您当前没有该权限', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      if (!this.$store.state.user.loginname ==='178218' && !this.$store.state.user.loginname ==='191200') {
+        this.$alert('您当前没有该权限', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      if (this.activeName !== '2') {
+        this.$alert('仅允许已出案案件导出', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
+      this.search.exprotFlag='exprot'
+      exportAllExcelToZip(this.search).then((response) => {
+        this.downloadFile(response)
+      })
+    },
     // 后台打包导出Excel压缩文件
     exportToZip() {
       if (!this.$store.state.user.roles === 'admin') {
@@ -620,6 +649,7 @@ export default {
       link.setAttribute('download', 'bhzx.zip')
       document.body.appendChild(link)
       link.click()
+      this.search.exprotFlag=''
     }
   }
 }
